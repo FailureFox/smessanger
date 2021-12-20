@@ -11,3 +11,5 @@ class AuthNumberChangeEvent extends AuthEvent {
 class AuthWelcomeNextEvent extends AuthEvent {}
 
 class AuthInputNextEvent extends AuthEvent {}
+
+class AuthVerifyNextEvent extends AuthEvent {}

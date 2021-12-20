@@ -39,6 +39,7 @@ dependencies:
   #other  
   animate_icons: ^2.0.0
   mask_text_input_formatter: ^2.0.0
+  pin_code_fields: ^7.3.0
   #data
   shared_preferences: ^2.0.11
   flutter_secure_storage: ^5.0.2

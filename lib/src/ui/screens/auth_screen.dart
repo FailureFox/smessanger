@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_bloc_export.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/auth_pages.dart';
+import 'package:smessanger/src/ui/pages/auth_pages/name_input_page.dart';
+import 'package:smessanger/src/ui/pages/auth_pages/number_input_page.dart';
+import 'package:smessanger/src/ui/pages/auth_pages/phone_verify_page.dart';
 import 'package:smessanger/src/ui/styles/colors.dart';
 
 class AuthScreen extends StatelessWidget {
@@ -48,7 +51,12 @@ class _AuthScreen extends StatelessWidget {
           child: PageView(
             physics: const NeverScrollableScrollPhysics(),
             controller: context.read<AuthBloc>().pageController,
-            children: const [WelcomePage(), NumberInputPage()],
+            children: const [
+              WelcomePage(),
+              NumberInputPage(),
+              PhoneVerifyPage(),
+              NameInputPage()
+            ],
           ),
         ),
       );

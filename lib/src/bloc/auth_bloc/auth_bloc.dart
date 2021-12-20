@@ -25,5 +25,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
     on<AuthNumberChangeEvent>((event, emit) => emit(
         (state as AuthNumberInputState).copyWith(phoneNumber: event.number)));
+
+    on<AuthInputNextEvent>((event, emit) {
+      pageController.nextPage(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.fastOutSlowIn);
+    });
+
+    on<AuthVerifyNextEvent>((event, emit) => pageController.nextPage(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.fastOutSlowIn));
   }
 }
