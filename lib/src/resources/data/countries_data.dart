@@ -7,7 +7,9 @@ class CountriesModel {
   factory CountriesModel.fromMap(Map<String, dynamic> map) {
     return CountriesModel(
         dialCode: map['dial_code'],
-        flag: 'assets/flag' + map['alpha_2_code'],
+        flag: 'assets/flags/' +
+            (map['alpha_2_code'] as String).toLowerCase() +
+            '.png',
         name: map['nameTranslations']['sr-Cyrl']);
   }
 }
@@ -6804,7 +6806,6 @@ class Countries {
       }
     },
     {
-      
       "num_code": "860",
       "alpha_2_code": "UZ",
       "alpha_3_code": "UZB",

@@ -4,8 +4,11 @@ import 'package:smessanger/src/ui/styles/text_styles.dart';
 
 abstract class AppTheme {
   static final ThemeData darkTheme = ThemeData(
-    canvasColor: AppColors.dbackground,
     primaryColor: AppColors.yellowTint,
+    dialogBackgroundColor: AppColors.dbackgroundML,
+    scaffoldBackgroundColor: AppColors.dbackground,
+    bottomSheetTheme:
+        const BottomSheetThemeData(backgroundColor: AppColors.dbackground),
     appBarTheme: const AppBarTheme(color: AppColors.dbackground),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -15,6 +18,7 @@ abstract class AppTheme {
           onPrimary: AppColors.dbackground),
     ),
     inputDecorationTheme: const InputDecorationTheme(
+        isDense: false,
         border: InputBorder.none,
         fillColor: AppColors.dbackgroundLL,
         filled: true),

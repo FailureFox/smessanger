@@ -73,3 +73,12 @@ class _Texts {
   static const String verifySubtitle2 = "Haven't received? Wait for";
   static const String buttonNext = 'Next';
 }
+
+class name extends StatelessWidget {
+  const name({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
