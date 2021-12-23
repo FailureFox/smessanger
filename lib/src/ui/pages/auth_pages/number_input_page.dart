@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/resources/data/countries_data.dart';
-import 'package:bottom_sheet/bottom_sheet.dart';
+import 'package:smessanger/src/ui/styles/colors.dart';
 
 class NumberInputPage extends StatelessWidget {
   const NumberInputPage({Key? key}) : super(key: key);
@@ -36,40 +36,46 @@ class NumberInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 45,
+      height: MediaQuery.of(context).size.width / 9,
       child: TextField(
+          maxLines: null,
+          minLines: null,
+          textAlignVertical: TextAlignVertical.center,
+          expands: true,
           inputFormatters: [MaskTextInputFormatter(mask: '##-###-##-####')],
           keyboardType: TextInputType.phone,
           onChanged: (value) => context
               .read<AuthBloc>()
               .add(AuthNumberChangeEvent(number: value)),
           decoration: InputDecoration(
-              prefixIcon: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  dialCodeSelectBottomSheet(
-                      (context.read<AuthBloc>().state as AuthNumberInputState)
-                          .countries,
-                      context);
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 5,
-                  margin: const EdgeInsets.only(left: 15, right: 2),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                          height: 15,
-                          child: Image.asset('assets/flags/ad.png')),
-                      const SizedBox(width: 10),
-                      Text(
-                        '+998',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      )
-                    ],
-                  ),
+            isDense: true,
+            prefixIcon: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+                dialCodeSelectBottomSheet(
+                    (context.read<AuthBloc>().state as AuthNumberInputState)
+                        .countries,
+                    context);
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width / 5,
+                margin: const EdgeInsets.only(left: 15, right: 2),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        height: 15, child: Image.asset('assets/flags/ad.png')),
+                    const SizedBox(width: 10),
+                    Text(
+                      '+998',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    )
+                  ],
                 ),
               ),
-              hintText: 'Phone number')),
+            ),
+            hintText: 'Phone number',
+          )),
     );
   }
 }
@@ -86,11 +92,23 @@ dialCodeSelectBottomSheet(
             expand: false,
             builder: (context, scrollcontroller) => Column(
               children: [
-                const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: TextField(
-                      decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.search), hintText: 'Search'),
+                Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width / 9,
+                      child: TextField(
+                        textAlignVertical: TextAlignVertical.center,
+                        maxLines: null,
+                        minLines: null,
+                        expands: true,
+                        decoration: InputDecoration(
+                            fillColor:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? AppColors.dbackgroundML
+                                    : AppColors.lbackgroundMD,
+                            prefixIcon: Icon(Icons.search),
+                            hintText: 'Search'),
+                      ),
                     )),
                 Expanded(
                   child: ListView(

@@ -26,11 +26,19 @@ class NameInputPage extends StatelessWidget {
           SizedBox(
               width: double.infinity,
               height: MediaQuery.of(context).size.width / 8,
-              child:
-                  ElevatedButton(onPressed: () {}, child: const Text('Next')))
+              child: NameNexButton())
         ],
       ),
     );
+  }
+}
+
+class NameNexButton extends StatelessWidget {
+  NameNexButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(onPressed: () {}, child: const Text('Next'));
   }
 }
 

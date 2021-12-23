@@ -45,8 +45,8 @@ class PhoneVerifyPage extends StatelessWidget {
                 selectedFillColor:
                     Theme.of(context).inputDecorationTheme.fillColor,
                 borderRadius: BorderRadius.circular(5),
-                fieldHeight: 55,
-                fieldWidth: 50,
+                fieldHeight: MediaQuery.of(context).size.width/8,
+                fieldWidth: MediaQuery.of(context).size.width/8,
               ),
               enableActiveFill: true,
               appContext: context,

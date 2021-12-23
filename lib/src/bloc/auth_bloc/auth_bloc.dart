@@ -22,17 +22,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       pageController.previousPage(
           duration: const Duration(milliseconds: 200),
           curve: Curves.fastOutSlowIn);
-      if (pageController.page == 1) {
+      if (state is AuthNumberInputState) {
         emit(AuthWelcomeState());
+      } else if (state is AuthPhoneVerifyState) {
+        emit(AuthNumberInputState());
       }
     });
     on<AuthNumberChangeEvent>((event, emit) => emit(
         (state as AuthNumberInputState).copyWith(phoneNumber: event.number)));
 
     on<AuthInputNextEvent>((event, emit) {
+      final mystate = state as AuthNumberInputState;
       pageController.nextPage(
           duration: const Duration(milliseconds: 200),
           curve: Curves.fastOutSlowIn);
+      emit(AuthPhoneVerifyState(
+          phoneNumber: mystate.phoneNumber, verifyCode: mystate.verifyCode));
     });
 
     on<AuthVerifyNextEvent>((event, emit) => pageController.nextPage(

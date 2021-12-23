@@ -8,7 +8,7 @@ abstract class AppTheme {
     dialogBackgroundColor: AppColors.dbackgroundML,
     scaffoldBackgroundColor: AppColors.dbackground,
     bottomSheetTheme:
-        const BottomSheetThemeData(backgroundColor: AppColors.dbackground),
+        const BottomSheetThemeData(backgroundColor: AppColors.dbackgroundLL),
     appBarTheme: const AppBarTheme(color: AppColors.dbackground),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -25,8 +25,10 @@ abstract class AppTheme {
     textTheme: AppTextThemes.dTextTheme,
     splashFactory: InkSplash.splashFactory,
     backgroundColor: AppColors.dbackground,
-    colorScheme: ColorScheme.fromSwatch()
-        .copyWith(brightness: Brightness.dark, primary: AppColors.yellowTint),
+    colorScheme: ColorScheme.fromSwatch().copyWith(
+      brightness: Brightness.dark,
+      primary: AppColors.yellowTint,
+    ),
   );
 
   static final ThemeData lightTheme = ThemeData(
