@@ -23,10 +23,6 @@ class NameInputPage extends StatelessWidget {
                 InputDecoration(isDense: false, hintText: 'Second name'),
           ),
           const Spacer(),
-          SizedBox(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.width / 8,
-              child: NameNexButton())
         ],
       ),
     );
@@ -34,11 +30,18 @@ class NameInputPage extends StatelessWidget {
 }
 
 class NameNexButton extends StatelessWidget {
-  NameNexButton({Key? key}) : super(key: key);
+  const NameNexButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(onPressed: () {}, child: const Text('Next'));
+    return SizedBox(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.width / 8,
+      child: ElevatedButton(
+        onPressed: () {},
+        child: const Text('Next'),
+      ),
+    );
   }
 }
 

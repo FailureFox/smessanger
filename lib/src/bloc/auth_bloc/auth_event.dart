@@ -1,19 +1,36 @@
+import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
+
 abstract class AuthEvent {}
 
+//Next page events
+
+class AuthNextPageEvent extends AuthEvent {}
+
 class AuthBackPageEvent extends AuthEvent {}
+
+//Page loading Events
+class AuthNumPageLoadingEvent extends AuthEvent {}
+
+class AuthVerifyPageLoadingEvent extends AuthEvent {}
+
+class AuthNameInputLoadingEvent extends AuthEvent {}
+
+//Other beautiful events :)
+
+//number-input
+class AuthNumberVerifyEvent extends AuthEvent {}
 
 class AuthNumberChangeEvent extends AuthEvent {
   final String number;
   AuthNumberChangeEvent({required this.number});
 }
+//sms pin input
 
-//Next page events
-class AuthWelcomeNextEvent extends AuthEvent {}
+class AuthSmsVerifyEvent extends AuthEvent {
+  AuthSmsVerifyEvent();
+}
 
-class AuthInputNextEvent extends AuthEvent {}
-
-class AuthVerifyNextEvent extends AuthEvent {}
-
-
-
-
+class AuthSmsChangeEvent extends AuthEvent {
+  final String sms;
+  AuthSmsChangeEvent({required this.sms});
+}

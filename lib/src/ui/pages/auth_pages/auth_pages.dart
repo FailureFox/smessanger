@@ -23,7 +23,7 @@ class WelcomePage extends StatelessWidget {
           child: ElevatedButton(
               onPressed: () {
                 FocusScope.of(context).requestFocus(FocusNode());
-                context.read<AuthBloc>().add(AuthWelcomeNextEvent());
+                context.read<AuthBloc>().add(AuthNextPageEvent());
               },
               child: const Text(_Texts.welcomeButtonText)),
         )

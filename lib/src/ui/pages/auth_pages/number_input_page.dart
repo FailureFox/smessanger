@@ -5,8 +5,19 @@ import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/resources/data/countries_data.dart';
 import 'package:smessanger/src/ui/styles/colors.dart';
 
-class NumberInputPage extends StatelessWidget {
+class NumberInputPage extends StatefulWidget {
   const NumberInputPage({Key? key}) : super(key: key);
+
+  @override
+  State<NumberInputPage> createState() => _NumberInputPageState();
+}
+
+class _NumberInputPageState extends State<NumberInputPage> {
+  @override
+  void initState() {
+    context.read<AuthBloc>().add(AuthNumPageLoadingEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,27 +63,33 @@ class NumberInputField extends StatelessWidget {
             prefixIcon: GestureDetector(
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
-                dialCodeSelectBottomSheet(
-                    (context.read<AuthBloc>().state as AuthNumberInputState)
-                        .countries,
-                    context);
+                dialCodeSelectBottomSheet(context);
               },
-              child: Container(
-                width: MediaQuery.of(context).size.width / 5,
-                margin: const EdgeInsets.only(left: 15, right: 2),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        height: 15, child: Image.asset('assets/flags/ad.png')),
-                    const SizedBox(width: 10),
-                    Text(
-                      '+998',
-                      style: Theme.of(context).textTheme.subtitle1,
-                    )
-                  ],
-                ),
-              ),
+              child:
+                  BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+                final mystate = state;
+                if (mystate is AuthNumberInputState) {
+                  return Container(
+                    width: MediaQuery.of(context).size.width / 5,
+                    margin: const EdgeInsets.only(left: 15, right: 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                            height: 15,
+                            child: Image.asset(mystate.selectedCountry.flag)),
+                        const SizedBox(width: 10),
+                        Text(
+                          mystate.selectedCountry.dialCode,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        )
+                      ],
+                    ),
+                  );
+                } else {
+                  return SizedBox();
+                }
+              }),
             ),
             hintText: 'Phone number',
           )),
@@ -80,8 +97,7 @@ class NumberInputField extends StatelessWidget {
   }
 }
 
-dialCodeSelectBottomSheet(
-    List<CountriesModel> countries, BuildContext context) {
+dialCodeSelectBottomSheet(BuildContext context) {
   return showModalBottomSheet(
       context: context,
       builder: (context) => DraggableScrollableSheet(
@@ -106,18 +122,17 @@ dialCodeSelectBottomSheet(
                                 Theme.of(context).brightness == Brightness.dark
                                     ? AppColors.dbackgroundML
                                     : AppColors.lbackgroundMD,
-                            prefixIcon: Icon(Icons.search),
+                            prefixIcon: const Icon(Icons.search),
                             hintText: 'Search'),
                       ),
                     )),
                 Expanded(
-                  child: ListView(
-                    controller: scrollcontroller,
-                    children: countries
-                        .map((e) => CountryItemsWidget(country: e))
-                        .toList(),
-                  ),
-                ),
+                    child: ListView.builder(
+                        itemCount: Countries.countryList.length,
+                        itemBuilder: (context, index) {
+                          return CountryItemsWidget(
+                              country: Countries.countryList[index]);
+                        })),
               ],
             ),
           ));
@@ -140,7 +155,7 @@ class NumberNextButton extends StatelessWidget {
                       ''
                   ? () {
                       FocusScope.of(context).requestFocus(FocusNode());
-                      context.read<AuthBloc>().add(AuthInputNextEvent());
+                      context.read<AuthBloc>().add((AuthNumberVerifyEvent()));
                     }
                   : null,
         );
@@ -159,13 +174,17 @@ class _Texts {
 
 class CountryItemsWidget extends StatelessWidget {
   const CountryItemsWidget({Key? key, required this.country}) : super(key: key);
-  final CountriesModel country;
+  final Map<String, dynamic> country;
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: SizedBox(height: 25, child: Image.asset(country.flag)),
-      title: Text(country.name),
-      subtitle: Text(country.dialCode),
+      leading: SizedBox(
+          height: 25,
+          child: Image.asset('assets/flags/' +
+              (country['alpha_2_code'] as String).toLowerCase() +
+              '.png')),
+      title: Text(country['en_short_name']),
+      subtitle: Text(country['dial_code']),
     );
   }
 }

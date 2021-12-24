@@ -3,8 +3,19 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 
-class PhoneVerifyPage extends StatelessWidget {
+class PhoneVerifyPage extends StatefulWidget {
   const PhoneVerifyPage({Key? key}) : super(key: key);
+
+  @override
+  State<PhoneVerifyPage> createState() => _PhoneVerifyPageState();
+}
+
+class _PhoneVerifyPageState extends State<PhoneVerifyPage> {
+  @override
+  void initState() {
+    context.read<AuthBloc>().add(AuthVerifyPageLoadingEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +36,7 @@ class PhoneVerifyPage extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           PinCodeTextField(
+              keyboardType: TextInputType.number,
               textStyle: Theme.of(context).textTheme.headline1,
               backgroundColor: Colors.transparent,
               showCursor: false,
@@ -45,8 +57,8 @@ class PhoneVerifyPage extends StatelessWidget {
                 selectedFillColor:
                     Theme.of(context).inputDecorationTheme.fillColor,
                 borderRadius: BorderRadius.circular(5),
-                fieldHeight: MediaQuery.of(context).size.width/8,
-                fieldWidth: MediaQuery.of(context).size.width/8,
+                fieldHeight: MediaQuery.of(context).size.width / 8,
+                fieldWidth: MediaQuery.of(context).size.width / 8,
               ),
               enableActiveFill: true,
               appContext: context,
@@ -58,7 +70,7 @@ class PhoneVerifyPage extends StatelessWidget {
               height: MediaQuery.of(context).size.width / 8,
               child: ElevatedButton(
                   onPressed: () =>
-                      context.read<AuthBloc>().add(AuthVerifyNextEvent()),
+                      context.read<AuthBloc>().add(AuthSmsVerifyEvent()),
                   child: const Text(_Texts.buttonNext)))
         ],
       ),

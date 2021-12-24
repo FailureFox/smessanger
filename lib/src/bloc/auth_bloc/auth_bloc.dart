@@ -3,61 +3,68 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_event.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_state.dart';
-import 'package:smessanger/src/resources/data/countries_data.dart';
+import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/resources/data/firebase_remote_use.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final PageController pageController;
   final FireBaseRemoteUse firebase = FireBaseRemoteUse();
-  AuthBloc({required this.pageController})
-      : super(AuthNumberInputState(countries: Countries.countryList)) {
-    on<AuthWelcomeNextEvent>((event, emit) {
-      pageController.nextPage(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.fastOutSlowIn);
-      final countries = Countries.countryList;
-      emit(AuthNumberInputState(
-          countries: countries,
-          selectedCountry: CountriesModel(
-              dialCode: '+998', flag: 'assets/flags/uz.png', name: 'uz')));
-    });
-
-    on<AuthBackPageEvent>((event, emit) {
-      pageController.previousPage(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.fastOutSlowIn);
-      if (state is AuthNumberInputState) {
-        emit(AuthWelcomeState());
-      } else if (state is AuthPhoneVerifyState) {
-        emit(AuthNumberInputState());
-      }
-    });
-
+  //bloc
+  AuthBloc({required this.pageController}) : super(AuthNumberInputState()) {
+    on<AuthNextPageEvent>((event, emit) => nextPage);
+    on<AuthBackPageEvent>((event, emit) => backPage);
+//number
+    on<AuthNumPageLoadingEvent>((event, emit) => emit(AuthNumberInputState()));
     on<AuthNumberChangeEvent>(
       (event, emit) => emit(
         (state as AuthNumberInputState).copyWith(phoneNumber: event.number),
       ),
     );
+    on<AuthNumberVerifyEvent>(
+      (event, emit) {
+        try {
+          final myState = state as AuthNumberInputState;
+          emit((state as AuthNumberInputState)
+              .copyWith(status: AuthStatus.loading));
 
-    on<AuthInputNextEvent>((event, emit) async {
-      final mystate = state as AuthNumberInputState;
-      try {
-        await firebase.verificationNumber(phoneNumber: mystate.phoneNumber);
-        pageController.nextPage(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.fastOutSlowIn);
-        emit(
-          AuthPhoneVerifyState(
-            phoneNumber:
-                mystate.selectedCountry!.dialCode + mystate.phoneNumber,
-            verifyCode: mystate.verifyCode,
-          ),
-        );
-      } catch (e) {}
+          firebase.verificationNumber(
+            phoneNumber: myState.selectedCountry.dialCode +
+                myState.phoneNumber.replaceAll('-', ''),
+            controller: pageController,
+          );
+        } catch (e) {
+          print(e);
+        }
+      },
+    );
+
+//sms-pin
+    on<AuthVerifyPageLoadingEvent>((event, emit) {
+      final myState = state as AuthNumberInputState;
+      emit(AuthPhoneVerifyState(phoneNumber: myState.phoneNumber));
     });
+    on<AuthSmsVerifyEvent>((event, emit) async {
+      try {
+        await firebase
+            .signInWithNumber((state as AuthPhoneVerifyState).myVerifyCode);
+        nextPage();
+      } catch (e) {
+        print(e);
+      }
+    });
+    on<AuthSmsChangeEvent>((event, emit) {
+      emit((state as AuthPhoneVerifyState).copyWith(myVerifyCode: event.sms));
+    });
+    //name
+  }
+  //func
+  void nextPage() {
+    pageController.nextPage(
+        duration: const Duration(milliseconds: 200), curve: Curves.linear);
+  }
 
-    on<AuthVerifyNextEvent>((event, emit) => pageController.nextPage(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.fastOutSlowIn));
+  void backPage() {
+    pageController.previousPage(
+        duration: Duration(milliseconds: 200), curve: Curves.linear);
   }
 }

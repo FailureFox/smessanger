@@ -1,3 +1,4 @@
+import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/resources/data/countries_data.dart';
 
 abstract class AuthState {}
@@ -12,46 +13,44 @@ class AuthWelcomeState extends AuthState {
 
 class AuthNumberInputState extends AuthState {
   final String phoneNumber;
-  final String verifyCode;
-  final CountriesModel? selectedCountry;
-  final List<CountriesModel> countries;
-
+  final CountriesModel selectedCountry;
+  final AuthStatus status;
   AuthNumberInputState({
     this.phoneNumber = '',
-    this.verifyCode = '',
-    this.selectedCountry,
-    this.countries = const [],
+    this.status = AuthStatus.initial,
+    this.selectedCountry = const CountriesModel(
+        dialCode: '+998', flag: 'assets/flags/uz.png', name: 'uz'),
   });
 
   AuthNumberInputState copyWith(
       {String? phoneNumber,
-      String? verifyCode,
       CountriesModel? selectedCountry,
-      List<CountriesModel>? countries}) {
+      List<CountriesModel>? countries,
+      AuthStatus? status}) {
     return AuthNumberInputState(
       phoneNumber: phoneNumber ?? this.phoneNumber,
-      verifyCode: verifyCode ?? this.verifyCode,
       selectedCountry: selectedCountry ?? this.selectedCountry,
-      countries: countries ?? this.countries,
+      status: status ?? this.status,
     );
   }
 }
 
 class AuthPhoneVerifyState extends AuthState {
   final String phoneNumber;
-  final String verifyCode;
   final String myVerifyCode;
+  final AuthStatus status;
 
-  AuthPhoneVerifyState(
-      {required this.phoneNumber,
-      required this.verifyCode,
-      this.myVerifyCode = ''});
+  AuthPhoneVerifyState({
+    required this.phoneNumber,
+    this.myVerifyCode = '',
+    this.status = AuthStatus.initial,
+  });
 
-  AuthPhoneVerifyState copyWith({String? myVerifyCode}) {
+  AuthPhoneVerifyState copyWith({String? myVerifyCode, AuthStatus? status}) {
     return AuthPhoneVerifyState(
       phoneNumber: phoneNumber,
-      verifyCode: verifyCode,
       myVerifyCode: myVerifyCode ?? this.myVerifyCode,
+      status: status ?? this.status,
     );
   }
 }

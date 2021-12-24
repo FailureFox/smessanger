@@ -2,7 +2,7 @@ class CountriesModel {
   final String dialCode;
   final String flag;
   final String name;
-  CountriesModel(
+  const CountriesModel(
       {required this.dialCode, required this.flag, required this.name});
   factory CountriesModel.fromMap(Map<String, dynamic> map) {
     return CountriesModel(
@@ -15,8 +15,7 @@ class CountriesModel {
 }
 
 class Countries {
-  static List<CountriesModel> get countryList =>
-      _countryList.map((map) => CountriesModel.fromMap(map)).toList();
+  static List<Map<String, dynamic>> get countryList => _countryList;
 
   static const List<Map<String, dynamic>> _countryList = [
     {
