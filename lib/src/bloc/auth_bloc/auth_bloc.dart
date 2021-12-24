@@ -14,7 +14,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthNextPageEvent>((event, emit) => nextPage());
     on<AuthBackPageEvent>((event, emit) => backPage());
     on<AuthWelcomePageLoadingEvent>((event, emit) => emit(AuthWelcomeState()));
-//number
+  //number
     on<AuthNumPageLoadingEvent>((event, emit) => emit(AuthNumberInputState()));
     on<AuthNumberChangeEvent>(
       (event, emit) => emit(
@@ -34,33 +34,38 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             controller: pageController,
           );
         } catch (e) {
-          print(e);
+          emit((state as AuthNumberInputState)
+              .copyWith(status: AuthStatus.error));
         }
       },
     );
 
-//sms-pin
+  //sms-pin
     on<AuthVerifyPageLoadingEvent>((event, emit) {
       final myState = state as AuthNumberInputState;
       emit(
         AuthPhoneVerifyState(
-          phoneNumber: myState.selectedCountry.dialCode + myState.phoneNumber,
+          selectedCountry: myState.selectedCountry,
+          phoneNumber:
+              myState.selectedCountry.dialCode + '-' + myState.phoneNumber,
         ),
       );
-    });
-    on<AuthSmsVerifyEvent>((event, emit) async {
-      try {
-        await firebase
-            .signInWithNumber((state as AuthPhoneVerifyState).myVerifyCode);
-        nextPage();
-      } catch (e) {
-        print(e);
-      }
     });
     on<AuthSmsChangeEvent>((event, emit) {
       emit((state as AuthPhoneVerifyState).copyWith(myVerifyCode: event.sms));
     });
-    //name
+    on<AuthSmsVerifyEvent>((event, emit) async {
+      try {
+        emit((state as AuthPhoneVerifyState)
+            .copyWith(status: AuthStatus.loading));
+        await firebase
+            .signInWithNumber((state as AuthPhoneVerifyState).myVerifyCode);
+        nextPage();
+      } catch (e) {
+        emit(
+            (state as AuthNumberInputState).copyWith(status: AuthStatus.error));
+      }
+    });
   }
   //func
   void nextPage() {

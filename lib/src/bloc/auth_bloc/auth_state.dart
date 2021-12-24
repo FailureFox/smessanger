@@ -39,9 +39,11 @@ class AuthPhoneVerifyState extends AuthState {
   final String phoneNumber;
   final String myVerifyCode;
   final AuthStatus status;
+  final CountriesModel selectedCountry;
 
   AuthPhoneVerifyState({
     required this.phoneNumber,
+    required this.selectedCountry,
     this.myVerifyCode = '',
     this.status = AuthStatus.initial,
   });
@@ -51,6 +53,13 @@ class AuthPhoneVerifyState extends AuthState {
       phoneNumber: phoneNumber,
       myVerifyCode: myVerifyCode ?? this.myVerifyCode,
       status: status ?? this.status,
+      selectedCountry: selectedCountry,
     );
   }
+}
+
+class AuthNameInputState extends AuthState {
+  String name;
+  String phoneNumber;
+  AuthNameInputState({required this.phoneNumber, this.name = ''});
 }

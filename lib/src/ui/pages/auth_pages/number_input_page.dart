@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
+import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/resources/data/countries_data.dart';
 import 'package:smessanger/src/ui/styles/colors.dart';
 
@@ -52,7 +53,6 @@ class NumberInputField extends StatelessWidget {
           maxLines: null,
           minLines: null,
           textAlignVertical: TextAlignVertical.center,
-          expands: true,
           inputFormatters: [MaskTextInputFormatter(mask: '##-###-##-####')],
           keyboardType: TextInputType.phone,
           onChanged: (value) => context
@@ -147,20 +147,24 @@ class NumberNextButton extends StatelessWidget {
       height: MediaQuery.of(context).size.width / 8,
       width: double.infinity,
       child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-        return ElevatedButton(
-          child: const Text('Next'),
-          onPressed:
-              (state is AuthNumberInputState ? state : AuthNumberInputState())
-                          .phoneNumber !=
-                      ''
-                  ? () {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      context.read<AuthBloc>().add((AuthNumberVerifyEvent()));
-                    }
-                  : null,
-        );
+        if (state is AuthNumberInputState) {
+          return ElevatedButton(
+            child: const Text('Next'),
+            onPressed:
+                state.phoneNumber == '' || state.status == AuthStatus.loading
+                    ? null
+                    : () => onPressed(context),
+          );
+        } else {
+          return const SizedBox();
+        }
       }),
     );
+  }
+
+  onPressed(BuildContext context) {
+    FocusScope.of(context).requestFocus(FocusNode());
+    context.read<AuthBloc>().add((AuthNumberVerifyEvent()));
   }
 }
 
