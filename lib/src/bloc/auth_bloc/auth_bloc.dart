@@ -11,8 +11,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FireBaseRemoteUse firebase = FireBaseRemoteUse();
   //bloc
   AuthBloc({required this.pageController}) : super(AuthNumberInputState()) {
-    on<AuthNextPageEvent>((event, emit) => nextPage);
-    on<AuthBackPageEvent>((event, emit) => backPage);
+    on<AuthNextPageEvent>((event, emit) => nextPage());
+    on<AuthBackPageEvent>((event, emit) => backPage());
+    on<AuthWelcomePageLoadingEvent>((event, emit) => emit(AuthWelcomeState()));
 //number
     on<AuthNumPageLoadingEvent>((event, emit) => emit(AuthNumberInputState()));
     on<AuthNumberChangeEvent>(
@@ -41,7 +42,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 //sms-pin
     on<AuthVerifyPageLoadingEvent>((event, emit) {
       final myState = state as AuthNumberInputState;
-      emit(AuthPhoneVerifyState(phoneNumber: myState.phoneNumber));
+      emit(
+        AuthPhoneVerifyState(
+          phoneNumber: myState.selectedCountry.dialCode + myState.phoneNumber,
+        ),
+      );
     });
     on<AuthSmsVerifyEvent>((event, emit) async {
       try {
@@ -65,6 +70,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void backPage() {
     pageController.previousPage(
-        duration: Duration(milliseconds: 200), curve: Curves.linear);
+        duration: const Duration(milliseconds: 200), curve: Curves.linear);
   }
 }

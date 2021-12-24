@@ -3,8 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_event.dart';
 
-class WelcomePage extends StatelessWidget {
+class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
+
+  @override
+  State<WelcomePage> createState() => _WelcomePageState();
+}
+
+class _WelcomePageState extends State<WelcomePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<AuthBloc>().add(AuthWelcomePageLoadingEvent());
+  }
 
   @override
   Widget build(BuildContext context) {

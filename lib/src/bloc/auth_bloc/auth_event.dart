@@ -9,6 +9,8 @@ class AuthNextPageEvent extends AuthEvent {}
 class AuthBackPageEvent extends AuthEvent {}
 
 //Page loading Events
+class AuthWelcomePageLoadingEvent extends AuthEvent {}
+
 class AuthNumPageLoadingEvent extends AuthEvent {}
 
 class AuthVerifyPageLoadingEvent extends AuthEvent {}

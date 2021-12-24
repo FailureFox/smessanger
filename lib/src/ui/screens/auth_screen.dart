@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_bloc_export.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
-import 'package:smessanger/src/ui/pages/auth_pages/auth_pages.dart';
+import 'package:smessanger/src/ui/pages/auth_pages/welcome_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/name_input_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/number_input_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/phone_verify_page.dart';
@@ -14,7 +14,7 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AuthBloc(pageController: PageController(initialPage: 1)),
+      create: (_) => AuthBloc(pageController: PageController(initialPage: 0)),
       child: const _AuthScreen(),
     );
   }
