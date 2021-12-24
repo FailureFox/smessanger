@@ -24,3 +24,7 @@ class NewsDataUse extends NewsData {
     client;
   }
 }
+
+class MyVerifyClass {
+  int a = 5;
+}

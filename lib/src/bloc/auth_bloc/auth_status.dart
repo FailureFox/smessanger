@@ -4,3 +4,7 @@ enum AuthStatus {
   error,
   initial,
 }
+
+class Abscyre {
+  int b = 5;
+}
