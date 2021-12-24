@@ -23,6 +23,7 @@ class NameInputPage extends StatelessWidget {
                 InputDecoration(isDense: false, hintText: 'Second name'),
           ),
           const Spacer(),
+          const NameNexButton()
         ],
       ),
     );
