@@ -1,14 +1,14 @@
+import 'package:smessanger/src/models/news_model.dart';
+import 'package:smessanger/src/resources/data/news_data_use.dart';
 import 'package:smessanger/src/resources/domain/repositories/news_repositories.dart';
 
 class NewsRepositoryUse extends NewsRepositories {
-  @override
-  getCountryNews(String country) {
-    throw UnimplementedError();
-  }
+  final NewsDataUse news;
+  NewsRepositoryUse({required this.news});
 
   @override
-  getNewNews() {
-    throw UnimplementedError();
+  Future<List<NewsModel>> getCountryNews(String country) async {
+    return await news.getCountryNews(country);
   }
 
   @override
