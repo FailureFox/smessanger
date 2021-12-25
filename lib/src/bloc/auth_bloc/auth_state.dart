@@ -1,3 +1,4 @@
+import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/resources/data/countries_data.dart';
 
@@ -24,8 +25,8 @@ class AuthNumberInputState extends AuthState {
 
   AuthNumberInputState copyWith(
       {String? phoneNumber,
-      CountriesModel? selectedCountry,
-      List<CountriesModel>? countries,
+      final CountriesModel? selectedCountry,
+      final List<CountriesModel>? countries,
       AuthStatus? status}) {
     return AuthNumberInputState(
       phoneNumber: phoneNumber ?? this.phoneNumber,
@@ -58,8 +59,31 @@ class AuthPhoneVerifyState extends AuthState {
   }
 }
 
-class AuthNameInputState extends AuthState {
-  String name;
-  String phoneNumber;
-  AuthNameInputState({required this.phoneNumber, this.name = ''});
+class AuthUserInitialSetupState extends AuthState {
+  final String name;
+  final String surname;
+  final String countryCode;
+  final String phoneNumber;
+  final String? avatar;
+  AuthUserInitialSetupState({
+    required this.countryCode,
+    required this.phoneNumber,
+    this.name = '',
+    this.surname = '',
+    this.avatar = '',
+  });
+
+  AuthUserInitialSetupState copyWIth({
+    String? name,
+    String? surname,
+    String? avatar,
+  }) {
+    return AuthUserInitialSetupState(
+      countryCode: countryCode,
+      phoneNumber: phoneNumber,
+      name: name ?? this.name,
+      surname: surname ?? this.surname,
+      avatar: avatar ?? this.avatar,
+    );
+  }
 }

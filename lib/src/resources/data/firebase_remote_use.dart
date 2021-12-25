@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:smessanger/src/bloc/auth_bloc/auth_bloc.dart';
 
 class FireBaseRemoteUse {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -10,10 +9,16 @@ class FireBaseRemoteUse {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   String verificationId = "";
 
-  Future<void> signInWithNumber(String pinCode) async {
-    final AuthCredential authCredential = PhoneAuthProvider.credential(
-        verificationId: verificationId, smsCode: pinCode);
-    await _firebaseAuth.signInWithCredential(authCredential);
+  Future<void> createAccount() async {}
+  Future<String> signInWithNumber(String pinCode) async {
+    try {
+      final AuthCredential authCredential = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: pinCode);
+      final user = await _firebaseAuth.signInWithCredential(authCredential);
+      return user.user!.uid;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message);
+    }
   }
 
   verificationNumber({

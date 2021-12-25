@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class NewsModel {
   final String author;
   final String title;
@@ -23,9 +21,9 @@ class NewsModel {
     return NewsModel(
       author: news['author'] ?? news['source']['name'],
       title: news['title'],
-      descriptions: news['description']??'',
+      descriptions: news['description'] ?? '',
       urlToNews: news['url'],
-      urlToImage: news['urlToImage']??'',
+      urlToImage: news['urlToImage'] ?? '',
       publishedAt: DateTime.parse(news['publishedAt'] as String),
       content: news['content'] ?? '',
     );

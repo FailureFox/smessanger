@@ -9,12 +9,13 @@ import 'package:smessanger/src/resources/data/firebase_remote_use.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final PageController pageController;
   final FireBaseRemoteUse firebase = FireBaseRemoteUse();
+
   //bloc
   AuthBloc({required this.pageController}) : super(AuthNumberInputState()) {
     on<AuthNextPageEvent>((event, emit) => nextPage());
     on<AuthBackPageEvent>((event, emit) => backPage());
     on<AuthWelcomePageLoadingEvent>((event, emit) => emit(AuthWelcomeState()));
-  //number
+    //number
     on<AuthNumPageLoadingEvent>((event, emit) => emit(AuthNumberInputState()));
     on<AuthNumberChangeEvent>(
       (event, emit) => emit(
@@ -40,7 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       },
     );
 
-  //sms-pin
+    //sms-pin
     on<AuthVerifyPageLoadingEvent>((event, emit) {
       final myState = state as AuthNumberInputState;
       emit(
@@ -63,8 +64,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         nextPage();
       } catch (e) {
         emit(
-            (state as AuthNumberInputState).copyWith(status: AuthStatus.error));
+            (state as AuthPhoneVerifyState).copyWith(status: AuthStatus.error));
       }
+    });
+
+    //userInitialSetupPage
+    on<AuthInitialUserSetupLoading>((event, emit) {
+      final mystate = state as AuthPhoneVerifyState;
+      emit(AuthUserInitialSetupState(
+        countryCode: mystate.selectedCountry.name,
+        phoneNumber: mystate.phoneNumber,
+      ));
+    });
+    on<AuthNameChangeEvent>((event, emit) {
+      emit((state as AuthUserInitialSetupState).copyWIth(name: event.name));
+    });
+    on<AuthSurnameChangeEvent>((event, emit) {
+      emit((state as AuthUserInitialSetupState)
+          .copyWIth(surname: event.surname));
     });
   }
   //func

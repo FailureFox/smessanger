@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/src/provider.dart';
+import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 
-class NameInputPage extends StatelessWidget {
+class NameInputPage extends StatefulWidget {
   const NameInputPage({Key? key}) : super(key: key);
+
+  @override
+  State<NameInputPage> createState() => _NameInputPageState();
+}
+
+class _NameInputPageState extends State<NameInputPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<AuthBloc>().add(AuthInitialUserSetupLoading());
+  }
 
   @override
   Widget build(BuildContext context) {
