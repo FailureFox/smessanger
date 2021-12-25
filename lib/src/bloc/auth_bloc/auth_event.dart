@@ -47,3 +47,5 @@ class AuthSurnameChangeEvent extends AuthEvent {
 }
 
 class AuthNameSurnameSetEvent extends AuthEvent {}
+
+class AuthPhotoSelectEvent extends AuthEvent {}

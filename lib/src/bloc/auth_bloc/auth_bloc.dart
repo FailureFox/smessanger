@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,6 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     //userInitialSetupPage
+    //name-surname
     on<AuthInitialUserSetupLoading>((event, emit) {
       final mystate = state as AuthPhoneVerifyState;
       emit(AuthUserInitialSetupState(
@@ -82,6 +84,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSurnameChangeEvent>((event, emit) {
       emit((state as AuthUserInitialSetupState)
           .copyWIth(surname: event.surname));
+    });
+    //photo
+    on<AuthPhotoSelectEvent>((event, emit) async {
+      final file = await FilePicker.platform.pickFiles(allowMultiple: false);
+      if (file != null) {
+        print(file.files.single.runtimeType);
+      }
     });
   }
   //func

@@ -23,6 +23,6 @@ abstract class AppColors {
   static const Color lbackgroundHD = Color(0xFFF2F3F3);
 
   static const Color lforeground = Color(0xFF000000);
-  static const Color lforegroundLL = Color(0xFF71747A);
-  static const Color lforegroundML = Color(0xFF9D9FA3);
+  static const Color lforegroundML = Color(0xFF71747A);
+  static const Color lforegroundLL = Color(0xFF9D9FA3);
 }

@@ -4,37 +4,37 @@ import 'package:smessanger/src/ui/styles/text_styles.dart';
 
 abstract class AppTheme {
   static final ThemeData darkTheme = ThemeData(
-    primaryColor: AppColors.yellowTint,
-    dialogBackgroundColor: AppColors.dbackgroundML,
-    scaffoldBackgroundColor: AppColors.dbackground,
-    bottomSheetTheme:
-        const BottomSheetThemeData(backgroundColor: AppColors.dbackgroundLL),
-    appBarTheme: const AppBarTheme(color: AppColors.dbackground),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-          elevation: 0,
-          onSurface: Colors.white,
-          primary: AppColors.yellowTint,
-          onPrimary: AppColors.dbackground),
-    ),
-    inputDecorationTheme: const InputDecorationTheme(
-        isDense: false,
-        border: InputBorder.none,
-        fillColor: AppColors.dbackgroundLL,
-        filled: true),
-    textTheme: AppTextThemes.dTextTheme,
-    splashFactory: InkSplash.splashFactory,
-    backgroundColor: AppColors.dbackground,
-    colorScheme: ColorScheme.fromSwatch().copyWith(
-      brightness: Brightness.dark,
-      primary: AppColors.yellowTint,
-    ),
-  );
+      dialogBackgroundColor: AppColors.dbackgroundML,
+      scaffoldBackgroundColor: AppColors.dbackground,
+      bottomSheetTheme:
+          const BottomSheetThemeData(backgroundColor: AppColors.dbackgroundLL),
+      appBarTheme: const AppBarTheme(color: AppColors.dbackground),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+            elevation: 0,
+            onSurface: Colors.white,
+            primary: AppColors.yellowTint,
+            onPrimary: AppColors.dbackground),
+      ),
+      inputDecorationTheme: const InputDecorationTheme(
+          isDense: false,
+          border: InputBorder.none,
+          fillColor: AppColors.dbackgroundLL,
+          filled: true),
+      textTheme: AppTextThemes.dTextTheme,
+      splashFactory: InkSplash.splashFactory,
+      backgroundColor: AppColors.dbackgroundML,
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        brightness: Brightness.dark,
+        primary: AppColors.yellowTint,
+      ),
+      iconTheme: const IconThemeData(color: AppColors.dforegroundML));
 
   static final ThemeData lightTheme = ThemeData(
+    iconTheme: const IconThemeData(color: AppColors.lforegroundML),
     canvasColor: AppColors.lbackground,
-    primaryColor: AppColors.yellowTint,
-    backgroundColor: AppColors.lbackground,
+    scaffoldBackgroundColor: AppColors.lbackground,
+    backgroundColor: AppColors.lbackgroundMD,
     appBarTheme: const AppBarTheme(color: AppColors.lbackground),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
