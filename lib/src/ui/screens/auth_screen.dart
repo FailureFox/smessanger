@@ -15,7 +15,7 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AuthBloc(pageController: PageController(initialPage: 4)),
+      create: (_) => AuthBloc(pageController: PageController()),
       child: const _AuthScreen(),
     );
   }

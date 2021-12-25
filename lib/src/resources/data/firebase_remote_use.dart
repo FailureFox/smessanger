@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
+import 'dart:io';
 
 class FireBaseRemoteUse {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -10,8 +11,16 @@ class FireBaseRemoteUse {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   String verificationId = "";
 
-  Future<void> createAccount(MyProfile profile) async {
-    print(profile.toMap());
+  Future<void> createAccount(MyProfile profile) async {}
+
+  Future<String> uploadFile(File file, String fileType) async {
+    try {
+      final basePath = fileType + file.path.split('/').last;
+      final myfile = await _storage.ref(basePath).putFile(file);
+      return myfile.ref.fullPath;
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   Future<String> signInWithNumber(String pinCode) async {

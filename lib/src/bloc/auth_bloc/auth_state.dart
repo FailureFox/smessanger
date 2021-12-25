@@ -64,18 +64,21 @@ class AuthUserInitialSetupState extends AuthState {
   final String countryCode;
   final String phoneNumber;
   final String? avatar;
+  final AuthStatus status;
   AuthUserInitialSetupState({
     required this.countryCode,
     required this.phoneNumber,
     this.name = '',
     this.surname = '',
     this.avatar = '',
+    this.status = AuthStatus.initial,
   });
 
   AuthUserInitialSetupState copyWIth({
     String? name,
     String? surname,
     String? avatar,
+    AuthStatus? status,
   }) {
     return AuthUserInitialSetupState(
       countryCode: countryCode,
@@ -83,6 +86,7 @@ class AuthUserInitialSetupState extends AuthState {
       name: name ?? this.name,
       surname: surname ?? this.surname,
       avatar: avatar ?? this.avatar,
+      status: status ?? this.status,
     );
   }
 }

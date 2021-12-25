@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthPhotoSelectEvent>((event, emit) async {
       final file = await FilePicker.platform.pickFiles(allowMultiple: false);
       if (file != null) {
-        print(file.files.single.runtimeType);
+        final fileType = file.files.single.extension;
+        if (fileType == 'png' || fileType == 'jpg' || fileType == 'jpeg') {
+          emit((state as AuthUserInitialSetupState)
+              .copyWIth(status: AuthStatus.loading));
+          File photo = File(file.files.single.path!);
+          final String avatar = await firebase.uploadFile(photo, 'images');
+          emit((state as AuthUserInitialSetupState).copyWIth(
+            avatar: avatar,
+            status: AuthStatus.loaded,
+          ));
+        } else {}
       }
     });
   }
