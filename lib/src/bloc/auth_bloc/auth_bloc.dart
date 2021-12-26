@@ -116,6 +116,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       }
     });
+    on<AuthSetupPinChangeEvent>((event, emit) {
+      emit((state as AuthUserInitialSetupState).copyWIth(pin: event.pin));
+    });
   }
   //func
   void nextPage() {

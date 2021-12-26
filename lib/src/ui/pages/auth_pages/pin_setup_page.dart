@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
 
-class PinSetupPage extends StatelessWidget {
+class PinSetupPage extends StatefulWidget {
   const PinSetupPage({Key? key}) : super(key: key);
 
+  @override
+  State<PinSetupPage> createState() => _PinSetupPageState();
+}
+
+class _PinSetupPageState extends State<PinSetupPage> {
+  pinChange(String value) {
+    if (pin.length < 4) {
+      setState(() {
+        pin = pin + value;
+      });
+    }
+  }
+
+  pinBackSpace() {
+    if (pin.isNotEmpty) {
+      final pinArray = pin.split('');
+      pinArray.removeLast();
+      pin = pinArray.join();
+      setState(() {});
+    }
+  }
+
+  String pin = '';
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -11,28 +34,20 @@ class PinSetupPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Setup pin code', style: Theme.of(context).textTheme.headline1),
+          const SizedBox(height: 10),
           const Text('Create a four digits code'),
           const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              CircleAvatar(
-                radius: 15,
-                backgroundColor: Theme.of(context).backgroundColor,
+            children: List.generate(
+              4,
+              (index) => CircleAvatar(
+                radius: MediaQuery.of(context).size.width / 20,
+                backgroundColor: pin.length > index
+                    ? Theme.of(context).hintColor
+                    : Theme.of(context).backgroundColor,
               ),
-              CircleAvatar(
-                radius: 15,
-                backgroundColor: Theme.of(context).backgroundColor,
-              ),
-              CircleAvatar(
-                radius: 15,
-                backgroundColor: Theme.of(context).backgroundColor,
-              ),
-              CircleAvatar(
-                radius: 15,
-                backgroundColor: Theme.of(context).backgroundColor,
-              )
-            ],
+            ),
           ),
           const Spacer(),
           SizedBox(
@@ -43,78 +58,27 @@ class PinSetupPage extends StatelessWidget {
               crossAxisCount: 3,
               childAspectRatio: 3 / 2.6,
               children: [
+                ...List.generate(
+                    9,
+                    (index) => IconButton(
+                        onPressed: () => pinChange('${index + 1}'),
+                        icon: Text(
+                          '${index + 1}',
+                          style: Theme.of(context).textTheme.headline4,
+                        ))),
+                const SizedBox(),
                 IconButton(
-                    onPressed: () {},
-                    icon: Text(
-                      '1',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: () {},
-                    icon: Text(
-                      '2',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: () {},
-                    icon: Text(
-                      '3',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: () {},
-                    icon: Text(
-                      '4',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: () {},
-                    icon: Text(
-                      '5',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: () {},
-                    icon: Text(
-                      '6',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: () {},
-                    icon: Text(
-                      '7',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: () {},
-                    icon: Text(
-                      '8',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: () {},
-                    icon: Text(
-                      '9',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: () {},
-                    icon: Text(
-                      '.',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: () {},
+                    onPressed: () => pinChange('0'),
                     icon: Text(
                       '0',
                       style: Theme.of(context).textTheme.headline4,
                     )),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: pinBackSpace,
                     icon: const Icon(Icons.backspace_outlined)),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

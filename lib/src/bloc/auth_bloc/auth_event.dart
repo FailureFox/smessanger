@@ -49,3 +49,8 @@ class AuthSurnameChangeEvent extends AuthEvent {
 class AuthNameSurnameSetEvent extends AuthEvent {}
 
 class AuthPhotoSelectEvent extends AuthEvent {}
+
+class AuthSetupPinChangeEvent extends AuthEvent {
+  final String pin;
+  AuthSetupPinChangeEvent({required this.pin});
+}

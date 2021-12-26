@@ -22,6 +22,7 @@ abstract class AppTheme {
           fillColor: AppColors.dbackgroundLL,
           filled: true),
       textTheme: AppTextThemes.dTextTheme,
+      hintColor: AppColors.dforegroundML,
       splashFactory: InkSplash.splashFactory,
       backgroundColor: AppColors.dbackgroundML,
       colorScheme: ColorScheme.fromSwatch().copyWith(
@@ -44,6 +45,7 @@ abstract class AppTheme {
         onPrimary: AppColors.lbackground,
       ),
     ),
+    hintColor: AppColors.lforeground,
     inputDecorationTheme: const InputDecorationTheme(
         border: InputBorder.none,
         fillColor: AppColors.lbackgroundLD,

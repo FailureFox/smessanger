@@ -77,12 +77,13 @@ class AuthUserInitialSetupState extends AuthState {
   final String countryCode;
   final String? avatar;
   final String avatarDownloadUrl;
-
+  final String pin;
   AuthUserInitialSetupState({
     required this.countryCode,
     required String phoneNumber,
     this.name = '',
     this.surname = '',
+    this.pin = '',
     this.avatar = '',
     this.avatarDownloadUrl = '',
     AuthStatus status = AuthStatus.initial,
@@ -94,14 +95,17 @@ class AuthUserInitialSetupState extends AuthState {
     String? avatar,
     AuthStatus? status,
     String? avatarDownloadUrl,
+    String? pin,
   }) {
     return AuthUserInitialSetupState(
-        countryCode: countryCode,
-        phoneNumber: phoneNumber,
-        name: name ?? this.name,
-        surname: surname ?? this.surname,
-        avatar: avatar ?? this.avatar,
-        status: status ?? this.status,
-        avatarDownloadUrl: avatarDownloadUrl ?? this.avatarDownloadUrl);
+      countryCode: countryCode,
+      phoneNumber: phoneNumber,
+      name: name ?? this.name,
+      surname: surname ?? this.surname,
+      avatar: avatar ?? this.avatar,
+      status: status ?? this.status,
+      avatarDownloadUrl: avatarDownloadUrl ?? this.avatarDownloadUrl,
+      pin: pin ?? this.pin,
+    );
   }
 }
