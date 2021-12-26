@@ -8,19 +8,28 @@ import 'dart:io';
 class FireBaseRemoteUse {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   String verificationId = "";
 
-  Future<void> createAccount(MyProfile profile) async {}
+  Future<void> createAccount(MyProfile profile) async {
+    
+  }
 
+
+  
   Future<String> uploadFile(File file, String fileType) async {
     try {
       final basePath = fileType + file.path.split('/').last;
-      final myfile = await _storage.ref(basePath).putFile(file);
+
+      final myfile = await _firebaseStorage.ref(basePath).putFile(file);
       return myfile.ref.fullPath;
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+  Future<String> getDownloadUrl(String fileName) async {
+    return await _firebaseStorage.ref(fileName).getDownloadURL();
   }
 
   Future<String> signInWithNumber(String pinCode) async {

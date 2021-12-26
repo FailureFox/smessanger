@@ -1,8 +1,7 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smessanger/src/bloc/auth_bloc/auth_bloc.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
+import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 
 class PhotoUploadPage extends StatelessWidget {
   const PhotoUploadPage({Key? key}) : super(key: key);
@@ -22,18 +21,25 @@ class PhotoUploadPage extends StatelessWidget {
             Center(
               child: CircleAvatar(
                 backgroundColor: Theme.of(context).backgroundColor,
-                radius: MediaQuery.of(context).size.width / 7,
-                backgroundImage: state.avatar == ''
+                radius: MediaQuery.of(context).size.width / 6,
+                backgroundImage: myState.avatar == ''
                     ? null
-                    : AssetImage('assets/larry/hello.png'),
-                child: IconButton(
-                    color: Theme.of(context).iconTheme.color,
-                    splashRadius: 0.1,
-                    iconSize: MediaQuery.of(context).size.width / 9,
-                    onPressed: () {
-                      context.read<AuthBloc>().add(AuthPhotoSelectEvent());
-                    },
-                    icon: const Icon(Icons.add_a_photo_rounded)),
+                    : NetworkImage(myState.avatarDownloadUrl),
+                child: myState.status == AuthStatus.initial ||
+                        myState.status == AuthStatus.error
+                    ? IconButton(
+                        color: Theme.of(context).iconTheme.color,
+                        splashRadius: 0.1,
+                        iconSize: MediaQuery.of(context).size.width / 7,
+                        onPressed: () {
+                          context.read<AuthBloc>().add(AuthPhotoSelectEvent());
+                        },
+                        icon: const Icon(Icons.add_a_photo_rounded))
+                    : myState.status == AuthStatus.loading
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : null,
               ),
             ),
             SizedBox(

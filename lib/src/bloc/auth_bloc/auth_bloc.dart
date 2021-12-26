@@ -11,7 +11,7 @@ import 'package:smessanger/src/resources/data/firebase_remote_use.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final PageController pageController;
   final FireBaseRemoteUse firebase = FireBaseRemoteUse();
-
+  String myUID = '';
   //bloc
   AuthBloc({required this.pageController}) : super(AuthNumberInputState()) {
     on<AuthNextPageEvent>((event, emit) => nextPage());
@@ -61,7 +61,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         emit((state as AuthPhoneVerifyState)
             .copyWith(status: AuthStatus.loading));
-        await firebase
+        myUID = await firebase
             .signInWithNumber((state as AuthPhoneVerifyState).myVerifyCode);
         nextPage();
       } catch (e) {
@@ -88,19 +88,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
     //photo
     on<AuthPhotoSelectEvent>((event, emit) async {
-      final file = await FilePicker.platform.pickFiles(allowMultiple: false);
-      if (file != null) {
-        final fileType = file.files.single.extension;
-        if (fileType == 'png' || fileType == 'jpg' || fileType == 'jpeg') {
-          emit((state as AuthUserInitialSetupState)
-              .copyWIth(status: AuthStatus.loading));
-          File photo = File(file.files.single.path!);
-          final String avatar = await firebase.uploadFile(photo, 'images');
-          emit((state as AuthUserInitialSetupState).copyWIth(
-            avatar: avatar,
-            status: AuthStatus.loaded,
-          ));
-        } else {}
+      try {
+        final file = await FilePicker.platform.pickFiles(allowMultiple: false);
+        if (file != null) {
+          final fileType = file.files.single.extension;
+          if (fileType == 'png' || fileType == 'jpg' || fileType == 'jpeg') {
+            emit((state as AuthUserInitialSetupState)
+                .copyWIth(status: AuthStatus.loading));
+            File photo = File(file.files.single.path!);
+            final String avatar =
+                await firebase.uploadFile(photo, 'images/$myUID/');
+            final downloadUrl = await firebase.getDownloadUrl(avatar);
+            emit((state as AuthUserInitialSetupState).copyWIth(
+              avatar: avatar,
+              avatarDownloadUrl: downloadUrl,
+              status: AuthStatus.loaded,
+            ));
+          } else {
+            emit((state as AuthUserInitialSetupState).copyWIth(
+              status: AuthStatus.error,
+            ));
+          }
+        }
+      } catch (e) {
+        emit((state as AuthUserInitialSetupState).copyWIth(
+          status: AuthStatus.error,
+        ));
       }
     });
   }

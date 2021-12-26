@@ -7,21 +7,28 @@ class MyProfile {
   String countryCode;
   String? status;
   String? avatarUrl;
+  String uid;
+  List<String> roles;
+  List<String> newsChannels;
   List<ChatModel> chats;
 
   MyProfile({
     required this.name,
     this.surname,
     required this.countryCode,
+    required this.uid,
+    this.roles = const [],
     this.status,
     required this.avatarUrl,
     this.chats = const [],
     required this.phoneNumber,
+    required this.newsChannels,
   });
 
-  factory MyProfile.fromMap(Map<String, dynamic> map) {
+  factory MyProfile.fromMap(Map<String, dynamic> map, String uid) {
     return MyProfile(
       name: map['name'],
+      uid: uid,
       surname: map['surname'] != '' ? map['surname'] : null,
       countryCode: map['countryCode'],
       status: map['status'] != '' ? map['status'] : null,
@@ -30,6 +37,8 @@ class MyProfile {
           .map((e) => ChatModel.fromMap(e))
           .toList(),
       phoneNumber: map['phoneNumber'],
+      roles: map['roles'].map((e) => e as String).toList(),
+      newsChannels: map['newsChannels'],
     );
   }
 
@@ -41,6 +50,8 @@ class MyProfile {
       'countryCode': countryCode,
       'status': status ?? '',
       'avatarUrl': avatarUrl ?? '',
+      'roles': roles,
+      'newsChannels': newsChannels,
       'chats': chats.map((e) => e.toMap()).toList()
     };
   }
