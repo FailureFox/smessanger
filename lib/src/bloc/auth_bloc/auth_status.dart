@@ -1,11 +1,23 @@
-enum UniversalStatus {
-  loading,
-  loaded,
-  error,
-  initial,
+class AuthStatus {
+  const AuthStatus();
 }
 
-enum AuthStatus {
-  registration,
-  signUp,
+class AuthLoginStatus extends AuthStatus {
+  final String uid;
+  AuthLoginStatus({required this.uid});
+}
+
+class AuthRegistrationStatus extends AuthStatus {}
+
+class AuthInitialStatus extends AuthStatus {
+  const AuthInitialStatus();
+}
+
+class AuthLoadingStatus extends AuthStatus {}
+
+class AuthLoadedStatus extends AuthStatus {}
+
+class AuthErrorStatus extends AuthStatus {
+  final String error;
+  AuthErrorStatus({required this.error});
 }

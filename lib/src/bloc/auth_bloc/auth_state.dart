@@ -4,13 +4,15 @@ import 'package:smessanger/src/resources/data/countries_data.dart';
 class AuthState {
   final bool darkTheme;
   final String phoneNumber;
-  final UniversalStatus status;
+  final AuthStatus status;
   final CountriesModel selectedCountry;
   final String myVerifyCode;
 
+  final String countrySearch;
+
   AuthState({
     this.phoneNumber = '',
-    this.status = UniversalStatus.initial,
+    this.status = const AuthInitialStatus(),
     this.darkTheme = false,
     this.myVerifyCode = '',
     this.selectedCountry = const CountriesModel(
@@ -18,18 +20,23 @@ class AuthState {
       dialCode: '+998',
       flag: 'assets/flags/uz.png',
     ),
+    this.countrySearch = '',
   });
-  AuthState copyWith(
-      {bool? darkTheme,
-      String? phoneNumber,
-      UniversalStatus? status,
-      CountriesModel? selectedCountry,
-      String? myVerifyCode}) {
+
+  AuthState copyWith({
+    bool? darkTheme,
+    String? phoneNumber,
+    AuthStatus? status,
+    CountriesModel? selectedCountry,
+    String? myVerifyCode,
+    String? countrySearch,
+  }) {
     return AuthState(
       darkTheme: darkTheme ?? this.darkTheme,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       status: status ?? this.status,
       selectedCountry: selectedCountry ?? this.selectedCountry,
+      countrySearch: countrySearch ?? this.countrySearch,
     );
   }
 }

@@ -18,20 +18,23 @@ class NumberInputPage extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(_Texts.phoneTitle,
-                    style: Theme.of(context).textTheme.headline1),
-                const SizedBox(height: 5),
-                const Text(_Texts.phoneSubtitle),
-                const SizedBox(height: 20),
-                const NumberInputField(),
-                const SizedBox(height: 20),
-                const Text(_Texts.phonePrivacyText),
-                const Spacer(),
-                const NumberNextButton()
-              ],
+            child: Form(
+              autovalidateMode: AutovalidateMode.always,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(_Texts.phoneTitle,
+                      style: Theme.of(context).textTheme.headline1),
+                  const SizedBox(height: 5),
+                  const Text(_Texts.phoneSubtitle),
+                  const SizedBox(height: 20),
+                  const NumberInputField(),
+                  const SizedBox(height: 20),
+                  const Text(_Texts.phonePrivacyText),
+                  const Spacer(),
+                  const NumberNextButton()
+                ],
+              ),
             ),
           ),
         ),
@@ -46,8 +49,14 @@ class NumberInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.width / 9,
-      child: TextField(
+      child: TextFormField(
+          validator: (value) {
+            if (value != null) {
+              if (value.length < 5) {
+                return 'Не существует такого номера';
+              }
+            }
+          },
           maxLines: null,
           minLines: null,
           textAlignVertical: TextAlignVertical.center,
@@ -61,14 +70,15 @@ class NumberInputField extends StatelessWidget {
             prefixIcon: GestureDetector(
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
-                dialCodeSelectBottomSheet(context);
+                Future.delayed(const Duration(milliseconds: 100),
+                    () => dialCodeSelectBottomSheet(context));
               },
               child:
                   BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
                 return Container(
-                  width: MediaQuery.of(context).size.width / 5,
                   margin: const EdgeInsets.only(left: 15, right: 2),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
@@ -90,9 +100,9 @@ class NumberInputField extends StatelessWidget {
   }
 }
 
-dialCodeSelectBottomSheet(BuildContext context) {
+dialCodeSelectBottomSheet(BuildContext mycontext) {
   return showModalBottomSheet(
-      context: context,
+      context: mycontext,
       builder: (context) => DraggableScrollableSheet(
             maxChildSize: 1,
             initialChildSize: 1,
@@ -104,8 +114,11 @@ dialCodeSelectBottomSheet(BuildContext context) {
                 Padding(
                     padding: const EdgeInsets.all(10),
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.width / 9,
+                      height: MediaQuery.of(mycontext).size.width / 9,
                       child: TextField(
+                        onChanged: (value) => mycontext
+                            .read<AuthBloc>()
+                            .add(AuthCountrySearchInputEvent(search: value)),
                         textAlignVertical: TextAlignVertical.center,
                         maxLines: null,
                         minLines: null,
@@ -120,12 +133,37 @@ dialCodeSelectBottomSheet(BuildContext context) {
                       ),
                     )),
                 Expanded(
-                    child: ListView.builder(
-                        itemCount: Countries.countryList.length,
-                        itemBuilder: (context, index) {
-                          return CountryItemsWidget(
-                              country: Countries.countryList[index]);
-                        })),
+                  child: BlocBuilder<AuthBloc, AuthState>(
+                    bloc: mycontext.read<AuthBloc>(),
+                    builder: (context, state) {
+                      if (state.countrySearch == '') {
+                        return ListView.builder(
+                          controller: scrollcontroller,
+                          itemCount: Countries.countryList.length,
+                          itemBuilder: (context, index) {
+                            return CountryItemsWidget(
+                                myContext: mycontext,
+                                country: Countries.countryList[index]);
+                          },
+                        );
+                      } else {
+                        return ListView(
+                          children: (Countries.countryList
+                                  .where((element) =>
+                                      (element['en_short_name'] +
+                                              element['dial_code'] as String)
+                                          .toLowerCase()
+                                          .contains(state.countrySearch
+                                              .toLowerCase()))
+                                  .toList())
+                              .map((e) => CountryItemsWidget(
+                                  country: e, myContext: mycontext))
+                              .toList(),
+                        );
+                      }
+                    },
+                  ),
+                ),
               ],
             ),
           ));
@@ -143,7 +181,7 @@ class NumberNextButton extends StatelessWidget {
         return ElevatedButton(
           child: const Text('Next'),
           onPressed:
-              state.phoneNumber == '' || state.status == UniversalStatus.loading
+              state.phoneNumber == '' || state.status is AuthLoadingStatus
                   ? null
                   : () => onPressed(context),
         );
@@ -153,7 +191,7 @@ class NumberNextButton extends StatelessWidget {
 
   onPressed(BuildContext context) {
     FocusScope.of(context).requestFocus(FocusNode());
-    context.read<AuthBloc>().add((AuthNumberVerifyEvent()));
+    context.read<AuthBloc>().add((AuthNumberVerifyEvent(context: context)));
   }
 }
 
@@ -166,11 +204,20 @@ class _Texts {
 }
 
 class CountryItemsWidget extends StatelessWidget {
-  const CountryItemsWidget({Key? key, required this.country}) : super(key: key);
+  const CountryItemsWidget(
+      {Key? key, required this.country, required this.myContext})
+      : super(key: key);
   final Map<String, dynamic> country;
+  final BuildContext myContext;
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () {
+        Navigator.pop(context);
+        myContext
+            .read<AuthBloc>()
+            .add(AuthCountrySelectEvent(CountriesModel.fromMap(country)));
+      },
       leading: SizedBox(
           height: 25,
           child: Image.asset('assets/flags/' +

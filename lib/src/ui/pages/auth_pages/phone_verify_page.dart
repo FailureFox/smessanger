@@ -52,7 +52,7 @@ class PhoneVerifyButton extends StatelessWidget {
       height: MediaQuery.of(context).size.width / 8,
       child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
         return ElevatedButton(
-          onPressed: state.status == UniversalStatus.loading
+          onPressed: state.status is AuthLoadingStatus
               ? null
               : () => context.read<AuthBloc>().add(AuthSmsVerifyEvent()),
           child: const Text(_Texts.buttonNext),

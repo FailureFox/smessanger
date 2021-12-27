@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smessanger/src/bloc/app_bloc/app_bloc_export.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
+import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/welcome_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/number_input_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/phone_verify_page.dart';
-import 'package:smessanger/src/ui/styles/colors.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -24,14 +23,28 @@ class _AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: context.read<AuthBloc>().pageController,
-        children: const [
-          WelcomePage(),
-          NumberInputPage(),
-          PhoneVerifyPage(),
-        ],
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          final authStatus = state.status;
+          if (authStatus is AuthErrorStatus) {
+            print('123' + authStatus.error);
+          } else if (authStatus is AuthLoginStatus) {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Scaffold()));
+          } else if (authStatus is AuthRegistrationStatus) {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Container()));
+          }
+        },
+        child: PageView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: context.read<AuthBloc>().pageController,
+          children: const [
+            WelcomePage(),
+            NumberInputPage(),
+            PhoneVerifyPage(),
+          ],
+        ),
       ),
     );
   }

@@ -22,38 +22,44 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (event, emit) => emit((state).copyWith(phoneNumber: event.number)),
     );
 
+    on<AuthCountrySelectEvent>(
+        (event, emit) => emit(state.copyWith(selectedCountry: event.country)));
     on<AuthNumberVerifyEvent>(
       (event, emit) {
         try {
-          emit((state).copyWith(status: UniversalStatus.loading));
+          emit((state).copyWith(status: AuthLoadingStatus()));
 
           firebase.verificationNumber(
             phoneNumber: state.selectedCountry.dialCode +
                 state.phoneNumber.replaceAll('-', ''),
             controller: pageController,
+            context: event.context,
           );
         } on SocketException {
-          emit(state.copyWith(status: UniversalStatus.error));
+          emit(state.copyWith(status: AuthErrorStatus(error: firebase.error)));
         } catch (e) {
-          emit(state.copyWith(status: UniversalStatus.error));
+          emit(state.copyWith(status: AuthErrorStatus(error: e.toString())));
         }
       },
     );
-
+    on<AuthErrorEvent>((event, emit) =>
+        emit(state.copyWith(status: AuthErrorStatus(error: event.message))));
+    on<AuthCountrySearchInputEvent>(
+        (event, emit) => emit(state.copyWith(countrySearch: event.search)));
     //sms-pin
     on<AuthSmsChangeEvent>((event, emit) {
       if (event.sms.length > 5) {
         emit((state).copyWith(
-            myVerifyCode: event.sms, status: UniversalStatus.initial));
+            myVerifyCode: event.sms, status: const AuthInitialStatus()));
       }
     });
 
     on<AuthSmsVerifyEvent>((event, emit) async {
       try {
-        emit((state).copyWith(status: UniversalStatus.loading));
+        emit((state).copyWith(status: AuthLoadingStatus()));
         myUID = await firebase.signInWithNumber((state).myVerifyCode);
       } catch (e) {
-        emit((state).copyWith(status: UniversalStatus.error));
+        emit((state).copyWith(status: AuthErrorStatus(error: e.toString())));
       }
     });
   }

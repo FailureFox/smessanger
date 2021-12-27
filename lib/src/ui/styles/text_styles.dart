@@ -16,8 +16,8 @@ abstract class AppTextThemes {
         fontWeight: FontWeight.w700, fontSize: 15, color: Colors.white),
     bodyText2: TextStyle(
         fontWeight: FontWeight.w700, fontSize: 15, color: Colors.white54),
-    caption: TextStyle(
-        fontWeight: FontWeight.normal, color: Colors.white, fontSize: 13),
+    // caption: TextStyle(
+    //     fontWeight: FontWeight.normal, color: Colors.white, fontSize: 13),
   );
 
   static const TextTheme lTextTheme = TextTheme(
@@ -32,8 +32,8 @@ abstract class AppTextThemes {
         fontWeight: FontWeight.w700, fontSize: 15, color: Colors.black),
     bodyText2: TextStyle(
         fontWeight: FontWeight.w700, fontSize: 15, color: Colors.black45),
-    caption: TextStyle(
-        fontWeight: FontWeight.normal, color: Colors.black, fontSize: 13),
+    // caption: TextStyle(
+    //     fontWeight: FontWeight.normal, color: Colors.black, fontSize: 13),
   );
 }
 
