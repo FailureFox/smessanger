@@ -31,26 +31,3 @@ class AuthSmsChangeEvent extends AuthEvent {
   final String sms;
   AuthSmsChangeEvent({required this.sms});
 }
-
-//userInitialSetup
-
-class AuthInitialUserSetupLoading extends AuthEvent {}
-
-class AuthNameChangeEvent extends AuthEvent {
-  final String name;
-  AuthNameChangeEvent({required this.name});
-}
-
-class AuthSurnameChangeEvent extends AuthEvent {
-  final String surname;
-  AuthSurnameChangeEvent({required this.surname});
-}
-
-class AuthNameSurnameSetEvent extends AuthEvent {}
-
-class AuthPhotoSelectEvent extends AuthEvent {}
-
-class AuthSetupPinChangeEvent extends AuthEvent {
-  final String pin;
-  AuthSetupPinChangeEvent({required this.pin});
-}

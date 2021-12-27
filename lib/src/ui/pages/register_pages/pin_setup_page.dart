@@ -42,7 +42,7 @@ class _PinSetupPageState extends State<PinSetupPage> {
             children: List.generate(
               4,
               (index) => CircleAvatar(
-                radius: MediaQuery.of(context).size.width / 20,
+                radius: MediaQuery.of(context).size.width / 30,
                 backgroundColor: pin.length > index
                     ? Theme.of(context).hintColor
                     : Theme.of(context).backgroundColor,
@@ -61,6 +61,7 @@ class _PinSetupPageState extends State<PinSetupPage> {
                 ...List.generate(
                     9,
                     (index) => IconButton(
+                        splashColor: Colors.transparent,
                         onPressed: () => pinChange('${index + 1}'),
                         icon: Text(
                           '${index + 1}',

@@ -11,12 +11,8 @@ class FireBaseRemoteUse {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   String verificationId = "";
 
-  Future<void> createAccount(MyProfile profile) async {
-    
-  }
+  Future<void> createAccount(MyProfile profile) async {}
 
-
-  
   Future<String> uploadFile(File file, String fileType) async {
     try {
       final basePath = fileType + file.path.split('/').last;

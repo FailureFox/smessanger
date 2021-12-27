@@ -4,40 +4,38 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/resources/data/countries_data.dart';
+import 'package:smessanger/src/ui/screens/auth_screen.dart';
 import 'package:smessanger/src/ui/styles/colors.dart';
 
-class NumberInputPage extends StatefulWidget {
+class NumberInputPage extends StatelessWidget {
   const NumberInputPage({Key? key}) : super(key: key);
 
   @override
-  State<NumberInputPage> createState() => _NumberInputPageState();
-}
-
-class _NumberInputPageState extends State<NumberInputPage> {
-  @override
-  void initState() {
-    context.read<AuthBloc>().add(AuthNumPageLoadingEvent());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(_Texts.phoneTitle, style: Theme.of(context).textTheme.headline1),
-          const SizedBox(height: 5),
-          const Text(_Texts.phoneSubtitle),
-          const SizedBox(height: 20),
-          const NumberInputField(),
-          const SizedBox(height: 20),
-          const Text(_Texts.phonePrivacyText),
-          const Spacer(),
-          const NumberNextButton()
-        ],
-      ),
+    return Column(
+      children: [
+        const AuthAppbar(),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_Texts.phoneTitle,
+                    style: Theme.of(context).textTheme.headline1),
+                const SizedBox(height: 5),
+                const Text(_Texts.phoneSubtitle),
+                const SizedBox(height: 20),
+                const NumberInputField(),
+                const SizedBox(height: 20),
+                const Text(_Texts.phonePrivacyText),
+                const Spacer(),
+                const NumberNextButton()
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -67,28 +65,23 @@ class NumberInputField extends StatelessWidget {
               },
               child:
                   BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-                final mystate = state;
-                if (mystate is AuthNumberInputState) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width / 5,
-                    margin: const EdgeInsets.only(left: 15, right: 2),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            height: 15,
-                            child: Image.asset(mystate.selectedCountry.flag)),
-                        const SizedBox(width: 10),
-                        Text(
-                          mystate.selectedCountry.dialCode,
-                          style: Theme.of(context).textTheme.subtitle1,
-                        )
-                      ],
-                    ),
-                  );
-                } else {
-                  return const SizedBox();
-                }
+                return Container(
+                  width: MediaQuery.of(context).size.width / 5,
+                  margin: const EdgeInsets.only(left: 15, right: 2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                          height: 15,
+                          child: Image.asset(state.selectedCountry.flag)),
+                      const SizedBox(width: 10),
+                      Text(
+                        state.selectedCountry.dialCode,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      )
+                    ],
+                  ),
+                );
               }),
             ),
             hintText: 'Phone number',
@@ -147,17 +140,13 @@ class NumberNextButton extends StatelessWidget {
       height: MediaQuery.of(context).size.width / 8,
       width: double.infinity,
       child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-        if (state is AuthNumberInputState) {
-          return ElevatedButton(
-            child: const Text('Next'),
-            onPressed:
-                state.phoneNumber == '' || state.status == AuthStatus.loading
-                    ? null
-                    : () => onPressed(context),
-          );
-        } else {
-          return const SizedBox();
-        }
+        return ElevatedButton(
+          child: const Text('Next'),
+          onPressed:
+              state.phoneNumber == '' || state.status == UniversalStatus.loading
+                  ? null
+                  : () => onPressed(context),
+        );
       }),
     );
   }

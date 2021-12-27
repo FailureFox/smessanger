@@ -13,7 +13,6 @@ class _NameInputPageState extends State<NameInputPage> {
   @override
   void initState() {
     super.initState();
-    context.read<AuthBloc>().add(AuthInitialUserSetupLoading());
   }
 
   @override
@@ -44,9 +43,7 @@ class NameInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (value) {
-        context.read<AuthBloc>().add(AuthNameChangeEvent(name: value));
-      },
+      onChanged: (value) {},
       decoration: const InputDecoration(isDense: false, hintText: 'First name'),
     );
   }
@@ -58,8 +55,7 @@ class SurnameInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (value) =>
-          context.read<AuthBloc>().add(AuthSurnameChangeEvent(surname: value)),
+      onChanged: (value) {},
       decoration:
           const InputDecoration(isDense: false, hintText: 'Second name'),
     );

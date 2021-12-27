@@ -3,52 +3,41 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
+import 'package:smessanger/src/ui/screens/auth_screen.dart';
 
-class PhoneVerifyPage extends StatefulWidget {
+class PhoneVerifyPage extends StatelessWidget {
   const PhoneVerifyPage({Key? key}) : super(key: key);
 
   @override
-  State<PhoneVerifyPage> createState() => _PhoneVerifyPageState();
-}
-
-class _PhoneVerifyPageState extends State<PhoneVerifyPage> {
-  @override
-  void initState() {
-    context.read<AuthBloc>().add(AuthVerifyPageLoadingEvent());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(_Texts.verifyTitle,
-              style: Theme.of(context).textTheme.headline1),
-          const SizedBox(height: 5),
-          BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-            final mystate = state;
-            if (mystate is AuthPhoneVerifyState) {
-              return Text(
+    return Column(
+      children: [
+        const AuthAppbar(),
+        Expanded(
+            child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(_Texts.verifyTitle,
+                  style: Theme.of(context).textTheme.headline1),
+              const SizedBox(height: 5),
+              Text(
                 _Texts.verifySubtitle +
-                    mystate.phoneNumber +
+                    context.read<AuthBloc>().state.phoneNumber +
                     '\n' +
                     _Texts.verifySubtitle2 +
                     ' 57 sec',
                 style: const TextStyle(fontSize: 16),
-              );
-            } else {
-              return const SizedBox();
-            }
-          }),
-          const SizedBox(height: 20),
-          const SmsPinField(),
-          const Spacer(),
-          const PhoneVerifyButton(),
-        ],
-      ),
+              ),
+              const SizedBox(height: 30),
+              const SmsPinField(),
+              const Spacer(),
+              const PhoneVerifyButton(),
+            ],
+          ),
+        ))
+      ],
     );
   }
 }
@@ -62,17 +51,12 @@ class PhoneVerifyButton extends StatelessWidget {
       width: double.infinity,
       height: MediaQuery.of(context).size.width / 8,
       child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-        final mystate = state;
-        if (mystate is AuthPhoneVerifyState) {
-          return ElevatedButton(
-            onPressed: mystate.status == AuthStatus.loading
-                ? null
-                : () => context.read<AuthBloc>().add(AuthSmsVerifyEvent()),
-            child: const Text(_Texts.buttonNext),
-          );
-        } else {
-          return const SizedBox();
-        }
+        return ElevatedButton(
+          onPressed: state.status == UniversalStatus.loading
+              ? null
+              : () => context.read<AuthBloc>().add(AuthSmsVerifyEvent()),
+          child: const Text(_Texts.buttonNext),
+        );
       }),
     );
   }
