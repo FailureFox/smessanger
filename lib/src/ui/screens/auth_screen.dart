@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
+import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/welcome_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/number_input_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/phone_verify_page.dart';
@@ -14,7 +15,9 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthBloc>(
-      create: (_) => rep.sl.call(),
+      create: (_) => AuthBloc(
+          firebase: rep.sl.call<FireBaseRepository>(),
+          pageController: PageController()),
       child: const _AuthScreen(),
     );
   }

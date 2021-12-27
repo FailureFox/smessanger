@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_event.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_state.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
-import 'package:smessanger/src/resources/data/firebase_remote_use.dart';
+
+import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final PageController pageController;
-  final FireBaseRemoteUse firebase;
+  final FireBaseRepository firebase;
   String myUID = '';
   //bloc
   AuthBloc({required this.pageController, required this.firebase})
@@ -36,8 +37,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             controller: pageController,
             context: event.context,
           );
-        } on SocketException {
-          emit(state.copyWith(status: AuthErrorStatus(error: firebase.error)));
         } catch (e) {
           emit(state.copyWith(status: AuthErrorStatus(error: e.toString())));
         }

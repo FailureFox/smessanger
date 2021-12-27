@@ -28,6 +28,7 @@ class _RegistrationScreenState extends State<_RegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         leading: IconButton(
             onPressed: () {
               if (controller.page! > 0) {
