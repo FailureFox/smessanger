@@ -5,6 +5,7 @@ import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/welcome_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/number_input_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/phone_verify_page.dart';
+import 'package:smessanger/src/ui/screens/registration_screen.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -27,13 +28,20 @@ class _AuthScreen extends StatelessWidget {
         listener: (context, state) {
           final authStatus = state.status;
           if (authStatus is AuthErrorStatus) {
-            print('123' + authStatus.error);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(authStatus.error.split('.')[0]),
+            ));
+            context
+                .read<AuthBloc>()
+                .emit(state.copyWith(status: const AuthInitialStatus()));
           } else if (authStatus is AuthLoginStatus) {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Scaffold()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Scaffold()));
           } else if (authStatus is AuthRegistrationStatus) {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Container()));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const RegistrationScreen()));
           }
         },
         child: PageView(
