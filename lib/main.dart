@@ -2,12 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
-import 'package:smessanger/src/bloc/app_bloc/app_event.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_state.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_status.dart';
-import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/ui/screens/auth_screen.dart';
 import 'package:smessanger/src/ui/styles/theme.dart';
+import 'injections.dart' as rep;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +36,7 @@ class _MyAppState extends State<_MyApp> {
   @override
   void initState() {
     super.initState();
-    context.read<AppBloc>().add(AppThemeLoadingEvent());
+    rep.init();
   }
 
   @override

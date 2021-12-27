@@ -6,14 +6,15 @@ import 'package:smessanger/src/ui/pages/auth_pages/welcome_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/number_input_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/phone_verify_page.dart';
 import 'package:smessanger/src/ui/screens/registration_screen.dart';
+import 'package:smessanger/injections.dart' as rep;
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AuthBloc(pageController: PageController(initialPage: 0)),
+    return BlocProvider<AuthBloc>(
+      create: (_) => rep.sl.call(),
       child: const _AuthScreen(),
     );
   }

@@ -9,8 +9,6 @@ class AuthNextPageEvent extends AuthEvent {}
 
 class AuthBackPageEvent extends AuthEvent {}
 
-//other beautiful events :)
-
 //number-input
 
 class AuthNumberVerifyEvent extends AuthEvent {
