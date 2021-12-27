@@ -1,21 +1,25 @@
+import 'package:smessanger/src/models/roles.dart';
+
 class RegistrationState {
   final String name;
   final String surname;
   final String avatarUrl;
-  final List<String> roles;
+  final Set<Roles> roles;
   final List<String> interestedNews;
+
   RegistrationState({
     this.name = '',
     this.surname = '',
     this.avatarUrl = '',
-    this.roles = const [],
+    this.roles = const {},
     this.interestedNews = const [],
   });
+
   RegistrationState copyWith(
       {String? name,
       String? surname,
       String? avatarUrl,
-      List<String>? roles,
+      Set<Roles>? roles,
       List<String>? interestedNews}) {
     return RegistrationState(
       name: name ?? this.name,

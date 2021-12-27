@@ -4,7 +4,7 @@ import 'package:smessanger/src/bloc/register_bloc/register_state.dart';
 
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   RegistrationBloc() : super(RegistrationState()) {
-    on((event, emit) => null);
+    on((event, emit) {});
   }
 }
 

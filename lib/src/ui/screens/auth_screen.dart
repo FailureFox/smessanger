@@ -38,10 +38,8 @@ class _AuthScreen extends StatelessWidget {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const Scaffold()));
           } else if (authStatus is AuthRegistrationStatus) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const RegistrationScreen()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => RegistrationScreen()));
           }
         },
         child: PageView(
