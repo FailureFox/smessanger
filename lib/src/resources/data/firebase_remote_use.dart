@@ -6,51 +6,64 @@ import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smessanger/src/resources/data/firebase_remote.dart';
 
-class FireBaseRemoteUse {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+class FireBaseRemoteUse extends FireBaseRemote {
+  final FirebaseAuth firebaseAuth;
+  final FirebaseFirestore firestore;
+  final FirebaseStorage firebaseStorage;
   String verificationId = "";
   String error = '';
+  FireBaseRemoteUse({
+    required this.firebaseAuth,
+    required this.firestore,
+    required this.firebaseStorage,
+  });
+
+  @override
   Future<void> createAccount(MyProfile profile) async {}
 
+  @override
   Future<String> uploadFile(File file, String fileType) async {
     try {
       final basePath = fileType + file.path.split('/').last;
 
-      final myfile = await _firebaseStorage.ref(basePath).putFile(file);
+      final myfile = await firebaseStorage.ref(basePath).putFile(file);
       return myfile.ref.fullPath;
     } catch (e) {
       throw Exception(e);
     }
   }
 
+  @override
   Future<bool> isRegistered(String uid) async {
-    return (await _firestore.collection('users').doc(uid).get()).exists;
+    return (await firestore.collection('users').doc(uid).get()).exists;
   }
 
+  @override
   Future<String> getDownloadUrl(String fileName) async {
-    return await _firebaseStorage.ref(fileName).getDownloadURL();
+    return await firebaseStorage.ref(fileName).getDownloadURL();
   }
 
+  @override
   Future<String> signInWithNumber(String pinCode) async {
     try {
       final AuthCredential authCredential = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: pinCode);
-      final user = await _firebaseAuth.signInWithCredential(authCredential);
+      final user = await firebaseAuth.signInWithCredential(authCredential);
       return user.user!.uid;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
   }
 
-  verificationNumber({
+  @override
+  Future<void> verificationNumber({
     required String phoneNumber,
     required PageController controller,
     required BuildContext context,
   }) async {
-    _firebaseAuth.verifyPhoneNumber(
+    firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (verificationCompleted) {},
         verificationFailed: (exception) {

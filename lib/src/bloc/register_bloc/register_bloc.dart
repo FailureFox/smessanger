@@ -1,13 +1,24 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_event.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_state.dart';
 
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
+  PageController controller = PageController();
   RegistrationBloc() : super(RegistrationState()) {
-    on((event, emit) {});
+    //
+    on<RegNameChangeEvent>(
+        (event, emit) => emit(state.copyWith(name: event.name)));
+
+    on<RegSurnameChangeEVent>(
+        (event, emit) => emit(state.copyWith(surname: event.surname)));
+
+    on<RegPinCodeChangeEvent>(
+        (event, emit) => emit(state.copyWith(pinCode: event.pinCode)));
+
+    on<RegAvatarSelectEvent>((event, emit) {});
   }
 }
-
 
 
 

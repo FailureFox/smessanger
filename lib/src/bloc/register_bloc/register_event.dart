@@ -12,9 +12,9 @@ class RegSurnameChangeEVent extends RegistrationEvent {
 
 class RegAvatarSelectEvent extends RegistrationEvent {}
 
-class PinCodeChangeEvent extends RegistrationEvent {
+class RegPinCodeChangeEvent extends RegistrationEvent {
   final String pinCode;
-  PinCodeChangeEvent({required this.pinCode});
+  RegPinCodeChangeEvent({required this.pinCode});
 }
 
-class RolesSelectEvent {}
+class RegRolesSelectEvent {}

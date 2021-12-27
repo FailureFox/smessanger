@@ -10,10 +10,12 @@ import 'package:smessanger/src/resources/data/firebase_remote_use.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final PageController pageController;
-  final FireBaseRemoteUse firebase = FireBaseRemoteUse();
+  final FireBaseRemoteUse firebase;
   String myUID = '';
   //bloc
-  AuthBloc({required this.pageController}) : super(AuthState()) {
+  AuthBloc({required this.pageController, required this.firebase})
+      : super(AuthState()) {
+    //
     on<AuthNextPageEvent>((event, emit) => nextPage());
     on<AuthBackPageEvent>((event, emit) => backPage());
 
