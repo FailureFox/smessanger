@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:smessanger/src/bloc/auth_bloc/auth_bloc.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 import 'dart:io';
@@ -25,6 +24,10 @@ class FireBaseRemoteUse {
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+  Future<bool> isRegistered(String uid) async {
+    return (await _firestore.collection('users').doc(uid).get()).exists;
   }
 
   Future<String> getDownloadUrl(String fileName) async {

@@ -37,6 +37,7 @@ class AuthState {
       status: status ?? this.status,
       selectedCountry: selectedCountry ?? this.selectedCountry,
       countrySearch: countrySearch ?? this.countrySearch,
+      myVerifyCode: myVerifyCode ?? this.myVerifyCode,
     );
   }
 }

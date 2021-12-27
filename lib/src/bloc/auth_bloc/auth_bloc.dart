@@ -28,7 +28,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (event, emit) {
         try {
           emit((state).copyWith(status: AuthLoadingStatus()));
-
           firebase.verificationNumber(
             phoneNumber: state.selectedCountry.dialCode +
                 state.phoneNumber.replaceAll('-', ''),
@@ -56,8 +55,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<AuthSmsVerifyEvent>((event, emit) async {
       try {
-        emit((state).copyWith(status: AuthLoadingStatus()));
-        myUID = await firebase.signInWithNumber((state).myVerifyCode);
+        emit(state.copyWith(status: AuthLoadingStatus()));
+        myUID = await firebase.signInWithNumber(state.myVerifyCode);
+        final bool isRegistered = await firebase.isRegistered(myUID);
+        emit(state.copyWith(
+            status: isRegistered
+                ? AuthLoginStatus(uid: myUID)
+                : AuthRegistrationStatus()));
       } catch (e) {
         emit((state).copyWith(status: AuthErrorStatus(error: e.toString())));
       }

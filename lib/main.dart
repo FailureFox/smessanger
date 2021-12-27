@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_event.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_state.dart';
+import 'package:smessanger/src/bloc/app_bloc/app_status.dart';
+import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/ui/screens/auth_screen.dart';
 import 'package:smessanger/src/ui/styles/theme.dart';
 
@@ -45,8 +47,42 @@ class _MyAppState extends State<_MyApp> {
         debugShowCheckedModeBanner: false,
         theme: state.isDark ? AppTheme.darkTheme : AppTheme.lightTheme,
         title: 'Messanger',
-        home: const AuthScreen(),
+        home: state.status == AppStatus.unlogged
+            ? const AuthScreen()
+            : state.status == AppStatus.initial
+                ? const WaitingScreen()
+                : const Scaffold(),
       );
     });
+  }
+}
+
+class WaitingScreen extends StatelessWidget {
+  const WaitingScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Spacer(),
+            Text(
+              'Pure.',
+              style: Theme.of(context).textTheme.headline1,
+            ),
+            const Spacer(),
+            SizedBox(
+              height: MediaQuery.of(context).size.width / 8,
+              child: const Text('Powered by FailureFox'),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
