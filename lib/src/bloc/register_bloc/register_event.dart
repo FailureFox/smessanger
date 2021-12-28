@@ -1,3 +1,5 @@
+import 'package:smessanger/src/models/roles.dart';
+
 abstract class RegistrationEvent {}
 
 class RegUIDLoadingEvent extends RegistrationEvent {
@@ -22,4 +24,12 @@ class RegPinCodeChangeEvent extends RegistrationEvent {
   RegPinCodeChangeEvent({required this.pinCode});
 }
 
-class RegRolesSelectEvent {}
+class RegRoleSelectEvent extends RegistrationEvent {
+  final Roles role;
+  RegRoleSelectEvent({required this.role});
+}
+
+class RegRoleDeleteEvent extends RegistrationEvent {
+  final Roles role;
+  RegRoleDeleteEvent({required this.role});
+}

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:smessanger/src/bloc/register_bloc/register_bloc.dart';
+import 'package:smessanger/src/bloc/register_bloc/register_event.dart';
 import 'package:smessanger/src/models/roles.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RolesSelectPage extends StatelessWidget {
   const RolesSelectPage({Key? key}) : super(key: key);
@@ -59,6 +62,15 @@ class RolesWidget extends StatefulWidget {
 class _RolesWidgetState extends State<RolesWidget> {
   bool active = false;
   ontap() {
+    if (!active) {
+      context
+          .read<RegistrationBloc>()
+          .add(RegRoleSelectEvent(role: widget.role));
+    } else {
+      context
+          .read<RegistrationBloc>()
+          .add(RegRoleDeleteEvent(role: widget.role));
+    }
     active = !active;
     setState(() {});
   }

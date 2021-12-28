@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_event.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_state.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_status.dart';
+import 'package:smessanger/src/models/roles.dart';
 import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
 
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
@@ -44,6 +45,17 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
         }
       },
     );
+
+    on<RegRoleSelectEvent>((event, emit) {
+      final List<Roles> roles = [...state.roles, event.role];
+      emit(state.copyWith(roles: roles));
+    });
+
+    on<RegRoleDeleteEvent>((event, emit) {
+      List<Roles> roles = state.roles;
+      roles.remove(event.role);
+      emit(state.copyWith(roles: roles));
+    });
   }
   nextPage() {
     controller.nextPage(

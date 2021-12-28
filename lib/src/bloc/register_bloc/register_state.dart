@@ -7,7 +7,7 @@ class RegistrationState {
   final String uid;
   final String avatarUrl;
   final String pinCode;
-  final Set<Roles> roles;
+  final List<Roles> roles;
   final RegistrationStatus status;
   final List<String> interestedNews;
 
@@ -18,7 +18,7 @@ class RegistrationState {
     this.avatarUrl = '',
     this.pinCode = '',
     this.uid = '',
-    this.roles = const {},
+    this.roles = const [],
     this.interestedNews = const [],
   });
 
@@ -26,7 +26,7 @@ class RegistrationState {
       {String? name,
       String? surname,
       String? avatarUrl,
-      Set<Roles>? roles,
+      List<Roles>? roles,
       RegistrationStatus? status,
       String? pinCode,
       String? uid,
