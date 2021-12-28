@@ -78,6 +78,11 @@ flutter:
   assets:
     - assets/flags/
     - assets/larry/
+    - assets/larry/dark/
+    - assets/larry/1.5x/
+    - assets/larry/2x/
+    - assets/larry/3x/
+    - assets/larry/4x/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

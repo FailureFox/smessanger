@@ -4,6 +4,7 @@ import 'package:smessanger/injections.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_event.dart';
+import 'package:smessanger/src/ui/pages/register_pages/intro_page.dart';
 import 'package:smessanger/src/ui/pages/register_pages/name_input_page.dart';
 import 'package:smessanger/src/ui/pages/register_pages/photo_upload_page.dart';
 import 'package:smessanger/src/ui/pages/register_pages/pin_setup_page.dart';
@@ -64,6 +65,7 @@ class _RegistrationScreenState extends State<_RegistrationScreen> {
           PhotoUploadPage(),
           PinSetupPage(),
           RolesSelectPage(),
+          IntroPage(),
         ],
       ),
     );

@@ -39,10 +39,13 @@ class RolesSelectPage extends StatelessWidget {
           ),
           const Spacer(),
           SizedBox(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.width / 8,
-              child:
-                  ElevatedButton(onPressed: () {}, child: const Text('Next')))
+            width: double.infinity,
+            height: MediaQuery.of(context).size.width / 8,
+            child: ElevatedButton(
+              onPressed: () => context.read<RegistrationBloc>().nextPage(),
+              child: const Text('Next'),
+            ),
+          )
         ],
       ),
     );
@@ -80,10 +83,13 @@ class _RolesWidgetState extends State<RolesWidget> {
     return GestureDetector(
       onTap: ontap,
       child: AnimatedContainer(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(2),
+          color: !active
+              ? Theme.of(context).backgroundColor
+              : Theme.of(context).colorScheme.primary,
+        ),
         duration: const Duration(milliseconds: 200),
-        color: !active
-            ? Theme.of(context).backgroundColor
-            : Theme.of(context).colorScheme.primary,
         margin: const EdgeInsets.only(right: 8, bottom: 8),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15),
