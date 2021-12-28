@@ -11,6 +11,8 @@ abstract class AppTheme {
       appBarTheme: const AppBarTheme(color: AppColors.dbackground),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
             elevation: 0,
             onSurface: Colors.white,
             primary: AppColors.yellowTint,
@@ -39,6 +41,7 @@ abstract class AppTheme {
     appBarTheme: const AppBarTheme(color: AppColors.lbackground),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
         elevation: 0,
         onSurface: Colors.black,
         primary: AppColors.yellowTint,

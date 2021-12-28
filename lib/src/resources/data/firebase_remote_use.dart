@@ -28,7 +28,7 @@ class FireBaseRemoteUse extends FireBaseRemote {
     try {
       final basePath = filePath + file.path.split('/').last;
       final myfile = await firebaseStorage.ref(basePath).putFile(file);
-      return myfile.ref.fullPath;
+      return await getDownloadUrl(myfile.ref.fullPath);
     } catch (e) {
       throw Exception(e);
     }

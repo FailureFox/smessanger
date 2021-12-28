@@ -45,12 +45,20 @@ class _AuthScreen extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => const Scaffold()));
           } else if (authStatus is AuthRegistrationStatus) {
             context
+                .read<AuthBloc>()
+                .emit(state.copyWith(status: const AuthInitialStatus()));
+            context
                 .read<AppBloc>()
                 .add(AppTokenLoadingEvent(uid: authStatus.uid));
+
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const RegistrationScreen()));
+                    builder: (context) => RegistrationScreen(
+                          phoneNumber: state.phoneNumber,
+                          country:
+                              state.selectedCountry.aplhaCode.toLowerCase(),
+                        )));
           }
         },
         child: PageView(

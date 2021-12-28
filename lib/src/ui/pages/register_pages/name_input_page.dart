@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_event.dart';
+import 'package:smessanger/src/bloc/register_bloc/register_state.dart';
 
 class NameInputPage extends StatelessWidget {
   const NameInputPage({Key? key}) : super(key: key);
@@ -64,13 +65,18 @@ class NameNextButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: MediaQuery.of(context).size.width / 8,
-      child: ElevatedButton(
-        onPressed: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-          context.read<RegistrationBloc>().nextPage();
-        },
-        child: const Text('Next'),
-      ),
+      child: BlocBuilder<RegistrationBloc, RegistrationState>(
+          builder: (context, state) {
+        return ElevatedButton(
+          onPressed: state.name.length > 3
+              ? () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  context.read<RegistrationBloc>().nextPage();
+                }
+              : null,
+          child: const Text('Next'),
+        );
+      }),
     );
   }
 }

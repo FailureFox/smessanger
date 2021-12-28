@@ -16,10 +16,10 @@ class AuthState {
     this.darkTheme = false,
     this.myVerifyCode = '',
     this.selectedCountry = const CountriesModel(
-      name: 'uz',
-      dialCode: '+998',
-      flag: 'assets/flags/uz.png',
-    ),
+        name: 'uz',
+        dialCode: '+998',
+        flag: 'assets/flags/uz.png',
+        aplhaCode: 'uz'),
     this.countrySearch = '',
   });
 

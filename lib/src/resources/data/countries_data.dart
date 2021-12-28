@@ -2,15 +2,21 @@ class CountriesModel {
   final String dialCode;
   final String flag;
   final String name;
+  final String aplhaCode;
   const CountriesModel(
-      {required this.dialCode, required this.flag, required this.name});
+      {required this.dialCode,
+      required this.flag,
+      required this.name,
+      required this.aplhaCode});
   factory CountriesModel.fromMap(Map<String, dynamic> map) {
     return CountriesModel(
-        dialCode: map['dial_code'],
-        flag: 'assets/flags/' +
-            (map['alpha_2_code'] as String).toLowerCase() +
-            '.png',
-        name: map['nameTranslations']['sr-Cyrl']);
+      dialCode: map['dial_code'],
+      flag: 'assets/flags/' +
+          (map['alpha_2_code'] as String).toLowerCase() +
+          '.png',
+      name: map['nameTranslations']['sr-Cyrl'],
+      aplhaCode: map['alpha_2_code'],
+    );
   }
 }
 
