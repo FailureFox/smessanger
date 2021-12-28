@@ -13,15 +13,22 @@ class AppBloc extends Bloc<AppEvents, AppState> {
 
     on<AppThemeLoadingEvent>((event, emit) async {
       storage = await SharedPreferences.getInstance();
+      emit(state.copyWith(isDark: storage.getBool('theme')));
       final token = await _secureStorage.read(key: 'token');
-      final AppStatus status =
-          token == null ? AppStatus.unlogged : AppStatus.logged;
       await Future.delayed(const Duration(seconds: 2));
-      emit(state.copyWith(isDark: storage.getBool('theme'), status: status));
+
+      if (token == null) {
+        emit(state.copyWith(status: AppStatus.unlogged));
+      } else {
+        emit(state.copyWith(status: AppStatus.logged, uid: token));
+      }
     });
     on<AppThemeChangeEvent>((event, emit) {
       storage.setBool('theme', !state.isDark);
       emit(state.copyWith(isDark: !state.isDark));
+    });
+    on<AppTokenLoadingEvent>((event, emit) {
+      emit(state.copyWith(uid: event.uid));
     });
   }
 }

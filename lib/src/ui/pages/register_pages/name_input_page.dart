@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
+import 'package:smessanger/src/bloc/register_bloc/register_bloc.dart';
+import 'package:smessanger/src/bloc/register_bloc/register_event.dart';
 
-class NameInputPage extends StatefulWidget {
+class NameInputPage extends StatelessWidget {
   const NameInputPage({Key? key}) : super(key: key);
-
-  @override
-  State<NameInputPage> createState() => _NameInputPageState();
-}
-
-class _NameInputPageState extends State<NameInputPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +34,8 @@ class NameInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (value) {},
+      onChanged: (value) =>
+          context.read<RegistrationBloc>().add(RegNameChangeEvent(name: value)),
       decoration: const InputDecoration(isDense: false, hintText: 'First name'),
     );
   }
@@ -55,7 +47,9 @@ class SurnameInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (value) {},
+      onChanged: (value) => context
+          .read<RegistrationBloc>()
+          .add(RegSurnameChangeEvent(surname: value)),
       decoration:
           const InputDecoration(isDense: false, hintText: 'Second name'),
     );
@@ -73,7 +67,7 @@ class NameNextButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           FocusScope.of(context).requestFocus(FocusNode());
-          context.read<AuthBloc>().add(AuthNextPageEvent());
+          context.read<RegistrationBloc>().nextPage();
         },
         child: const Text('Next'),
       ),

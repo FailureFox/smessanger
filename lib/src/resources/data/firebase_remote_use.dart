@@ -24,10 +24,9 @@ class FireBaseRemoteUse extends FireBaseRemote {
   Future<void> createAccount(MyProfile profile) async {}
 
   @override
-  Future<String> uploadFile(File file, String fileType) async {
+  Future<String> uploadFile(File file, String filePath) async {
     try {
-      final basePath = fileType + file.path.split('/').last;
-
+      final basePath = filePath + file.path.split('/').last;
       final myfile = await firebaseStorage.ref(basePath).putFile(file);
       return myfile.ref.fullPath;
     } catch (e) {

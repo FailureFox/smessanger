@@ -66,7 +66,9 @@ class WaitingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        elevation: 0,
+      ),
       body: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(15.0),

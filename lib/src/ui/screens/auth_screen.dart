@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
+import 'package:smessanger/src/bloc/app_bloc/app_bloc_export.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
-import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/welcome_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/number_input_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/phone_verify_page.dart';
@@ -15,9 +16,7 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthBloc>(
-      create: (_) => AuthBloc(
-          firebase: rep.sl.call<FireBaseRepository>(),
-          pageController: PageController()),
+      create: (_) => rep.sl.call<AuthBloc>(),
       child: const _AuthScreen(),
     );
   }
@@ -39,11 +38,19 @@ class _AuthScreen extends StatelessWidget {
                 .read<AuthBloc>()
                 .emit(state.copyWith(status: const AuthInitialStatus()));
           } else if (authStatus is AuthLoginStatus) {
+            context
+                .read<AppBloc>()
+                .add(AppTokenLoadingEvent(uid: authStatus.uid));
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const Scaffold()));
           } else if (authStatus is AuthRegistrationStatus) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => RegistrationScreen()));
+            context
+                .read<AppBloc>()
+                .add(AppTokenLoadingEvent(uid: authStatus.uid));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const RegistrationScreen()));
           }
         },
         child: PageView(

@@ -7,7 +7,10 @@ class AuthLoginStatus extends AuthStatus {
   AuthLoginStatus({required this.uid});
 }
 
-class AuthRegistrationStatus extends AuthStatus {}
+class AuthRegistrationStatus extends AuthStatus {
+  final String uid;
+  AuthRegistrationStatus({required this.uid});
+}
 
 class AuthInitialStatus extends AuthStatus {
   const AuthInitialStatus();

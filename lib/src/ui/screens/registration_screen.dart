@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smessanger/injections.dart';
+import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_bloc.dart';
+import 'package:smessanger/src/bloc/register_bloc/register_event.dart';
 import 'package:smessanger/src/ui/pages/register_pages/name_input_page.dart';
 import 'package:smessanger/src/ui/pages/register_pages/photo_upload_page.dart';
 import 'package:smessanger/src/ui/pages/register_pages/pin_setup_page.dart';
@@ -10,8 +13,9 @@ class RegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (_) => RegistrationBloc(), child: const _RegistrationScreen());
+    return BlocProvider<RegistrationBloc>(
+        create: (_) => sl.call<RegistrationBloc>(),
+        child: const _RegistrationScreen());
   }
 }
 
@@ -23,7 +27,13 @@ class _RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<_RegistrationScreen> {
-  final PageController controller = PageController();
+  @override
+  void initState() {
+    super.initState();
+    final uid = context.read<AppBloc>().state.uid;
+    context.read<RegistrationBloc>().add(RegUIDLoadingEvent(uid: uid));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,10 +41,8 @@ class _RegistrationScreenState extends State<_RegistrationScreen> {
         elevation: 0,
         leading: IconButton(
             onPressed: () {
-              if (controller.page! > 0) {
-                controller.previousPage(
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.linear);
+              if (context.read<RegistrationBloc>().controller.page! > 0) {
+                context.read<RegistrationBloc>().pervousePage();
               } else {
                 Navigator.pop(context);
               }
@@ -45,7 +53,7 @@ class _RegistrationScreenState extends State<_RegistrationScreen> {
             )),
       ),
       body: PageView(
-        controller: controller,
+        controller: context.read<RegistrationBloc>().controller,
         children: const [NameInputPage(), PhotoUploadPage(), PinSetupPage()],
       ),
     );

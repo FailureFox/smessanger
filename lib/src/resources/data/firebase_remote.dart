@@ -5,7 +5,7 @@ import 'package:smessanger/src/models/my_profile_model.dart';
 abstract class FireBaseRemote {
   Future<void> createAccount(MyProfile profile);
 
-  Future<String> uploadFile(File file, String fileType);
+  Future<String> uploadFile(File file, String filePath);
 
   Future<bool> isRegistered(String uid);
 

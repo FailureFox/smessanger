@@ -10,12 +10,11 @@ import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final PageController pageController;
+  final PageController pageController = PageController();
   final FireBaseRepository firebase;
   String myUID = '';
   //bloc
-  AuthBloc({required this.pageController, required this.firebase})
-      : super(AuthState()) {
+  AuthBloc({required this.firebase}) : super(AuthState()) {
     //
     on<AuthNextPageEvent>((event, emit) => nextPage());
     on<AuthBackPageEvent>((event, emit) => backPage());
@@ -62,7 +61,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(
             status: isRegistered
                 ? AuthLoginStatus(uid: myUID)
-                : AuthRegistrationStatus()));
+                : AuthRegistrationStatus(uid: myUID)));
       } catch (e) {
         emit((state).copyWith(status: AuthErrorStatus(error: e.toString())));
       }
