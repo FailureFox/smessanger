@@ -11,7 +11,7 @@ abstract class AppTextThemes {
         fontSize: 32,
         color: Colors.white),
     headline2: TextStyle(
-        fontWeight: FontWeight.w700 , fontSize: 17, color: Colors.white),
+        fontWeight: FontWeight.w700, fontSize: 17, color: Colors.white),
     bodyText1: TextStyle(
         fontWeight: FontWeight.w700, fontSize: 15, color: Colors.white),
     bodyText2: TextStyle(
@@ -27,7 +27,7 @@ abstract class AppTextThemes {
         fontSize: 32,
         color: Colors.black),
     headline2: TextStyle(
-        fontWeight: FontWeight.normal, fontSize: 17, color: Colors.black),
+        fontWeight: FontWeight.w700, fontSize: 17, color: Colors.black),
     bodyText1: TextStyle(
         fontWeight: FontWeight.w700, fontSize: 15, color: Colors.black),
     bodyText2: TextStyle(

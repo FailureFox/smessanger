@@ -8,7 +8,9 @@ abstract class AppTheme {
       scaffoldBackgroundColor: AppColors.dbackground,
       bottomSheetTheme:
           const BottomSheetThemeData(backgroundColor: AppColors.dbackgroundLL),
-      appBarTheme: const AppBarTheme(color: AppColors.dbackground),
+      appBarTheme: const AppBarTheme(
+          color: AppColors.dbackground,
+          iconTheme: IconThemeData(color: Colors.white)),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
             shape:
@@ -58,7 +60,7 @@ abstract class AppTheme {
       selectedItemColor: AppColors.yellowTint,
       unselectedItemColor: AppColors.lforegroundLL,
     ),
-    hintColor: AppColors.lforeground,
+    hintColor: AppColors.lforegroundML,
     inputDecorationTheme: const InputDecorationTheme(
         border: InputBorder.none,
         fillColor: AppColors.lbackgroundLD,
