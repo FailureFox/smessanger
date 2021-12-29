@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 
 abstract class FireBaseRepository {
+  Future<void> saveToken(String uid);
   Future<void> createAccount(MyProfile profile);
 
   Future<String> uploadFile(File file, String filePath);

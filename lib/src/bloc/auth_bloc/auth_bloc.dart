@@ -58,10 +58,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(status: AuthLoadingStatus()));
         myUID = await firebase.signInWithNumber(state.myVerifyCode);
         final bool isRegistered = await firebase.isRegistered(myUID);
-        emit(state.copyWith(
-            status: isRegistered
-                ? AuthLoginStatus(uid: myUID)
-                : AuthRegistrationStatus(uid: myUID)));
+
+        if (isRegistered) {
+          emit(state.copyWith(status: AuthLoginStatus(uid: myUID)));
+          firebase.saveToken(myUID);
+        } else {
+          emit(state.copyWith(status: AuthRegistrationStatus(uid: myUID)));
+        }
       } catch (e) {
         emit((state).copyWith(status: AuthErrorStatus(error: e.toString())));
       }

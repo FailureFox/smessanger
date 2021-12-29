@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_event.dart';
+import 'package:smessanger/src/ui/screens/home_screen.dart';
 import 'package:smessanger/src/ui/styles/images.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,7 +25,7 @@ class _IntroPageState extends State<IntroPage> {
       context.read<RegistrationBloc>().add(RegRegisterAccountEvent());
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => Scaffold()),
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
           (route) => false);
     }
   }

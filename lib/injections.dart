@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc.dart';
@@ -18,10 +19,13 @@ Future<void> init() async {
   sl.registerFactory<RegistrationBloc>(
       () => RegistrationBloc(filePick: sl.call(), fRepostiry: sl.call()));
   //firebase
-  sl.registerLazySingleton<FireBaseRemote>(() => FireBaseRemoteUse(
-      firebaseAuth: sl.call(),
-      firestore: sl.call(),
-      firebaseStorage: sl.call()));
+  sl.registerLazySingleton<FireBaseRemote>(
+    () => FireBaseRemoteUse(
+        firebaseAuth: sl.call(),
+        firestore: sl.call(),
+        firebaseStorage: sl.call(),
+        securestorage: sl.call()),
+  );
 
   sl.registerLazySingleton<FireBaseRepository>(
       () => FireBaseRepositoryUse(firebase: sl.call()));
@@ -31,9 +35,11 @@ Future<void> init() async {
   final FirebaseStorage fStorage = FirebaseStorage.instance;
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final FilePicker filePicker = FilePicker.platform;
+  const secureStorage = FlutterSecureStorage();
   sl.registerLazySingleton<FilePicker>(() => filePicker);
   sl.registerLazySingleton<FirebaseFirestore>(() => fireStore);
   sl.registerLazySingleton<FirebaseStorage>(() => fStorage);
   sl.registerLazySingleton<FirebaseAuth>(() => fAuth);
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+  sl.registerLazySingleton<FlutterSecureStorage>(() => secureStorage);
 }

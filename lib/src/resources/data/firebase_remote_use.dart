@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 import 'dart:io';
@@ -12,20 +13,26 @@ class FireBaseRemoteUse extends FireBaseRemote {
   final FirebaseAuth firebaseAuth;
   final FirebaseFirestore firestore;
   final FirebaseStorage firebaseStorage;
+  final FlutterSecureStorage securestorage;
   String verificationId = "";
   String error = '';
   FireBaseRemoteUse({
     required this.firebaseAuth,
     required this.firestore,
     required this.firebaseStorage,
+    required this.securestorage,
   });
+  @override
+  Future<void> saveToken(String uid) async {
+    await securestorage.write(key: 'token', value: uid);
+  }
 
   @override
   Future<void> createAccount(MyProfile profile) async {
     try {
       firestore.collection('users').doc(profile.uid).set(profile.toMap());
+      saveToken(profile.uid);
     } catch (e) {
-      print(e);
       throw Exception(e);
     }
   }

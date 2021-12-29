@@ -18,6 +18,11 @@ abstract class AppTheme {
             primary: AppColors.yellowTint,
             onPrimary: AppColors.dbackground),
       ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: AppColors.dbackgroundML,
+        selectedItemColor: AppColors.yellowTint,
+        unselectedItemColor: AppColors.dforegroundLL,
+      ),
       inputDecorationTheme: const InputDecorationTheme(
           isDense: false,
           border: InputBorder.none,
@@ -47,6 +52,11 @@ abstract class AppTheme {
         primary: AppColors.yellowTint,
         onPrimary: AppColors.lbackground,
       ),
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: AppColors.lbackground,
+      selectedItemColor: AppColors.yellowTint,
+      unselectedItemColor: AppColors.lforegroundLL,
     ),
     hintColor: AppColors.lforeground,
     inputDecorationTheme: const InputDecorationTheme(

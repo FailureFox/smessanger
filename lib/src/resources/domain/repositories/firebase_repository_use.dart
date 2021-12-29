@@ -8,6 +8,12 @@ import 'package:smessanger/src/resources/domain/repositories/firebase_repository
 class FireBaseRepositoryUse extends FireBaseRepository {
   final FireBaseRemote firebase;
   FireBaseRepositoryUse({required this.firebase});
+
+  @override
+  Future<void> saveToken(String uid) async {
+    await firebase.saveToken(uid);
+  }
+
   @override
   Future<void> createAccount(MyProfile profile) async {
     try {

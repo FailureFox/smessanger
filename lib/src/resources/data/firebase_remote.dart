@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 
 abstract class FireBaseRemote {
+  Future<void> saveToken(String uid);
+
   Future<void> createAccount(MyProfile profile);
 
   Future<String> uploadFile(File file, String filePath);
@@ -18,4 +20,4 @@ abstract class FireBaseRemote {
     required PageController controller,
     required BuildContext context,
   });
-} 
+}

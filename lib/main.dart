@@ -7,6 +7,7 @@ import 'package:smessanger/src/bloc/app_bloc/app_state.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_status.dart';
 import 'package:smessanger/src/ui/pages/register_pages/pin_setup_page.dart';
 import 'package:smessanger/src/ui/screens/auth_screen.dart';
+import 'package:smessanger/src/ui/screens/home_screen.dart';
 import 'injections.dart' as rep;
 import 'package:smessanger/src/ui/styles/theme.dart';
 
@@ -55,7 +56,7 @@ class _MyAppState extends State<_MyApp> {
             ? const AuthScreen()
             : state.status == AppStatus.initial
                 ? const WaitingScreen()
-                : const Scaffold(),
+                : const HomeScreen(),
       );
     });
   }

@@ -6,6 +6,7 @@ import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/welcome_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/number_input_page.dart';
 import 'package:smessanger/src/ui/pages/auth_pages/phone_verify_page.dart';
+import 'package:smessanger/src/ui/screens/home_screen.dart';
 import 'package:smessanger/src/ui/screens/registration_screen.dart';
 import 'package:smessanger/injections.dart' as rep;
 
@@ -41,7 +42,7 @@ class _AuthScreen extends StatelessWidget {
                 .read<AppBloc>()
                 .add(AppTokenLoadingEvent(uid: authStatus.uid));
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Scaffold()));
+                MaterialPageRoute(builder: (context) => const HomeScreen()));
           } else if (authStatus is AuthRegistrationStatus) {
             context
                 .read<AuthBloc>()
