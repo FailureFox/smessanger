@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_bloc.dart';
 import 'package:smessanger/src/resources/data/firebase_remote.dart';
@@ -24,12 +25,15 @@ Future<void> init() async {
 
   sl.registerLazySingleton<FireBaseRepository>(
       () => FireBaseRepositoryUse(firebase: sl.call()));
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  final FirebaseStorage storage = FirebaseStorage.instance;
+  final SharedPreferences sharedPreferences =
+      await SharedPreferences.getInstance();
+  final FirebaseAuth fAuth = FirebaseAuth.instance;
+  final FirebaseStorage fStorage = FirebaseStorage.instance;
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final FilePicker filePicker = FilePicker.platform;
   sl.registerLazySingleton<FilePicker>(() => filePicker);
   sl.registerLazySingleton<FirebaseFirestore>(() => fireStore);
-  sl.registerLazySingleton<FirebaseStorage>(() => storage);
-  sl.registerLazySingleton<FirebaseAuth>(() => firebaseAuth);
+  sl.registerLazySingleton<FirebaseStorage>(() => fStorage);
+  sl.registerLazySingleton<FirebaseAuth>(() => fAuth);
+  sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
 }

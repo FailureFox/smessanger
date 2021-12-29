@@ -21,7 +21,14 @@ class FireBaseRemoteUse extends FireBaseRemote {
   });
 
   @override
-  Future<void> createAccount(MyProfile profile) async {}
+  Future<void> createAccount(MyProfile profile) async {
+    try {
+      firestore.collection('users').doc(profile.uid).set(profile.toMap());
+    } catch (e) {
+      print(e);
+      throw Exception(e);
+    }
+  }
 
   @override
   Future<String> uploadFile(File file, String filePath) async {

@@ -54,7 +54,8 @@ class _AuthScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) => RegistrationScreen(
-                          phoneNumber: state.phoneNumber,
+                          phoneNumber: state.selectedCountry.dialCode +
+                              state.phoneNumber,
                           country:
                               state.selectedCountry.aplhaCode.toLowerCase(),
                         )));

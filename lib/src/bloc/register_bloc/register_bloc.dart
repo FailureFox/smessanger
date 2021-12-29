@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_event.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_state.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_status.dart';
+import 'package:smessanger/src/models/my_profile_model.dart';
 import 'package:smessanger/src/models/roles.dart';
 import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
 
@@ -15,8 +16,11 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   RegistrationBloc({required this.fRepostiry, required this.filePick})
       : super(RegistrationState()) {
     //
-    on<RegUIDLoadingEvent>(
-        (event, emit) => emit(state.copyWith(uid: event.uid)));
+    on<RegUIDLoadingEvent>((event, emit) => emit(state.copyWith(
+          uid: event.uid,
+          country: event.country,
+          phoneNumber: event.phoneNumber,
+        )));
     on<RegNameChangeEvent>(
         (event, emit) => emit(state.copyWith(name: event.name)));
 
@@ -54,6 +58,19 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       List<Roles> roles = state.roles;
       roles.remove(event.role);
       emit(state.copyWith(roles: roles));
+    });
+    on<RegRegisterAccountEvent>((event, emit) {
+      MyProfile profile = MyProfile(
+          name: state.name,
+          surname: state.surname,
+          status: '',
+          countryCode: state.country,
+          uid: state.uid,
+          roles: state.roles.map((e) => e.toString()).toList(),
+          avatarUrl: state.avatarUrl,
+          phoneNumber: state.phoneNumber,
+          newsChannels: state.interestedNews);
+      fRepostiry.createAccount(profile);
     });
   }
   nextPage() {

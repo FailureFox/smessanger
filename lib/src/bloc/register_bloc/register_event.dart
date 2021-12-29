@@ -4,7 +4,10 @@ abstract class RegistrationEvent {}
 
 class RegUIDLoadingEvent extends RegistrationEvent {
   final String uid;
-  RegUIDLoadingEvent({required this.uid});
+  final String country;
+  final String phoneNumber;
+  RegUIDLoadingEvent(
+      {required this.uid, required this.country, required this.phoneNumber});
 }
 
 class RegNameChangeEvent extends RegistrationEvent {
@@ -33,3 +36,5 @@ class RegRoleDeleteEvent extends RegistrationEvent {
   final Roles role;
   RegRoleDeleteEvent({required this.role});
 }
+
+class RegRegisterAccountEvent extends RegistrationEvent {}

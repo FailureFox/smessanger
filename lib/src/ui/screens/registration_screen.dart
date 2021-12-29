@@ -19,13 +19,23 @@ class RegistrationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<RegistrationBloc>(
-        create: (_) => sl.call<RegistrationBloc>(),
-        child: const _RegistrationScreen());
+      create: (_) => sl.call<RegistrationBloc>(),
+      child: _RegistrationScreen(
+        phoneNumber: phoneNumber,
+        country: country,
+      ),
+    );
   }
 }
 
 class _RegistrationScreen extends StatefulWidget {
-  const _RegistrationScreen({Key? key}) : super(key: key);
+  final String phoneNumber;
+  final String country;
+  const _RegistrationScreen({
+    Key? key,
+    required this.phoneNumber,
+    required this.country,
+  }) : super(key: key);
 
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
@@ -36,7 +46,8 @@ class _RegistrationScreenState extends State<_RegistrationScreen> {
   void initState() {
     super.initState();
     final uid = context.read<AppBloc>().state.uid;
-    context.read<RegistrationBloc>().add(RegUIDLoadingEvent(uid: uid));
+    context.read<RegistrationBloc>().add(RegUIDLoadingEvent(
+        uid: uid, phoneNumber: widget.phoneNumber, country: widget.country));
   }
 
   @override

@@ -7,6 +7,8 @@ class RegistrationState {
   final String uid;
   final String avatarUrl;
   final String pinCode;
+  final String phoneNumber;
+  final String country;
   final List<Roles> roles;
   final RegistrationStatus status;
   final List<String> interestedNews;
@@ -18,6 +20,8 @@ class RegistrationState {
     this.avatarUrl = '',
     this.pinCode = '',
     this.uid = '',
+    this.phoneNumber = '',
+    this.country = '',
     this.roles = const [],
     this.interestedNews = const [],
   });
@@ -30,6 +34,8 @@ class RegistrationState {
       RegistrationStatus? status,
       String? pinCode,
       String? uid,
+      String? phoneNumber,
+      String? country,
       List<String>? interestedNews}) {
     return RegistrationState(
       name: name ?? this.name,
@@ -39,6 +45,8 @@ class RegistrationState {
       roles: roles ?? this.roles,
       status: status ?? this.status,
       uid: uid ?? this.uid,
+      country: country ?? this.country,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
       interestedNews: interestedNews ?? this.interestedNews,
     );
   }
