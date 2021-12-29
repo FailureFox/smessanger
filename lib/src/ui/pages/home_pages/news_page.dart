@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:smessanger/src/models/news_model.dart';
 import 'package:smessanger/src/resources/data/news_data.dart';
 import 'package:smessanger/src/resources/data/news_data_use.dart';
+import 'package:smessanger/src/ui/styles/images.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({Key? key}) : super(key: key);
@@ -32,28 +33,28 @@ class _NewsPageState extends State<NewsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      controller: _controller,
-      slivers: [
-        SliverAppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: AnimatedCrossFade(
-              firstChild: Text(
-                'Discover',
-                style: Theme.of(context).textTheme.headline2,
-              ),
-              secondChild: const SizedBox(),
-              crossFadeState: isClosed
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond,
-              duration: const Duration(milliseconds: 300)),
-          pinned: true,
-          expandedHeight: 150,
-          flexibleSpace: FlexibleSpaceBar(
-            background: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Column(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: CustomScrollView(
+        controller: _controller,
+        slivers: [
+          SliverAppBar(
+            elevation: 0,
+            centerTitle: true,
+            title: AnimatedCrossFade(
+                firstChild: Text(
+                  'Discover',
+                  style: Theme.of(context).textTheme.headline2,
+                ),
+                secondChild: const SizedBox(),
+                crossFadeState: isClosed
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+                duration: const Duration(milliseconds: 300)),
+            pinned: true,
+            expandedHeight: 150,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Spacer(),
@@ -64,27 +65,31 @@ class _NewsPageState extends State<NewsPage> {
               ),
             ),
           ),
-        ),
-        FutureBuilder(
-            future: NewsDataUse(client: HttpClient()).getCountryNews('us'),
-            builder: (context, AsyncSnapshot<List<NewsModel>> async) {
-              if (async.hasData && async.data!.isNotEmpty) {
-                return SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                  if (async.data![index].urlToImage != '') {
-                    return NewsItemsWidget(news: async.data![index]);
-                  } else {
-                    return null;
-                  }
-                }, childCount: async.data!.length));
-              } else {
-                return SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                  return Container();
-                }, childCount: 0));
-              }
-            })
-      ],
+          FutureBuilder(
+              future: NewsDataUse().getCountryNews('us'),
+              builder: (context, AsyncSnapshot<List<NewsModel>> async) {
+                if (async.hasData && async.data!.isNotEmpty) {
+                  return SliverList(
+                      delegate: SliverChildListDelegate([
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                          onPressed: () {}, child: const Text('See all')),
+                    ),
+                    ...List.generate(3,
+                        (index) => NewsItemsWidget(news: async.data![index])),
+                    const SizedBox(height: 30),
+                    const HomeCategoriesWidget(),
+                  ]));
+                } else {
+                  return SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                    return Container();
+                  }, childCount: 0));
+                }
+              })
+        ],
+      ),
     );
   }
 }
@@ -101,7 +106,7 @@ class NewsItemsWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.symmetric(vertical: 15.0),
             child: Row(
               children: [
                 Flexible(
@@ -162,7 +167,6 @@ class NewsFullPage extends StatefulWidget {
 class _NewsFullPageState extends State<NewsFullPage> {
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _controller.dispose();
   }
@@ -225,16 +229,109 @@ class _NewsFullPageState extends State<NewsFullPage> {
               Padding(
                 padding: const EdgeInsets.only(right: 15, bottom: 10),
                 child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text('Author : ' +
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    'Author : ' +
                         (widget.news.author == ''
                             ? widget.news.urlToNews
-                            : widget.news.author))),
-              )
+                            : widget.news.author),
+                  ),
+                ),
+              ),
             ],
           ))
         ],
       ),
+    );
+  }
+}
+
+class HomeCategoriesWidget extends StatelessWidget {
+  const HomeCategoriesWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Popular categories',
+          style: TextStyle(
+              fontFamily: Theme.of(context).textTheme.headline1!.fontFamily,
+              fontSize: 25,
+              color: Theme.of(context).textTheme.headline1!.color),
+        ),
+        const SizedBox(height: 10),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: const [
+              NewsCategoriesItemsWidget(
+                image: AppImages.searching,
+                text: 'Philosophy',
+                members: '12,145',
+              ),
+              NewsCategoriesItemsWidget(
+                image: AppImages.loading,
+                text: 'Books',
+                members: '12,145',
+              ),
+              NewsCategoriesItemsWidget(
+                image: AppImages.teamwork,
+                text: 'Sport',
+                members: '12,145',
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class NewsCategoriesItemsWidget extends StatelessWidget {
+  const NewsCategoriesItemsWidget({
+    Key? key,
+    required this.image,
+    required this.members,
+    required this.text,
+  }) : super(key: key);
+  final String image;
+  final String members;
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(right: 10, bottom: 10),
+      child: SizedBox(
+          height: MediaQuery.of(context).size.height / 5.4,
+          width: MediaQuery.of(context).size.width / 1.6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).backgroundColor,
+                    image: DecorationImage(
+                        image: AssetImage(image),
+                        fit: BoxFit.fitWidth,
+                        alignment: Alignment.topCenter,
+                        colorFilter:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? const ColorFilter.mode(
+                                    Colors.white, BlendMode.srcIn)
+                                : null),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(text, style: Theme.of(context).textTheme.headline2),
+              const SizedBox(height: 5),
+              Text('$members members'),
+            ],
+          )),
     );
   }
 }
