@@ -37,7 +37,7 @@ class _PinSetupPageState extends State<PinSetupPage> {
           isFirst = true;
           setState(() {});
         }
-      } 
+      }
     }
   }
 
@@ -64,70 +64,81 @@ class _PinSetupPageState extends State<PinSetupPage> {
   bool isFirst = true;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Setup pin code', style: Theme.of(context).textTheme.headline1),
-          const SizedBox(height: 10),
-          const Text('Create a four digits code'),
-          const Spacer(),
-          Center(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width / 1.2,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(
-                  4,
-                  (index) => CircleAvatar(
-                    radius: MediaQuery.of(context).size.width / 30,
-                    backgroundColor:
-                        (isFirst ? pin.length : secondPin.length) > index
-                            ? Theme.of(context).hintColor
-                            : Theme.of(context).backgroundColor,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () => context.read<RegistrationBloc>().pervousePage(),
+            icon: Icon(
+              Icons.arrow_back_ios_new,
+              color: Theme.of(context).hintColor,
+            )),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Setup pin code',
+                style: Theme.of(context).textTheme.headline1),
+            const SizedBox(height: 10),
+            const Text('Create a four digits code'),
+            const Spacer(),
+            Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width / 1.2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(
+                    4,
+                    (index) => CircleAvatar(
+                      radius: MediaQuery.of(context).size.width / 30,
+                      backgroundColor:
+                          (isFirst ? pin.length : secondPin.length) > index
+                              ? Theme.of(context).hintColor
+                              : Theme.of(context).backgroundColor,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const Spacer(),
-          SizedBox(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height / 2.3,
-            child: GridView.count(
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 3,
-              childAspectRatio: (MediaQuery.of(context).size.width / 5) /
-                  (MediaQuery.of(context).size.height / 15),
-              children: [
-                ...List.generate(
-                    9,
-                    (index) => SizedBox(
-                          height: MediaQuery.of(context).size.height / 15,
-                          width: MediaQuery.of(context).size.width / 5,
-                          child: IconButton(
-                              splashColor: Colors.transparent,
-                              onPressed: () => pinChange('${index + 1}'),
-                              icon: Text(
-                                '${index + 1}',
-                                style: Theme.of(context).textTheme.headline4,
-                              )),
-                        )),
-                const SizedBox(),
-                IconButton(
-                    onPressed: () => pinChange('0'),
-                    icon: Text(
-                      '0',
-                      style: Theme.of(context).textTheme.headline4,
-                    )),
-                IconButton(
-                    onPressed: pinBackSpace,
-                    icon: const Icon(Icons.backspace_outlined)),
-              ],
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height / 2.3,
+              child: GridView.count(
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 3,
+                childAspectRatio: (MediaQuery.of(context).size.width / 5) /
+                    (MediaQuery.of(context).size.height / 15),
+                children: [
+                  ...List.generate(
+                      9,
+                      (index) => SizedBox(
+                            height: MediaQuery.of(context).size.height / 15,
+                            width: MediaQuery.of(context).size.width / 5,
+                            child: IconButton(
+                                splashColor: Colors.transparent,
+                                onPressed: () => pinChange('${index + 1}'),
+                                icon: Text(
+                                  '${index + 1}',
+                                  style: Theme.of(context).textTheme.headline4,
+                                )),
+                          )),
+                  const SizedBox(),
+                  IconButton(
+                      onPressed: () => pinChange('0'),
+                      icon: Text(
+                        '0',
+                        style: Theme.of(context).textTheme.headline4,
+                      )),
+                  IconButton(
+                      onPressed: pinBackSpace,
+                      icon: const Icon(Icons.backspace_outlined)),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

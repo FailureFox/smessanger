@@ -9,21 +9,32 @@ class NameInputPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(_Texts.title, style: Theme.of(context).textTheme.headline1),
-          const SizedBox(height: 5),
-          const Text(_Texts.subtitle),
-          const SizedBox(height: 20),
-          const NameInputField(),
-          const SizedBox(height: 10),
-          const SurnameInputField(),
-          const Spacer(),
-          const NameNextButton()
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(
+              Icons.arrow_back_ios_new,
+              color: Theme.of(context).hintColor,
+            )),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(_Texts.title, style: Theme.of(context).textTheme.headline1),
+            const SizedBox(height: 5),
+            const Text(_Texts.subtitle),
+            const SizedBox(height: 20),
+            const NameInputField(),
+            const SizedBox(height: 10),
+            const SurnameInputField(),
+            const Spacer(),
+            const NameNextButton()
+          ],
+        ),
       ),
     );
   }

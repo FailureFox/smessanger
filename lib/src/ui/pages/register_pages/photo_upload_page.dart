@@ -10,16 +10,27 @@ class PhotoUploadPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Upload a photo', style: Theme.of(context).textTheme.headline1),
-          const RegAvatarSelectWidget(),
-          const RegAvatarSelectNextButton()
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () => context.read<RegistrationBloc>().pervousePage(),
+            icon: Icon(
+              Icons.arrow_back_ios_new,
+              color: Theme.of(context).hintColor,
+            )),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Upload a photo',
+                style: Theme.of(context).textTheme.headline1),
+            const RegAvatarSelectWidget(),
+            const RegAvatarSelectNextButton()
+          ],
+        ),
       ),
     );
   }

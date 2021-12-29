@@ -42,21 +42,6 @@ class _RegistrationScreenState extends State<_RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-            onPressed: () {
-              if (context.read<RegistrationBloc>().controller.page! > 0) {
-                context.read<RegistrationBloc>().pervousePage();
-              } else {
-                Navigator.pop(context);
-              }
-            },
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-              color: Theme.of(context).iconTheme.color,
-            )),
-      ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         controller: context.read<RegistrationBloc>().controller,
