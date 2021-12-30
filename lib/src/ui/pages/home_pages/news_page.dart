@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smessanger/src/models/news_model.dart';
-import 'package:smessanger/src/resources/data/news_data.dart';
+
 import 'package:smessanger/src/resources/data/news_data_use.dart';
+import 'package:smessanger/src/ui/pages/home_pages/components/news_items_widget.dart';
 import 'package:smessanger/src/ui/styles/images.dart';
 
 class NewsPage extends StatefulWidget {
@@ -65,69 +64,42 @@ class _NewsPageState extends State<NewsPage> {
               ),
             ),
           ),
-          FutureBuilder(
-              future: NewsDataUse().getCountryNews('us'),
-              builder: (context, AsyncSnapshot<List<NewsModel>> async) {
-                if (async.hasData && async.data!.isNotEmpty) {
-                  return SliverList(
-                      delegate: SliverChildListDelegate([
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                          onPressed: () {}, child: const Text('See all')),
-                    ),
-                    ...List.generate(3,
-                        (index) => NewsItemsWidget(news: async.data![index])),
-                    const SizedBox(height: 30),
-                    const HomeCategoriesWidget(),
-                  ]));
-                } else {
-                  return SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                    return Container();
-                  }, childCount: 0));
-                }
-              })
-        ],
-      ),
-    );
-  }
-}
-
-class NewsItemsWidget extends StatelessWidget {
-  NewsItemsWidget({Key? key, required this.news}) : super(key: key);
-  NewsModel news;
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.push(context,
-          CupertinoPageRoute(builder: (context) => NewsFullPage(news: news))),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15.0),
-            child: Row(
-              children: [
-                Flexible(
-                    child: Text(
-                  news.title,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                )),
-                const SizedBox(width: 10),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 3,
-                  height: MediaQuery.of(context).size.width / 5,
-                  child: Image.network(
-                    news.urlToImage,
-                    fit: BoxFit.fitWidth,
-                  ),
-                )
-              ],
-            ),
-          ),
-          const Divider(height: 0)
+          // FutureBuilder(
+          //     future: NewsDataUse().getCountryNews('us'),
+          //     builder: (context, AsyncSnapshot<List<NewsModel>> async) {
+          //       if (async.hasData && async.data!.isNotEmpty) {
+          //         return SliverList(
+          //             delegate: SliverChildListDelegate([
+          //           Row(
+          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //             children: [
+          //               Text(
+          //                 'In case if you missed it',
+          //                 style: TextStyle(
+          //                     fontFamily: Theme.of(context)
+          //                         .textTheme
+          //                         .headline1!
+          //                         .fontFamily,
+          //                     fontSize: 25,
+          //                     color:
+          //                         Theme.of(context).textTheme.headline1!.color),
+          //               ),
+          //               TextButton(
+          //                   onPressed: () {}, child: const Text('See all')),
+          //             ],
+          //           ),
+          //           ...List.generate(5,
+          //               (index) => NewsItemsWidget(news: async.data![index])),
+          //           const SizedBox(height: 30),
+          //           const HomeCategoriesWidget(),
+          //         ]));
+          //       } else {
+          //         return SliverList(
+          //             delegate: SliverChildBuilderDelegate((context, index) {
+          //           return Container();
+          //         }, childCount: 0));
+          //       }
+          //     })
         ],
       ),
     );
@@ -151,96 +123,6 @@ class NewsSearchInput extends StatelessWidget {
           prefixIcon: Icon(Icons.search),
           hintText: 'Chats, channels and peoples...',
         ),
-      ),
-    );
-  }
-}
-
-class NewsFullPage extends StatefulWidget {
-  const NewsFullPage({Key? key, required this.news}) : super(key: key);
-  final NewsModel news;
-
-  @override
-  State<NewsFullPage> createState() => _NewsFullPageState();
-}
-
-class _NewsFullPageState extends State<NewsFullPage> {
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
-  final PageController _controller = PageController();
-  bool isClosed = false;
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      isClosed = _isSliverAppBarExpanded;
-      setState(() {});
-    });
-  }
-
-  bool get _isSliverAppBarExpanded {
-    return _controller.hasClients &&
-        _controller.offset > (200 - kToolbarHeight);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        controller: _controller,
-        slivers: [
-          SliverAppBar(
-            title: isClosed
-                ? Text(widget.news.title,
-                    style: Theme.of(context).textTheme.headline2)
-                : null,
-            pinned: true,
-            expandedHeight: 200,
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.fromLTRB(4, 0, 0, 4),
-              title: isClosed
-                  ? null
-                  : Text(
-                      widget.news.title,
-                      style: const TextStyle(fontSize: 13),
-                    ),
-              background:
-                  Image.network(widget.news.urlToImage, fit: BoxFit.cover),
-            ),
-          ),
-          SliverList(
-              delegate: SliverChildListDelegate(
-            [
-              ...List.generate(15, (index) => Text(widget.news.content)),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text('Published at : ' +
-                        widget.news.publishedAt
-                            .toLocal()
-                            .toString()
-                            .split(' ')[0])),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 15, bottom: 10),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    'Author : ' +
-                        (widget.news.author == ''
-                            ? widget.news.urlToNews
-                            : widget.news.author),
-                  ),
-                ),
-              ),
-            ],
-          ))
-        ],
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc.dart';
+import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_bloc.dart';
 import 'package:smessanger/src/resources/data/firebase_remote.dart';
 import 'package:smessanger/src/resources/data/firebase_remote_use.dart';
@@ -18,6 +19,7 @@ Future<void> init() async {
   sl.registerFactory<AuthBloc>(() => AuthBloc(firebase: sl.call()));
   sl.registerFactory<RegistrationBloc>(
       () => RegistrationBloc(filePick: sl.call(), fRepostiry: sl.call()));
+  sl.registerFactory<HomeBloc>(() => HomeBloc());
   //firebase
   sl.registerLazySingleton<FireBaseRemote>(
     () => FireBaseRemoteUse(

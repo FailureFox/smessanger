@@ -11,10 +11,14 @@ class NewsDataUse extends NewsData {
     Uri uri = Uri.parse(url + apiKey + '&country=$country');
     final response = await http.get(uri);
 
-    final jsonString = response.body;
-    return (jsonDecode(jsonString)['articles'] as List<dynamic>)
-        .map((e) => NewsModel.fromMap(e))
-        .toList();
+    try {
+      final jsonString = response.body;
+      return (jsonDecode(jsonString)['articles'] as List<dynamic>)
+          .map((e) => NewsModel.fromMap(e))
+          .toList();
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   @override
