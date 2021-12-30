@@ -37,18 +37,19 @@ class _HomeScreenState extends State<_HomeScreen> {
         );
   }
 
-  final List<Widget> pages = const [
-    NewsPage(),
-    ChatPage(),
-    FilmsPage(),
-    SettingsPage()
-  ];
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
       return Scaffold(
-        body: pages[state.page],
+        body: IndexedStack(
+          index: state.page,
+          children: const [
+            NewsPage(),
+            ChatPage(),
+            FilmsPage(),
+            SettingsPage(),
+          ],
+        ),
         bottomNavigationBar: BottomNavigationBar(
           onTap: (index) =>
               context.read<HomeBloc>().add(HomePageChangeEvent(page: index)),

@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
+import 'package:smessanger/src/ui/pages/auth_pages/welcome_page.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -17,9 +18,17 @@ class SettingsPage extends StatelessWidget {
         child: Column(
           children: [
             const Spacer(flex: 3),
-            CircleAvatar(
-              radius: MediaQuery.of(context).size.width / 8,
-              backgroundImage: NetworkImage(state.myProfile!.avatarUrl!),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(onPressed: () {}, icon: const SizedBox()),
+                CircleAvatar(
+                  radius: MediaQuery.of(context).size.width / 8,
+                  backgroundImage: NetworkImage(state.myProfile!.avatarUrl!),
+                ),
+                const LightDarkIconButton()
+              ],
             ),
             const Spacer(),
             Column(

@@ -1,24 +1,36 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smessanger/src/models/news_model.dart';
-
-import 'package:smessanger/src/resources/data/news_data_use.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smessanger/src/bloc/news_bloc/news_bloc.dart';
+import 'package:smessanger/src/bloc/news_bloc/news_event.dart';
+import 'package:smessanger/src/bloc/news_bloc/news_state.dart';
+import 'package:smessanger/src/bloc/news_bloc/news_status.dart';
 import 'package:smessanger/src/ui/pages/home_pages/components/news_items_widget.dart';
 import 'package:smessanger/src/ui/styles/images.dart';
 
-class NewsPage extends StatefulWidget {
+class NewsPage extends StatelessWidget {
   const NewsPage({Key? key}) : super(key: key);
 
   @override
-  State<NewsPage> createState() => _NewsPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (_) => NewsBloc(), child: const _NewsPageWithBloc());
+  }
 }
 
-class _NewsPageState extends State<NewsPage> {
+class _NewsPageWithBloc extends StatefulWidget {
+  const _NewsPageWithBloc({Key? key}) : super(key: key);
+
+  @override
+  State<_NewsPageWithBloc> createState() => _NewsPageWithBlocState();
+}
+
+class _NewsPageWithBlocState extends State<_NewsPageWithBloc> {
   final ScrollController _controller = ScrollController();
   bool isClosed = false;
   @override
   void initState() {
     super.initState();
+    context.read<NewsBloc>().add(NewsLoadingEvent());
     _controller.addListener(() {
       isClosed = _isSliverAppBarExpanded;
       setState(() {});
@@ -64,63 +76,53 @@ class _NewsPageState extends State<NewsPage> {
               ),
             ),
           ),
-          FutureBuilder(
-              future: NewsDataUse().getCountryNews('us'),
-              builder: (context, AsyncSnapshot<List<NewsModel>?> async) {
-                if (async.hasData && async.data!.isNotEmpty) {
-                  return SliverList(
-                      delegate: SliverChildListDelegate([
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'In case if you missed it',
-                          style: TextStyle(
-                              fontFamily: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .fontFamily,
-                              fontSize: 25,
-                              color:
-                                  Theme.of(context).textTheme.headline1!.color),
-                        ),
-                        TextButton(
-                            onPressed: () {}, child: const Text('See all')),
-                      ],
-                    ),
-                    ...List.generate(5,
-                        (index) => NewsItemsWidget(news: async.data![index])),
-                    const SizedBox(height: 30),
-                    const HomeCategoriesWidget(),
-                  ]));
-                } else {
-                  return SliverList(
-                      delegate: SliverChildListDelegate([
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'In case if you missed it',
-                          style: TextStyle(
-                              fontFamily: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .fontFamily,
-                              fontSize: 25,
-                              color:
-                                  Theme.of(context).textTheme.headline1!.color),
-                        ),
-                        TextButton(
-                            onPressed: () {}, child: const Text('See all')),
-                      ],
-                    ),
-                    ...List.generate(
-                        5, (index) => const NewsItemsLoadingWidget()),
-                    const SizedBox(height: 30),
-                    const HomeCategoriesWidget(),
-                  ]));
-                }
-              })
+          const NewsBody()
+        ],
+      ),
+    );
+  }
+}
+
+class NewsBody extends StatelessWidget {
+  const NewsBody({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'In case if you missed it',
+                style: TextStyle(
+                    fontFamily:
+                        Theme.of(context).textTheme.headline1!.fontFamily,
+                    fontSize: 25,
+                    color: Theme.of(context).textTheme.headline1!.color),
+              ),
+              TextButton(onPressed: () {}, child: const Text('See all')),
+            ],
+          ),
+          BlocBuilder<NewsBloc, NewsState>(builder: (context, state) {
+            if (state.status == NewsStatus.loaded) {
+              return Column(
+                children: List.generate(
+                  5,
+                  (index) => NewsItemsWidget(
+                    news: state.news[index],
+                  ),
+                ),
+              );
+            } else {
+              return Column(
+                  children: List.generate(
+                      5, (index) => const NewsItemsLoadingWidget()));
+            }
+          }),
+          const SizedBox(height: 30),
+          const HomeCategoriesWidget(),
         ],
       ),
     );
