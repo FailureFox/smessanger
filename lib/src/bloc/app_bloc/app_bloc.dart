@@ -13,7 +13,7 @@ class AppBloc extends Bloc<AppEvents, AppState> {
 // storage.getBool('theme')
     on<AppThemeLoadingEvent>((event, emit) async {
       storage = await SharedPreferences.getInstance();
-      emit(state.copyWith(isDark: true));
+      emit(state.copyWith(isDark: false));
       final token = await _secureStorage.read(key: 'token');
       await Future.delayed(const Duration(seconds: 2));
 

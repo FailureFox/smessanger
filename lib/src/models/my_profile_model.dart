@@ -33,12 +33,14 @@ class MyProfile {
       countryCode: map['countryCode'],
       status: map['status'] != '' ? map['status'] : null,
       avatarUrl: map['avatarUrl'] != '' ? map['avatarUrl'] : null,
-      chats: (map['chats'] as List<Map<String, dynamic>>)
-          .map((e) => ChatModel.fromMap(e))
+      chats: (map['chats'] as List)
+          .map((e) => ChatModel.fromMap(e as Map<String, dynamic>))
           .toList(),
       phoneNumber: map['phoneNumber'],
-      roles: map['roles'].map((e) => e as String).toList(),
-      newsChannels: map['newsChannels'],
+      roles: (map['roles'] as List<dynamic>).map((e) => e as String).toList(),
+      newsChannels: (map['newsChannels'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
     );
   }
 

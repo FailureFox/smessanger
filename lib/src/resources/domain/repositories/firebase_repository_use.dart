@@ -71,4 +71,7 @@ class FireBaseRepositoryUse extends FireBaseRepository {
       context: context,
     );
   }
+
+  @override
+  Stream<MyProfile> getMyUser(uid) => firebase.getMyUser(uid);
 }

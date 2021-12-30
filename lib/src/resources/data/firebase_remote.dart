@@ -20,4 +20,6 @@ abstract class FireBaseRemote {
     required PageController controller,
     required BuildContext context,
   });
+
+  Stream<MyProfile> getMyUser(uid);
 }

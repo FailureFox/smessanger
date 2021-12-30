@@ -22,6 +22,13 @@ class FireBaseRemoteUse extends FireBaseRemote {
     required this.firebaseStorage,
     required this.securestorage,
   });
+
+  @override
+  Stream<MyProfile> getMyUser(uid) {
+    return firestore.collection('users').doc(uid).snapshots().map((event) =>
+        MyProfile.fromMap(event.data() as Map<String, dynamic>, uid));
+  }
+
   @override
   Future<void> saveToken(String uid) async {
     await securestorage.write(key: 'token', value: uid);

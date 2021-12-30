@@ -64,42 +64,63 @@ class _NewsPageState extends State<NewsPage> {
               ),
             ),
           ),
-          // FutureBuilder(
-          //     future: NewsDataUse().getCountryNews('us'),
-          //     builder: (context, AsyncSnapshot<List<NewsModel>> async) {
-          //       if (async.hasData && async.data!.isNotEmpty) {
-          //         return SliverList(
-          //             delegate: SliverChildListDelegate([
-          //           Row(
-          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //             children: [
-          //               Text(
-          //                 'In case if you missed it',
-          //                 style: TextStyle(
-          //                     fontFamily: Theme.of(context)
-          //                         .textTheme
-          //                         .headline1!
-          //                         .fontFamily,
-          //                     fontSize: 25,
-          //                     color:
-          //                         Theme.of(context).textTheme.headline1!.color),
-          //               ),
-          //               TextButton(
-          //                   onPressed: () {}, child: const Text('See all')),
-          //             ],
-          //           ),
-          //           ...List.generate(5,
-          //               (index) => NewsItemsWidget(news: async.data![index])),
-          //           const SizedBox(height: 30),
-          //           const HomeCategoriesWidget(),
-          //         ]));
-          //       } else {
-          //         return SliverList(
-          //             delegate: SliverChildBuilderDelegate((context, index) {
-          //           return Container();
-          //         }, childCount: 0));
-          //       }
-          //     })
+          FutureBuilder(
+              future: NewsDataUse().getCountryNews('us'),
+              builder: (context, AsyncSnapshot<List<NewsModel>?> async) {
+                if (async.hasData && async.data!.isNotEmpty) {
+                  return SliverList(
+                      delegate: SliverChildListDelegate([
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'In case if you missed it',
+                          style: TextStyle(
+                              fontFamily: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .fontFamily,
+                              fontSize: 25,
+                              color:
+                                  Theme.of(context).textTheme.headline1!.color),
+                        ),
+                        TextButton(
+                            onPressed: () {}, child: const Text('See all')),
+                      ],
+                    ),
+                    ...List.generate(5,
+                        (index) => NewsItemsWidget(news: async.data![index])),
+                    const SizedBox(height: 30),
+                    const HomeCategoriesWidget(),
+                  ]));
+                } else {
+                  return SliverList(
+                      delegate: SliverChildListDelegate([
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'In case if you missed it',
+                          style: TextStyle(
+                              fontFamily: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .fontFamily,
+                              fontSize: 25,
+                              color:
+                                  Theme.of(context).textTheme.headline1!.color),
+                        ),
+                        TextButton(
+                            onPressed: () {}, child: const Text('See all')),
+                      ],
+                    ),
+                    ...List.generate(
+                        5, (index) => const NewsItemsLoadingWidget()),
+                    const SizedBox(height: 30),
+                    const HomeCategoriesWidget(),
+                  ]));
+                }
+              })
         ],
       ),
     );
@@ -134,15 +155,20 @@ class HomeCategoriesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Popular categories',
-          style: TextStyle(
-              fontFamily: Theme.of(context).textTheme.headline1!.fontFamily,
-              fontSize: 25,
-              color: Theme.of(context).textTheme.headline1!.color),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Popular categories',
+              style: TextStyle(
+                  fontFamily: Theme.of(context).textTheme.headline1!.fontFamily,
+                  fontSize: 25,
+                  color: Theme.of(context).textTheme.headline1!.color),
+            ),
+            TextButton(onPressed: () {}, child: const Text('See all'))
+          ],
         ),
         const SizedBox(height: 10),
         SingleChildScrollView(
@@ -156,7 +182,7 @@ class HomeCategoriesWidget extends StatelessWidget {
               ),
               NewsCategoriesItemsWidget(
                 image: AppImages.loading,
-                text: 'Books',
+                text: 'Sciense',
                 members: '12,145',
               ),
               NewsCategoriesItemsWidget(

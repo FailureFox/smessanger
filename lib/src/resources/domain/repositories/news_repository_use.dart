@@ -7,7 +7,7 @@ class NewsRepositoryUse extends NewsRepositories {
   NewsRepositoryUse({required this.news});
 
   @override
-  Future<List<NewsModel>> getCountryNews(String country) async {
+  Future<List<NewsModel>?> getCountryNews(String country) async {
     return await news.getCountryNews(country);
   }
 

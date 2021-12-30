@@ -19,7 +19,7 @@ Future<void> init() async {
   sl.registerFactory<AuthBloc>(() => AuthBloc(firebase: sl.call()));
   sl.registerFactory<RegistrationBloc>(
       () => RegistrationBloc(filePick: sl.call(), fRepostiry: sl.call()));
-  sl.registerFactory<HomeBloc>(() => HomeBloc());
+  sl.registerFactory<HomeBloc>(() => HomeBloc(fRepository: sl.call()));
   //firebase
   sl.registerLazySingleton<FireBaseRemote>(
     () => FireBaseRemoteUse(

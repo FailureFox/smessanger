@@ -20,4 +20,5 @@ abstract class FireBaseRepository {
     required PageController controller,
     required BuildContext context,
   });
+  Stream<MyProfile> getMyUser(uid);
 }

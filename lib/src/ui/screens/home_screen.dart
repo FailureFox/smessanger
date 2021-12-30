@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_event.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
@@ -20,14 +21,29 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _HomeScreen extends StatelessWidget {
+class _HomeScreen extends StatefulWidget {
   const _HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<_HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<_HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(
+          HomeLoadingEvent(uid: context.read<AppBloc>().state.uid),
+        );
+  }
+
   final List<Widget> pages = const [
     NewsPage(),
     ChatPage(),
     FilmsPage(),
     SettingsPage()
   ];
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
