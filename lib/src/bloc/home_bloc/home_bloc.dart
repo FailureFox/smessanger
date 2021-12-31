@@ -7,16 +7,19 @@ import 'package:smessanger/src/resources/domain/repositories/firebase_repository
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final FireBaseRepository fRepository;
   HomeBloc({required this.fRepository}) : super(HomeState()) {
-    on<HomeLoadingEvent>((event, emit) {
-      fRepository
-          .getMyUser(event.uid)
-          .listen((event) => myUserChangedEvent(event));
-    });
+    on<HomeLoadingEvent>(
+      (event, emit) {
+        emit(state.copyWith(status: HomeStatus.loading));
+        fRepository
+            .getMyUser(event.uid)
+            .listen((event) => myUserChangedEvent(event));
+      },
+    );
 
     on<HomePageChangeEvent>(
         (event, emit) => emit(state.copyWith(page: event.page)));
   }
   myUserChangedEvent(MyProfile myProfile) {
-    emit(state.copyWith(myProfile: myProfile));
+    emit(state.copyWith(myProfile: myProfile, status: HomeStatus.loaded));
   }
 }

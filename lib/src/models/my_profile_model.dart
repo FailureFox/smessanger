@@ -11,6 +11,9 @@ class MyProfile {
   List<String> roles;
   List<String> newsChannels;
   List<ChatModel> chats;
+  List<String> groups;
+  List<String> following;
+  List<String> followers;
 
   MyProfile({
     required this.name,
@@ -23,6 +26,9 @@ class MyProfile {
     this.chats = const [],
     required this.phoneNumber,
     required this.newsChannels,
+    this.groups = const [],
+    this.following = const [],
+    this.followers = const [],
   });
 
   factory MyProfile.fromMap(Map<String, dynamic> map, String uid) {
@@ -37,10 +43,12 @@ class MyProfile {
           .map((e) => ChatModel.fromMap(e as Map<String, dynamic>))
           .toList(),
       phoneNumber: map['phoneNumber'],
-      roles: (map['roles'] as List<dynamic>).map((e) => e as String).toList(),
-      newsChannels: (map['newsChannels'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
+      roles: (map['roles'] as List).map((e) => e as String).toList(),
+      newsChannels:
+          (map['newsChannels'] as List).map((e) => e as String).toList(),
+      groups: (map['groups'] as List).map((e) => e as String).toList(),
+      following: (map['following'] as List).map((e) => e as String).toList(),
+      followers: (map['followers'] as List).map((e) => e as String).toList(),
     );
   }
 
@@ -54,7 +62,10 @@ class MyProfile {
       'avatarUrl': avatarUrl ?? '',
       'roles': roles,
       'newsChannels': newsChannels,
-      'chats': chats.map((e) => e.toMap()).toList()
+      'chats': chats.map((e) => e.toMap()).toList(),
+      'groups': groups,
+      'following': following,
+      'followers': followers,
     };
   }
 }

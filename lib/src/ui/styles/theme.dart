@@ -9,6 +9,7 @@ abstract class AppTheme {
       bottomSheetTheme:
           const BottomSheetThemeData(backgroundColor: AppColors.dbackgroundLL),
       appBarTheme: const AppBarTheme(
+          elevation: 0,
           color: AppColors.dbackground,
           iconTheme: IconThemeData(color: Colors.white)),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -45,7 +46,10 @@ abstract class AppTheme {
     canvasColor: AppColors.lbackground,
     scaffoldBackgroundColor: AppColors.lbackground,
     backgroundColor: AppColors.lbackgroundMD,
-    appBarTheme: const AppBarTheme(color: AppColors.lbackground),
+    appBarTheme: const AppBarTheme(
+      color: AppColors.lbackground,
+      elevation: 0,
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
