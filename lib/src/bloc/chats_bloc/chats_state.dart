@@ -6,17 +6,25 @@ class ChatState {
   final UserModel? chatUser;
   final List<MessageModel>? messages;
   final ChatStatus status;
-  ChatState({this.chatUser, this.messages, this.status = ChatStatus.initial});
+  final String lastMessageTime;
+  ChatState({
+    this.chatUser,
+    this.messages,
+    this.status = ChatStatus.initial,
+    this.lastMessageTime = '',
+  });
 
   ChatState copyWith({
     List<MessageModel>? messages,
     UserModel? chatUser,
     ChatStatus? status,
+    String? lastMessageTime,
   }) {
     return ChatState(
       chatUser: chatUser ?? this.chatUser,
       messages: messages ?? this.messages,
       status: status ?? this.status,
+      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
     );
   }
 }

@@ -60,6 +60,7 @@ class FireBaseRemoteUse extends FireBaseRemote {
   @override
   Future<bool> isRegistered(String uid) async {
     try {
+      
       return (await firestore.collection('users').doc(uid).get()).exists;
     } catch (e) {
       throw Exception(e);

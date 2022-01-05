@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:smessanger/src/ui/styles/colors.dart';
 import 'package:smessanger/src/ui/styles/text_styles.dart';
 
@@ -9,6 +10,13 @@ abstract class AppTheme {
       bottomSheetTheme:
           const BottomSheetThemeData(backgroundColor: AppColors.dbackgroundLL),
       appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            // Status bar color
+            statusBarColor: AppColors.dbackground,
+            statusBarIconBrightness:
+                Brightness.light, // For Android (dark icons)
+            statusBarBrightness: Brightness.light, // For iOS (dark icons)
+          ),
           elevation: 0,
           color: AppColors.dbackground,
           iconTheme: IconThemeData(color: Colors.white)),
@@ -47,6 +55,12 @@ abstract class AppTheme {
     scaffoldBackgroundColor: AppColors.lbackground,
     backgroundColor: AppColors.lbackgroundMD,
     appBarTheme: const AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        // Status bar color
+        statusBarColor: AppColors.lbackground,
+        statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
+        statusBarBrightness: Brightness.light, // For iOS (dark icons)
+      ),
       color: AppColors.lbackground,
       elevation: 0,
     ),

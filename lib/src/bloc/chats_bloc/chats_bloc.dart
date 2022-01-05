@@ -35,6 +35,30 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   messagesLoaded(List<MessageModel> messages) {
-    emit(state.copyWith(messages: messages, status: ChatStatus.loaded));
+    final time = messages.last.dateTime.toDate();
+    final lastMessageTime = timeDetect(time);
+    emit(state.copyWith(
+      messages: messages,
+      status: ChatStatus.loaded,
+      lastMessageTime: lastMessageTime,
+    ));
+  }
+
+  String timeDetect(DateTime time) {
+    final difference = DateTime.now().difference(time);
+
+    if (difference.inDays != 0) {
+      if (difference.inDays > 7) {
+        return '${time.day}.${time.month}.${time.year}';
+      } else {
+        return '${time.weekday}';
+      }
+    } else if (difference.inHours != 0) {
+      return '${time.hour}:${time.minute} ${time.timeZoneName}';
+    } else if (difference.inMinutes != 0) {
+      return difference.inMinutes.toString() + ' m';
+    } else {
+      return difference.inSeconds.toString() + ' s';
+    }
   }
 }
