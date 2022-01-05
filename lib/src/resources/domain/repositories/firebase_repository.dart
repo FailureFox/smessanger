@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
+import 'package:smessanger/src/models/user_model.dart';
 
 abstract class FireBaseRepository {
   Future<void> saveToken(String uid);
@@ -21,4 +23,8 @@ abstract class FireBaseRepository {
     required BuildContext context,
   });
   Stream<MyProfile> getMyUser(uid);
+
+  Stream<UserModel> getChatUser(String uid);
+
+  Stream<List<MessageModel>> getMessages(String chatId);
 }

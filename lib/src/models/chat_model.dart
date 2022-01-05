@@ -1,24 +1,24 @@
 class ChatModel {
   ChatType type;
-  String userId;
-  String chatId;
+  String chatUser;
+  String chatID;
 
   ChatModel({
     required this.type,
-    required this.userId,
-    required this.chatId,
+    required this.chatUser,
+    required this.chatID,
   });
   factory ChatModel.fromMap(Map<String, dynamic> map) {
     return ChatModel(
-      chatId: map['chatId'],
-      userId: map['user'],
+      chatID: map['chatID'],
+      chatUser: map['chatUser'],
       type: _typeDetect[map['chatType']]!,
     );
   }
   Map<String, dynamic> toMap() {
     return {
-      'chatId': chatId,
-      'userId': userId,
+      'chatID': chatID,
+      'chatUser': chatUser,
       'type': type.toString(),
     };
   }

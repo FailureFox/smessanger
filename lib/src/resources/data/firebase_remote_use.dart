@@ -4,9 +4,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc_export.dart';
+import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smessanger/src/models/user_model.dart';
 import 'package:smessanger/src/resources/data/firebase_remote.dart';
 
 class FireBaseRemoteUse extends FireBaseRemote {
@@ -105,5 +107,23 @@ class FireBaseRemoteUse extends FireBaseRemote {
         codeAutoRetrievalTimeout: (verificationId) {
           this.verificationId = verificationId;
         });
+  }
+
+  @override
+  Stream<UserModel> getChatUser(String uid) {
+    final snapshot = firestore.collection('users').doc(uid).snapshots();
+    return snapshot.map((event) => UserModel.fromMap(event.data()!, uid));
+  }
+
+  @override
+  Stream<List<MessageModel>> getMessages(String chatId) {
+    final snapshots = firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .snapshots();
+    return snapshots.map((event) => event.docs
+        .map((e) => MessageModel.fromMap(e as Map<String, dynamic>))
+        .toList());
   }
 }

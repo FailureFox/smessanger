@@ -1,5 +1,7 @@
+import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 import 'package:flutter/material.dart';
+import 'package:smessanger/src/models/user_model.dart';
 import 'package:smessanger/src/resources/data/firebase_remote.dart';
 import 'dart:io';
 
@@ -74,4 +76,14 @@ class FireBaseRepositoryUse extends FireBaseRepository {
 
   @override
   Stream<MyProfile> getMyUser(uid) => firebase.getMyUser(uid);
+
+  @override
+  Stream<UserModel> getChatUser(String uid) {
+    return firebase.getChatUser(uid);
+  }
+
+  @override
+  Stream<List<MessageModel>> getMessages(String chatId) {
+    return firebase.getMessages(chatId);
+  }
 }
