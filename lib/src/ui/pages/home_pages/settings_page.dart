@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
+import 'package:smessanger/src/models/my_profile_model.dart';
+import 'package:smessanger/src/ui/pages/auth_pages/welcome_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -20,7 +22,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     controller.addListener(() {
       isClosed = _isSliverAppBarExpanded;
@@ -35,10 +36,11 @@ class _SettingsPageState extends State<SettingsPage> {
       slivers: [
         SliverAppBar(
           centerTitle: true,
+          actions: const [LightDarkIconButton()],
           title: AnimatedCrossFade(
-              firstChild: const Text(
+              firstChild: Text(
                 'Settings',
-                style: TextStyle(color: Colors.black),
+                style: Theme.of(context).textTheme.headline2,
               ),
               secondChild: const SizedBox(),
               crossFadeState: isClosed
@@ -52,14 +54,14 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.all(15.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  const Spacer(flex: 3),
                   SizedBox(height: MediaQuery.of(context).viewPadding.top),
                   Text('Settings',
                       style: Theme.of(context).textTheme.headline1),
-                  const SizedBox(height: 15),
+                  const Spacer(),
                   const SettingsTitle(),
-                  const SizedBox(height: 15),
+                  const Spacer(flex: 2),
                 ],
               ),
             ),
@@ -82,7 +84,17 @@ class SettingsBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SettingsComponents(
-              text: 'Edit profile', icon: Icons.edit_outlined, function: () {}),
+              text: 'Edit profile',
+              icon: Icons.edit_outlined,
+              function: () {
+                final MyProfile profile =
+                    context.read<HomeBloc>().state.myProfile!;
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        pageBuilder: (context, anim, anim2) =>
+                            ProfilePage(profile: profile)));
+              }),
           SettingsComponents(
               text: 'Communicate', icon: Icons.public, function: () {}),
           SettingsComponents(
@@ -152,7 +164,7 @@ class SettingsTitle extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  state.myProfile!.name + (state.myProfile!.surname ?? ''),
+                  "${state.myProfile!.name} ${state.myProfile?.surname ?? ""}",
                   style: Theme.of(context).textTheme.headline2,
                 ),
                 Text('@${state.myProfile!.name.toLowerCase()}')
@@ -172,11 +184,11 @@ class SettingsTitle extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Shimmer(
-                    child: Container(
+                    child: SizedBox(
                         height: 5,
                         width: MediaQuery.of(context).size.width / 2)),
                 Shimmer(
-                    child: Container(
+                    child: SizedBox(
                         height: 5,
                         width: MediaQuery.of(context).size.width / 3))
               ],
@@ -201,6 +213,7 @@ class SettingsComponents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: function,
       contentPadding: const EdgeInsets.all(0),
       leading: CircleAvatar(
         backgroundColor: Theme.of(context).backgroundColor,
@@ -208,6 +221,97 @@ class SettingsComponents extends StatelessWidget {
       ),
       title: Text(text, style: Theme.of(context).textTheme.headline2),
       trailing: const Icon(Icons.arrow_forward_ios_outlined, size: 15),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({Key? key, required this.profile}) : super(key: key);
+  final MyProfile profile;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        height: MediaQuery.of(context).size.height / 2.1,
+        width: double.infinity,
+        color: Theme.of(context).hoverColor,
+        child: Column(
+          children: [
+            AppBar(
+              leading: IconButton(
+                  splashRadius: 20,
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Theme.of(context).iconTheme.color,
+                  )),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              actions: const [LightDarkIconButton()],
+            ),
+            CircleAvatar(
+              radius: MediaQuery.of(context).size.width / 8,
+              backgroundImage: NetworkImage(profile.avatarUrl!),
+            ),
+            const Spacer(),
+            Column(
+              children: [
+                Text(
+                  '${profile.name} ${profile.surname}',
+                  style: Theme.of(context).textTheme.headline2,
+                ),
+                const SizedBox(height: 5),
+                const Text('last seen 4 min ago'),
+              ],
+            ),
+            const Spacer(),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 15,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  MyProfileIndicators(
+                      count: profile.followers.length.toString(),
+                      text: 'followers'),
+                  VerticalDivider(width: 0, color: Theme.of(context).hintColor),
+                  MyProfileIndicators(
+                      count: profile.following.length.toString(),
+                      text: 'following'),
+                  VerticalDivider(width: 0, color: Theme.of(context).hintColor),
+                  MyProfileIndicators(
+                      count: profile.groups.length.toString(), text: 'groups'),
+                ],
+              ),
+            ),
+            const Spacer(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MyProfileIndicators extends StatelessWidget {
+  const MyProfileIndicators({Key? key, required this.count, required this.text})
+      : super(key: key);
+  final String text;
+  final String count;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          count,
+          style: TextStyle(
+              fontSize: 20,
+              color: Theme.of(context).textTheme.bodyText2!.color),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          text,
+          style: const TextStyle(fontWeight: FontWeight.w400),
+        ),
+      ],
     );
   }
 }

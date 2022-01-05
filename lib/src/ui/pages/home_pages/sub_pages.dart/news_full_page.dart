@@ -47,12 +47,6 @@ class _NewsFullPageState extends State<NewsFullPage> {
             expandedHeight: 200,
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.fromLTRB(4, 0, 0, 4),
-              title: isClosed
-                  ? null
-                  : Text(
-                      widget.news.title,
-                      style: const TextStyle(fontSize: 13),
-                    ),
               background:
                   Image.network(widget.news.urlToImage, fit: BoxFit.cover),
             ),
@@ -60,6 +54,13 @@ class _NewsFullPageState extends State<NewsFullPage> {
           SliverList(
               delegate: SliverChildListDelegate(
             [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Text(
+                  widget.news.title,
+                  style: Theme.of(context).textTheme.headline1,
+                ),
+              ),
               ...List.generate(15, (index) => Text(widget.news.content)),
               Padding(
                 padding: const EdgeInsets.all(15),

@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
+import 'package:smessanger/src/models/user_model.dart';
 
 abstract class FireBaseRemote {
   Future<void> saveToken(String uid);
@@ -22,4 +24,8 @@ abstract class FireBaseRemote {
   });
 
   Stream<MyProfile> getMyUser(uid);
+
+  Stream<UserModel> getChatUser(String uid);
+
+  Stream<List<MessageModel>> getMessages(String chatId);
 }

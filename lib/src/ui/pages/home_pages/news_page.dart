@@ -71,7 +71,7 @@ class _NewsPageWithBlocState extends State<_NewsPageWithBloc> {
                   const Spacer(),
                   Text('Discover',
                       style: Theme.of(context).textTheme.headline1),
-                  const NewsSearchInput()
+                  const SearchInput()
                 ],
               ),
             ),
@@ -129,8 +129,8 @@ class NewsBody extends StatelessWidget {
   }
 }
 
-class NewsSearchInput extends StatelessWidget {
-  const NewsSearchInput({Key? key}) : super(key: key);
+class SearchInput extends StatelessWidget {
+  const SearchInput({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
