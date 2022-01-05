@@ -16,35 +16,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc({required this.chatModel, required this.repository})
       : super(ChatState()) {
     on<ChatLoadingEvent>((event, emit) {
+      emit(state.copyWith(status: ChatStatus.loading));
       try {
         repository.getChatUser(chatModel.chatUser).listen((user) {
           userLoaded(user);
+          repository.getMessages(chatModel.chatID).listen((messages) {
+            messagesLoaded(messages);
+          });
         });
       } on SocketException catch (e) {
-        log(e.message);
-      }
-      try {
-        repository.getMessages(chatModel.chatID).listen((messages) {
-          messagesLoaded(messages);
-        });
-      } on SocketException catch (e) {
-        log(e.message);
+        log('asd' + e.message);
       }
     });
   }
 
-  
   userLoaded(UserModel user) {
-    emit(state.copyWith(
-      user: user,
-      status: state.messages != null ? ChatStatus.loaded : ChatStatus.loading,
-    ));
+    emit(state.copyWith(chatUser: user));
   }
 
   messagesLoaded(List<MessageModel> messages) {
-    emit(state.copyWith(
-        messages: messages,
-        status:
-            state.chatUser != null ? ChatStatus.loaded : ChatStatus.loading));
+    emit(state.copyWith(messages: messages, status: ChatStatus.loaded));
   }
 }

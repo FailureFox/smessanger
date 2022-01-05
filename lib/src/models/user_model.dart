@@ -4,7 +4,7 @@ class UserModel {
   String phoneNumber;
   String countryCode;
   String? status;
-  String? avatarUrl;
+  String avatarUrl;
   String uid;
   List<String> roles;
   List<String> newsChannels;
@@ -34,7 +34,7 @@ class UserModel {
       surname: map['surname'] != '' ? map['surname'] : null,
       countryCode: map['countryCode'],
       status: map['status'] != '' ? map['status'] : null,
-      avatarUrl: map['avatarUrl'] != '' ? map['avatarUrl'] : null,
+      avatarUrl: map['avatarUrl'],
       phoneNumber: map['phoneNumber'],
       roles: (map['roles'] as List).map((e) => e as String).toList(),
       newsChannels:

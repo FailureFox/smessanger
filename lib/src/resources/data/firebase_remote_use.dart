@@ -122,8 +122,7 @@ class FireBaseRemoteUse extends FireBaseRemote {
         .doc(chatId)
         .collection('messages')
         .snapshots();
-    return snapshots.map((event) => event.docs
-        .map((e) => MessageModel.fromMap(e as Map<String, dynamic>))
-        .toList());
+    return snapshots.map((event) =>
+        event.docs.map((e) => MessageModel.fromMap(e.data())).toList());
   }
 }

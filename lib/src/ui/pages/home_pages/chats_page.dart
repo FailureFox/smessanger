@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
+import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
+import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
+import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
+import 'package:smessanger/src/ui/pages/home_pages/components/chat_items.dart';
 import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
+import 'package:smessanger/injections.dart' as rep;
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -60,15 +67,61 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
         ),
-        SliverList(
-            delegate: SliverChildListDelegate([
+        BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+          if (state.status == HomeStatus.loaded) {
+            return const ChatsBody();
+          } else {
+            return const ChatLoadingBody();
+          }
+        })
+      ],
+    );
+  }
+}
+
+class ChatsBody extends StatelessWidget {
+  const ChatsBody({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        [
+          BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+            return Column(
+              children: [
+                ...state.myProfile!.chats.map(
+                  (e) => BlocProvider<ChatBloc>(
+                    create: (_) => ChatBloc(
+                        chatModel: e,
+                        repository: rep.sl.call<FireBaseRepository>()),
+                    child: const ChatItems(),
+                  ),
+                )
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
+}
+
+class ChatLoadingBody extends StatelessWidget {
+  const ChatLoadingBody({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        [
           Column(
             children: [
               ...List.generate(15, (index) => const ChatListLoadingItems())
             ],
           ),
-        ]))
-      ],
+        ],
+      ),
     );
   }
 }

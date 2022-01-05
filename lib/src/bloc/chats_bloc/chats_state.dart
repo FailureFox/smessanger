@@ -10,12 +10,12 @@ class ChatState {
 
   ChatState copyWith({
     List<MessageModel>? messages,
-    UserModel? user,
+    UserModel? chatUser,
     ChatStatus? status,
   }) {
     return ChatState(
-      chatUser: user,
-      messages: messages,
+      chatUser: chatUser ?? this.chatUser,
+      messages: messages ?? this.messages,
       status: status ?? this.status,
     );
   }
