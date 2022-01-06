@@ -1,13 +1,10 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_state.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
-import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
 import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/models/user_model.dart';
 
@@ -17,59 +14,108 @@ class ChatRoomPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-        ),
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .scaffoldBackgroundColor
-                      .withOpacity(0.9)),
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+          ),
+          flexibleSpace: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .scaffoldBackgroundColor
+                        .withOpacity(0.9)),
+              ),
             ),
           ),
-        ),
-        backgroundColor:
-            Theme.of(context).appBarTheme.backgroundColor!.withOpacity(0.5),
-        bottom: const PreferredSize(
-            child: Divider(height: 1), preferredSize: Size.fromHeight(5)),
-        leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back_ios,
-                color: Theme.of(context).iconTheme.color)),
-        title: BlocBuilder<ChatBloc, ChatState>(
-            bloc: ChatInheritedWidget.of(context)!.bloc,
-            builder: (context, state) {
-              return ListTile(
-                contentPadding: const EdgeInsets.all(0),
-                leading: CircleAvatar(
-                  radius: 22,
-                  backgroundImage: NetworkImage(state.chatUser!.avatarUrl),
-                ),
-                title: Text(state.chatUser!.name,
-                    style: Theme.of(context).textTheme.headline2),
-              );
-            }),
-      ),
-      body: BlocBuilder<ChatBloc, ChatState>(
-        bloc: ChatInheritedWidget.of(context)!.bloc,
-        builder: (context, state) {
-          return AnimatedList(
-              reverse: true,
-              initialItemCount: state.messages!.length,
-              itemBuilder: (context, index, animation) {
-                return MessagesWidget(
-                  animation: animation,
-                  message: state.messages![index],
-                  userModel: state.chatUser!,
+          backgroundColor:
+              Theme.of(context).appBarTheme.backgroundColor!.withOpacity(0.5),
+          bottom: const PreferredSize(
+              child: Divider(height: 1), preferredSize: Size.fromHeight(5)),
+          leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(Icons.arrow_back_ios,
+                  color: Theme.of(context).iconTheme.color)),
+          title: BlocBuilder<ChatBloc, ChatState>(
+              bloc: ChatInheritedWidget.of(context)!.bloc,
+              builder: (context, state) {
+                return ListTile(
+                  contentPadding: const EdgeInsets.all(0),
+                  leading: CircleAvatar(
+                    radius: 22,
+                    backgroundImage: NetworkImage(state.chatUser!.avatarUrl),
+                  ),
+                  title: Text(state.chatUser!.name,
+                      style: Theme.of(context).textTheme.headline2),
                 );
-              });
-        },
+              }),
+        ),
+        body: Column(
+          children: const [
+            Expanded(child: ChatMessagesList()),
+            MessageInputBar()
+          ],
+        ));
+  }
+}
+
+class MessageInputBar extends StatelessWidget {
+  const MessageInputBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+      child: Row(
+        children: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.file_present)),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.all(10),
+              height: MediaQuery.of(context).size.width / 10,
+              child: TextField(
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.emoji_emotions_outlined)),
+                    fillColor: Theme.of(context).hoverColor,
+                    hintText: 'Write your message here',
+                    hintStyle: Theme.of(context).textTheme.bodyText2),
+                maxLines: null,
+                minLines: null,
+                expands: true,
+              ),
+            ),
+          ),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.mic))
+        ],
       ),
+    );
+  }
+}
+
+class ChatMessagesList extends StatelessWidget {
+  const ChatMessagesList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChatBloc, ChatState>(
+      bloc: ChatInheritedWidget.of(context)!.bloc,
+      builder: (context, state) {
+        return AnimatedList(
+            reverse: true,
+            initialItemCount: state.messages!.length,
+            itemBuilder: (context, index, animation) {
+              return MessagesWidget(
+                animation: animation,
+                message: state.messages![index],
+                userModel: state.chatUser!,
+              );
+            });
+      },
     );
   }
 }
