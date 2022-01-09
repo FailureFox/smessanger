@@ -61,9 +61,15 @@ class ChatRoomPage extends StatelessWidget {
   }
 }
 
-class MessageInputBar extends StatelessWidget {
+class MessageInputBar extends StatefulWidget {
   const MessageInputBar({Key? key}) : super(key: key);
 
+  @override
+  State<MessageInputBar> createState() => _MessageInputBarState();
+}
+
+class _MessageInputBarState extends State<MessageInputBar> {
+  TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -76,6 +82,10 @@ class MessageInputBar extends StatelessWidget {
               margin: const EdgeInsets.all(10),
               height: MediaQuery.of(context).size.width / 10,
               child: TextField(
+                onChanged: (value) {
+                  setState(() {});
+                },
+                controller: controller,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                     suffixIcon: IconButton(
@@ -90,7 +100,9 @@ class MessageInputBar extends StatelessWidget {
               ),
             ),
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.mic))
+          controller.text == ''
+              ? IconButton(onPressed: () {}, icon: const Icon(Icons.mic))
+              : IconButton(onPressed: () {}, icon: const Icon(Icons.send))
         ],
       ),
     );

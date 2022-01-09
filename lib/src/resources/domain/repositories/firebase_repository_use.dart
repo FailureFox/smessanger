@@ -86,4 +86,10 @@ class FireBaseRepositoryUse extends FireBaseRepository {
   Stream<List<MessageModel>> getMessages(String chatId) {
     return firebase.getMessages(chatId);
   }
+
+  @override
+  Future<void> sendMessage(
+      {required MessageModel message, required String chatId}) {
+    return firebase.sendMessage(message: message, chatId: chatId);
+  }
 }

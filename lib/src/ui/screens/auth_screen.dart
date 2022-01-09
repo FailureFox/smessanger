@@ -41,7 +41,7 @@ class _AuthScreen extends StatelessWidget {
             context
                 .read<AppBloc>()
                 .add(AppTokenLoadingEvent(uid: authStatus.uid));
-            Navigator.push(context,
+            Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => const HomeScreen()));
           } else if (authStatus is AuthRegistrationStatus) {
             context

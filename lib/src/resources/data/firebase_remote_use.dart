@@ -60,7 +60,6 @@ class FireBaseRemoteUse extends FireBaseRemote {
   @override
   Future<bool> isRegistered(String uid) async {
     try {
-      
       return (await firestore.collection('users').doc(uid).get()).exists;
     } catch (e) {
       throw Exception(e);
@@ -125,5 +124,13 @@ class FireBaseRemoteUse extends FireBaseRemote {
         .snapshots();
     return snapshots.map((event) =>
         event.docs.map((e) => MessageModel.fromMap(e.data())).toList());
+  }
+
+  @override
+  Future<void> sendMessage(
+      {required MessageModel message, required String chatId}) async {
+    await firestore.collection('chats').doc(chatId).collection('messages').add(
+          message.toMap(),
+        );
   }
 }

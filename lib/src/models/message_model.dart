@@ -24,10 +24,10 @@ class MessageModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'dateTime': dateTime,
+      'dateTime': DateTime.now(),
       'from': from,
       'message': message,
-      'readed': readed,
+      'readed': false,
     };
   }
 }

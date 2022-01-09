@@ -28,4 +28,7 @@ abstract class FireBaseRemote {
   Stream<UserModel> getChatUser(String uid);
 
   Stream<List<MessageModel>> getMessages(String chatId);
+
+  Future<void> sendMessage(
+      {required MessageModel message, required String chatId});
 }
