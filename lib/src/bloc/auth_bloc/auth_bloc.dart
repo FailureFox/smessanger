@@ -4,15 +4,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_event.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_state.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_status.dart';
+import 'package:smessanger/src/resources/domain/repositories/auth_repository.dart';
 
-import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/token_repository.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final PageController pageController = PageController();
-  final FireBaseRepository firebase;
+  final AuthRepository repository;
+  final TokenRepository tokenRepository;
   String myUID = '';
   //bloc
-  AuthBloc({required this.firebase}) : super(AuthState()) {
+  AuthBloc({required this.repository, required this.tokenRepository})
+      : super(AuthState()) {
     //
     on<AuthNextPageEvent>((event, emit) => nextPage());
     on<AuthBackPageEvent>((event, emit) => backPage());
@@ -28,7 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (event, emit) {
         try {
           emit((state).copyWith(status: AuthLoadingStatus()));
-          firebase.verificationNumber(
+          repository.verificationNumber(
             phoneNumber: state.selectedCountry.dialCode +
                 state.phoneNumber.replaceAll('-', ''),
             controller: pageController,
@@ -54,11 +57,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSmsVerifyEvent>((event, emit) async {
       try {
         emit(state.copyWith(status: AuthLoadingStatus()));
-        myUID = await firebase.signInWithNumber(state.myVerifyCode);
-        final bool isRegistered = await firebase.isRegistered(myUID);
+        myUID = await repository.signInWithNumber(state.myVerifyCode);
+        final bool isRegistered = await repository.isRegistered(myUID);
         if (isRegistered) {
           emit(state.copyWith(status: AuthLoginStatus(uid: myUID)));
-          firebase.saveToken(myUID);
+          tokenRepository.saveToken(myUID);
         } else {
           emit(state.copyWith(status: AuthRegistrationStatus(uid: myUID)));
         }

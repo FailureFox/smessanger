@@ -7,14 +7,19 @@ import 'package:smessanger/src/bloc/register_bloc/register_state.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_status.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 import 'package:smessanger/src/models/roles.dart';
-import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/auth_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/file_repository.dart';
 
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   PageController controller = PageController();
-  final FireBaseRepository fRepostiry;
+  final AuthRepository repository;
+  final FileRepository fileRepository;
   final FilePicker filePick;
-  RegistrationBloc({required this.fRepostiry, required this.filePick})
-      : super(RegistrationState()) {
+  RegistrationBloc({
+    required this.repository,
+    required this.filePick,
+    required this.fileRepository,
+  }) : super(RegistrationState()) {
     //
     on<RegUIDLoadingEvent>((event, emit) => emit(state.copyWith(
           uid: event.uid,
@@ -39,7 +44,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
             emit(state.copyWith(status: RegAvatarLoadingStatus()));
             final File avatar = File(image.files.single.path!);
             final String uploadedAvatar =
-                await fRepostiry.uploadFile(avatar, 'images/${state.uid}');
+                await fileRepository.uploadFile(avatar, 'images/${state.uid}');
             emit(state.copyWith(
                 avatarUrl: uploadedAvatar, status: RegAvatarLoadedStatus()));
           }
@@ -70,7 +75,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           avatarUrl: state.avatarUrl,
           phoneNumber: state.phoneNumber,
           newsChannels: state.interestedNews);
-      fRepostiry.createAccount(profile);
+      repository.createAccount(profile);
     });
   }
   nextPage() {

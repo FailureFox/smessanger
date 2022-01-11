@@ -4,7 +4,8 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
-import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/messages_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 import 'package:smessanger/src/ui/pages/home_pages/components/chat_items.dart';
 import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 import 'package:smessanger/injections.dart' as rep;
@@ -94,7 +95,8 @@ class ChatsBody extends StatelessWidget {
                   (e) => BlocProvider<ChatBloc>(
                     create: (_) => ChatBloc(
                         chatModel: e,
-                        repository: rep.sl.call<FireBaseRepository>()),
+                        userRepo: rep.sl.call<UserRepository>(),
+                        messageRepo: rep.sl.call<MessagesRepository>()),
                     child: const ChatItems(),
                   ),
                 )

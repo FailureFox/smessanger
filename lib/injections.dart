@@ -8,29 +8,34 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_bloc.dart';
-import 'package:smessanger/src/resources/data/firebase_remote.dart';
-import 'package:smessanger/src/resources/data/firebase_remote_use.dart';
-import 'package:smessanger/src/resources/domain/repositories/firebase_repository.dart';
-import 'package:smessanger/src/resources/domain/repositories/firebase_repository_use.dart';
+import 'package:smessanger/src/resources/domain/repositories/auth_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/file_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/messages_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
+import 'package:smessanger/src/resources/domain/usecases/auth_repository_use.dart';
+import 'package:smessanger/src/resources/domain/usecases/file_repository_use.dart';
+import 'package:smessanger/src/resources/domain/usecases/messages_repository_use.dart';
+import 'package:smessanger/src/resources/domain/usecases/user_repository_use.dart';
 
 final sl = GetIt.instance;
 Future<void> init() async {
-  //useCases
-  sl.registerFactory<AuthBloc>(() => AuthBloc(firebase: sl.call()));
-  sl.registerFactory<RegistrationBloc>(
-      () => RegistrationBloc(filePick: sl.call(), fRepostiry: sl.call()));
-  sl.registerFactory<HomeBloc>(() => HomeBloc(fRepository: sl.call()));
-  //firebase
-  sl.registerLazySingleton<FireBaseRemote>(
-    () => FireBaseRemoteUse(
-        firebaseAuth: sl.call(),
-        firestore: sl.call(),
-        firebaseStorage: sl.call(),
-        securestorage: sl.call()),
-  );
+  //Bloc
+  sl.registerFactory<AuthBloc>(
+      () => AuthBloc(repository: sl.call(), tokenRepository: sl.call()));
+  sl.registerFactory<RegistrationBloc>(() => RegistrationBloc(
+      repository: sl.call(), filePick: sl.call(), fileRepository: sl.call()));
+  sl.registerFactory<HomeBloc>(() => HomeBloc(repository: sl.call()));
+  //repositories
+  sl.registerLazySingleton<UserRepository>(
+      () => UserRepositoryUse(firestore: sl.call()));
+  sl.registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryUse(firestore: sl.call(), firebaseAuth: sl.call()));
+  sl.registerLazySingleton<FileRepository>(
+      () => FileRepositoryUse(firebaseStorage: sl.call()));
+  sl.registerLazySingleton<MessagesRepository>(
+      () => MessagesRepositoryUse(firestore: sl.call()));
+  //
 
-  sl.registerLazySingleton<FireBaseRepository>(
-      () => FireBaseRepositoryUse(firebase: sl.call()));
   final SharedPreferences sharedPreferences =
       await SharedPreferences.getInstance();
   final FirebaseAuth fAuth = FirebaseAuth.instance;

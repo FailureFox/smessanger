@@ -24,7 +24,3 @@ class NewsDataUse extends NewsData {
   @override
   getPopularityNews() {}
 }
-
-class MyVerifyClass {
-  int a = 5;
-}
