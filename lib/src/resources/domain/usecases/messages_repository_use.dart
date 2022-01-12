@@ -22,6 +22,7 @@ class MessagesRepositoryUse extends MessagesRepository {
         .collection('chats')
         .doc(chatId)
         .collection('messages')
+        .orderBy('dateTime', descending: true)
         .snapshots();
     return snapshots.map((event) =>
         event.docs.map((e) => MessageModel.fromMap(e.data())).toList());

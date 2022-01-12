@@ -24,7 +24,7 @@ class MessageModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'dateTime': DateTime.now(),
+      'dateTime': Timestamp.now(),
       'from': from,
       'message': message,
       'readed': false,

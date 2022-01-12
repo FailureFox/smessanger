@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chat_status.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_event.dart';
@@ -14,6 +16,7 @@ import 'package:smessanger/src/resources/domain/repositories/user_repository.dar
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final MessagesRepository messageRepo;
   final UserRepository userRepo;
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   final ChatModel chatModel;
   ChatBloc(
       {required this.chatModel,
@@ -33,6 +36,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         log('asd' + e.message);
       }
     });
+
+    on<ChatSendMessageEvent>((event, emit) async {
+      messageRepo.sendMessage(
+          message: MessageModel(
+              dateTime: Timestamp.now(),
+              from: event.uid,
+              message: event.message,
+              readed: false),
+          chatId: chatModel.chatID);
+    });
   }
 
   userLoaded(UserModel user) {
@@ -42,11 +55,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   messagesLoaded(List<MessageModel> messages) {
     final time = messages.last.dateTime.toDate();
     final lastMessageTime = timeDetect(time);
-    emit(state.copyWith(
-      messages: messages,
-      status: ChatStatus.loaded,
-      lastMessageTime: lastMessageTime,
-    ));
+    if (state.messages == null) {
+      emit(
+        state.copyWith(
+          messages: messages,
+          status: ChatStatus.loaded,
+          lastMessageTime: lastMessageTime,
+        ),
+      );
+    } else {
+      listKey.currentState!.insertItem(0,
+          duration: const Duration(milliseconds: 200));
+      state.messages = messages;
+    }
   }
 
   String timeDetect(DateTime time) {

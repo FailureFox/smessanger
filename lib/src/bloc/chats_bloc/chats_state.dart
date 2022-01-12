@@ -4,7 +4,7 @@ import 'package:smessanger/src/models/user_model.dart';
 
 class ChatState {
   final UserModel? chatUser;
-  final List<MessageModel>? messages;
+  List<MessageModel>? messages;
   final ChatStatus status;
   final String lastMessageTime;
   ChatState({

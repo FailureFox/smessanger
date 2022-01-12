@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
+import 'package:smessanger/src/bloc/chats_bloc/chats_event.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_state.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
-import 'package:smessanger/src/models/message_model.dart';
-import 'package:smessanger/src/models/user_model.dart';
+import 'package:smessanger/src/ui/pages/home_pages/components/messages_widget.dart';
 
 class ChatRoomPage extends StatelessWidget {
   const ChatRoomPage({Key? key, required this.homeBloc}) : super(key: key);
@@ -53,16 +53,18 @@ class ChatRoomPage extends StatelessWidget {
               }),
         ),
         body: Column(
-          children: const [
-            Expanded(child: ChatMessagesList()),
-            MessageInputBar()
+          children: [
+            const Expanded(child: ChatMessagesList()),
+            MessageInputBar(uid: homeBloc.state.myProfile!.uid)
           ],
         ));
   }
 }
 
 class MessageInputBar extends StatefulWidget {
-  const MessageInputBar({Key? key}) : super(key: key);
+  final String uid;
+
+  const MessageInputBar({Key? key, required this.uid}) : super(key: key);
 
   @override
   State<MessageInputBar> createState() => _MessageInputBarState();
@@ -102,7 +104,16 @@ class _MessageInputBarState extends State<MessageInputBar> {
           ),
           controller.text == ''
               ? IconButton(onPressed: () {}, icon: const Icon(Icons.mic))
-              : IconButton(onPressed: () {}, icon: const Icon(Icons.send))
+              : IconButton(
+                  onPressed: () {
+                    final String text = controller.text;
+                    ChatInheritedWidget.of(context)!.bloc.add(
+                        ChatSendMessageEvent(message: text, uid: widget.uid));
+                    controller.clear();
+
+                    setState(() {});
+                  },
+                  icon: const Icon(Icons.send))
         ],
       ),
     );
@@ -118,71 +129,18 @@ class ChatMessagesList extends StatelessWidget {
       bloc: ChatInheritedWidget.of(context)!.bloc,
       builder: (context, state) {
         return AnimatedList(
-            reverse: true,
-            initialItemCount: state.messages!.length,
-            itemBuilder: (context, index, animation) {
-              return MessagesWidget(
-                animation: animation,
-                message: state.messages![index],
-                userModel: state.chatUser!,
-              );
-            });
+          reverse: true,
+          key: ChatInheritedWidget.of(context)!.bloc.listKey,
+          initialItemCount: state.messages!.length,
+          itemBuilder: (context, index, animation) {
+            return MessagesWidget(
+              animation: animation,
+              message: state.messages![index],
+              userModel: state.chatUser!,
+            );
+          },
+        );
       },
-    );
-  }
-}
-
-class MessagesWidget extends StatelessWidget {
-  const MessagesWidget({
-    Key? key,
-    required this.animation,
-    required this.message,
-    required this.userModel,
-  }) : super(key: key);
-  final Animation<double> animation;
-  final MessageModel message;
-  final UserModel userModel;
-
-  @override
-  Widget build(BuildContext context) {
-    bool isNotMy = message.from == userModel.uid;
-    return SizeTransition(
-      sizeFactor: animation,
-      child: Row(
-        mainAxisAlignment:
-            isNotMy ? MainAxisAlignment.start : MainAxisAlignment.end,
-        children: [
-          isNotMy
-              ? CircleAvatar(backgroundImage: NetworkImage(userModel.avatarUrl))
-              : const SizedBox(),
-          Container(
-            constraints:
-                BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
-            margin: const EdgeInsets.all(5),
-            padding: const EdgeInsets.all(10),
-            color: isNotMy
-                ? Theme.of(context).backgroundColor
-                : Theme.of(context).colorScheme.primary,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                isNotMy
-                    ? Text(
-                        userModel.name,
-                        style: Theme.of(context).textTheme.bodyText1,
-                      )
-                    : const SizedBox(),
-                Text(
-                  message.message,
-                  style: isNotMy
-                      ? Theme.of(context).textTheme.bodyText2
-                      : TextStyle(color: Theme.of(context).backgroundColor),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
