@@ -1,23 +1,22 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_event.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_state.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_status.dart';
+import 'package:smessanger/src/resources/domain/repositories/token_repository.dart';
 
 class AppBloc extends Bloc<AppEvents, AppState> {
-  AppBloc() : super(const AppState()) {
-    late SharedPreferences storage;
-    FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final TokenRepository tokenRepository;
+  final SharedPreferences preferences;
+  AppBloc({required this.tokenRepository, required this.preferences})
+      : super(const AppState()) {
 // storage.getBool('theme')
     on<AppThemeLoadingEvent>((event, emit) async {
-      storage = await SharedPreferences.getInstance();
-      final theme = storage.getBool('theme') ?? false;
+      final theme = preferences.getBool('theme') ?? false;
       emit(state.copyWith(isDark: theme));
-      final token = await _secureStorage.read(key: 'token');
+      final token = await tokenRepository.getToken();
       await Future.delayed(const Duration(seconds: 2));
-
       if (token == null) {
         emit(state.copyWith(status: AppStatus.unlogged));
       } else {
@@ -25,7 +24,7 @@ class AppBloc extends Bloc<AppEvents, AppState> {
       }
     });
     on<AppThemeChangeEvent>((event, emit) {
-      storage.setBool('theme', !state.isDark);
+      preferences.setBool('theme', !state.isDark);
       emit(state.copyWith(isDark: !state.isDark));
     });
     on<AppTokenLoadingEvent>((event, emit) {

@@ -11,13 +11,14 @@ class MessagesWidget extends StatelessWidget {
   }) : super(key: key);
   final Animation<double> animation;
   final MessageModel message;
+
   final UserModel userModel;
 
   @override
   Widget build(BuildContext context) {
     bool isNotMy = message.from == userModel.uid;
     return SizeTransition(
-      sizeFactor: Tween<double>(begin: 0, end: 1).animate(animation),
+      sizeFactor: animation,
       child: Row(
         mainAxisAlignment:
             isNotMy ? MainAxisAlignment.start : MainAxisAlignment.end,

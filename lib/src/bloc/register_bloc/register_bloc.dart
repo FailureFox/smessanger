@@ -9,15 +9,18 @@ import 'package:smessanger/src/models/my_profile_model.dart';
 import 'package:smessanger/src/models/roles.dart';
 import 'package:smessanger/src/resources/domain/repositories/auth_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/file_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/token_repository.dart';
 
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   PageController controller = PageController();
   final AuthRepository repository;
   final FileRepository fileRepository;
   final FilePicker filePick;
+  final TokenRepository tokenRepository;
   RegistrationBloc({
     required this.repository,
     required this.filePick,
+    required this.tokenRepository,
     required this.fileRepository,
   }) : super(RegistrationState()) {
     //
@@ -75,7 +78,9 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           avatarUrl: state.avatarUrl,
           phoneNumber: state.phoneNumber,
           newsChannels: state.interestedNews);
+
       repository.createAccount(profile);
+      tokenRepository.saveToken(profile.uid);
     });
   }
   nextPage() {

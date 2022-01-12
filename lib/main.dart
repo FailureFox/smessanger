@@ -16,8 +16,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   rep.init();
-
-  // rep.init();
   runApp(const App());
 }
 
@@ -27,7 +25,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AppBloc>(
-        create: (_) => AppBloc(), child: const _MyApp());
+        create: (_) => rep.sl.call<AppBloc>(), child: const _MyApp());
   }
 }
 
