@@ -42,10 +42,11 @@ class ChatRoomPage extends StatelessWidget {
               bloc: ChatInheritedWidget.of(context)!.bloc,
               builder: (context, state) {
                 return ListTile(
+                  onTap: () {},
                   contentPadding: const EdgeInsets.all(0),
                   leading: CircleAvatar(
                     radius: 22,
-                    backgroundImage: NetworkImage(state.chatUser!.avatarUrl),
+                    backgroundImage: NetworkImage(state.chatUser!.avatarUrl!),
                   ),
                   title: Text(state.chatUser!.name,
                       style: Theme.of(context).textTheme.headline2),
@@ -110,7 +111,6 @@ class _MessageInputBarState extends State<MessageInputBar> {
                     ChatInheritedWidget.of(context)!.bloc.add(
                         ChatSendMessageEvent(message: text, uid: widget.uid));
                     controller.clear();
-
                     setState(() {});
                   },
                   icon: const Icon(Icons.send))

@@ -11,7 +11,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       (event, emit) {
         emit(state.copyWith(status: HomeStatus.loading));
         repository
-            .getMyUser(event.uid)
+            .getUser(event.uid)
             .listen((event) => myUserChangedEvent(event));
       },
     );
@@ -19,7 +19,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomePageChangeEvent>(
         (event, emit) => emit(state.copyWith(page: event.page)));
   }
-  myUserChangedEvent(MyProfile myProfile) {
+  myUserChangedEvent(UserModel myProfile) {
     emit(state.copyWith(myProfile: myProfile, status: HomeStatus.loaded));
   }
 }

@@ -10,16 +10,19 @@ import 'package:smessanger/src/models/roles.dart';
 import 'package:smessanger/src/resources/domain/repositories/auth_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/file_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/token_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
-  PageController controller = PageController();
-  final AuthRepository repository;
+  final PageController controller = PageController();
+  final AuthRepository authRep;
+  final UserRepository userRep;
   final FileRepository fileRepository;
   final FilePicker filePick;
   final TokenRepository tokenRepository;
   RegistrationBloc({
-    required this.repository,
+    required this.authRep,
     required this.filePick,
+    required this.userRep,
     required this.tokenRepository,
     required this.fileRepository,
   }) : super(RegistrationState()) {
@@ -68,7 +71,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       emit(state.copyWith(roles: roles));
     });
     on<RegRegisterAccountEvent>((event, emit) {
-      MyProfile profile = MyProfile(
+      UserModel profile = UserModel(
           name: state.name,
           surname: state.surname,
           status: '',
@@ -79,7 +82,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           phoneNumber: state.phoneNumber,
           newsChannels: state.interestedNews);
 
-      repository.createAccount(profile);
+      userRep.setUser(profile);
       tokenRepository.saveToken(profile.uid);
     });
   }

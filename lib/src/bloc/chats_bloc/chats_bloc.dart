@@ -9,7 +9,7 @@ import 'package:smessanger/src/bloc/chats_bloc/chats_event.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_state.dart';
 import 'package:smessanger/src/models/chat_model.dart';
 import 'package:smessanger/src/models/message_model.dart';
-import 'package:smessanger/src/models/user_model.dart';
+import 'package:smessanger/src/models/my_profile_model.dart';
 import 'package:smessanger/src/resources/domain/repositories/messages_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 
@@ -26,7 +26,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatLoadingEvent>((event, emit) {
       emit(state.copyWith(status: ChatStatus.loading));
       try {
-        userRepo.getChatUser(chatModel.chatUser).listen((user) {
+        userRepo.getUser(chatModel.chatUser).listen((user) {
           userLoaded(user);
           messageRepo.getMessages(chatModel.chatID).listen((messages) {
             messagesLoaded(messages);
@@ -64,8 +64,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ),
       );
     } else {
-      listKey.currentState!.insertItem(0,
-          duration: const Duration(milliseconds: 200));
+      listKey.currentState!
+          .insertItem(0, duration: const Duration(milliseconds: 200));
       state.messages = messages;
     }
   }

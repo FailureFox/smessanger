@@ -1,6 +1,6 @@
 import 'package:smessanger/src/models/chat_model.dart';
 
-class MyProfile {
+class UserModel {
   String name;
   String? surname;
   String phoneNumber;
@@ -15,7 +15,7 @@ class MyProfile {
   List<String> following;
   List<String> followers;
 
-  MyProfile({
+  UserModel({
     required this.name,
     this.surname,
     required this.countryCode,
@@ -31,8 +31,8 @@ class MyProfile {
     this.followers = const [],
   });
 
-  factory MyProfile.fromMap(Map<String, dynamic> map, String uid) {
-    return MyProfile(
+  factory UserModel.fromMap(Map<String, dynamic> map, String uid) {
+    return UserModel(
       name: map['name'],
       uid: uid,
       surname: map['surname'] != '' ? map['surname'] : null,

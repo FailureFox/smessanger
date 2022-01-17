@@ -28,9 +28,13 @@ Future<void> init() async {
   sl.registerFactory<AuthBloc>(
       () => AuthBloc(repository: sl.call(), tokenRepository: sl.call()));
   sl.registerFactory<RegistrationBloc>(() => RegistrationBloc(
-      repository: sl.call(), filePick: sl.call(), fileRepository: sl.call()));
+      userRep: sl.call(),
+      tokenRepository: sl.call(),
+      authRep: sl.call(),
+      filePick: sl.call(),
+      fileRepository: sl.call()));
   sl.registerFactory<HomeBloc>(() => HomeBloc(repository: sl.call()));
-  
+
   //repositories
   sl.registerLazySingleton<UserRepository>(
       () => UserRepositoryUse(firestore: sl.call()));

@@ -14,16 +14,6 @@ class AuthRepositoryUse extends AuthRepository {
   AuthRepositoryUse({required this.firestore, required this.firebaseAuth});
 
   @override
-  Future<String> createAccount(MyProfile profile) async {
-    try {
-      await firestore.collection('users').doc(profile.uid).set(profile.toMap());
-      return profile.uid;
-    } catch (e) {
-      throw Exception(e);
-    }
-  }
-
-  @override
   Future<bool> isRegistered(String uid) async {
     try {
       return (await firestore.collection('users').doc(uid).get()).exists;

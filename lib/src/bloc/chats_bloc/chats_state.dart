@@ -1,6 +1,6 @@
 import 'package:smessanger/src/bloc/chats_bloc/chat_status.dart';
 import 'package:smessanger/src/models/message_model.dart';
-import 'package:smessanger/src/models/user_model.dart';
+import 'package:smessanger/src/models/my_profile_model.dart';
 
 class ChatState {
   final UserModel? chatUser;

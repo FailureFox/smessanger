@@ -87,7 +87,7 @@ class SettingsBody extends StatelessWidget {
               text: 'Edit profile',
               icon: Icons.edit_outlined,
               function: () {
-                final MyProfile profile =
+                final UserModel profile =
                     context.read<HomeBloc>().state.myProfile!;
                 Navigator.push(
                     context,
@@ -227,7 +227,7 @@ class SettingsComponents extends StatelessWidget {
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key, required this.profile}) : super(key: key);
-  final MyProfile profile;
+  final UserModel profile;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

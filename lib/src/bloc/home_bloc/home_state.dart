@@ -2,12 +2,12 @@ import 'package:smessanger/src/models/my_profile_model.dart';
 
 class HomeState {
   final int page;
-  final MyProfile? myProfile;
+  final UserModel? myProfile;
   final HomeStatus status;
   HomeState({this.page = 0, this.myProfile, this.status = HomeStatus.intial});
   HomeState copyWith({
     int? page,
-    MyProfile? myProfile,
+    UserModel? myProfile,
     HomeStatus? status,
   }) {
     return HomeState(

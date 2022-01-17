@@ -44,7 +44,7 @@ class _ChatItemsState extends State<ChatItems> {
               clipBehavior: Clip.hardEdge,
               borderRadius: BorderRadius.circular(100),
               child: CircleAvatar(
-                backgroundImage: NetworkImage(state.chatUser!.avatarUrl),
+                backgroundImage: NetworkImage(state.chatUser!.avatarUrl!),
                 backgroundColor: Theme.of(context).backgroundColor,
                 radius: MediaQuery.of(context).size.width / 14,
               ),
