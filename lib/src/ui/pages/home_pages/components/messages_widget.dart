@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smessanger/src/models/message_model.dart';
-import 'package:smessanger/src/models/user_model.dart';
+import 'package:smessanger/src/models/my_profile_model.dart';
 
 class MessagesWidget extends StatelessWidget {
   const MessagesWidget({
@@ -24,7 +24,8 @@ class MessagesWidget extends StatelessWidget {
             isNotMy ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: [
           isNotMy
-              ? CircleAvatar(backgroundImage: NetworkImage(userModel.avatarUrl))
+              ? CircleAvatar(
+                  backgroundImage: NetworkImage(userModel.avatarUrl!))
               : const SizedBox(),
           Container(
             constraints:
