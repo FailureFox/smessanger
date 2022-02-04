@@ -10,9 +10,10 @@ class FilmsBloc extends Cubit<FilmsState> {
   }
 
   loadFilms(String region) async {
-    final popularityFilms =
-        await filmsDomain.getPopularityFilms(region: region);
-    final trandingFilms = await filmsDomain.getTrandingFilms(region: region);
+    final popularityFilms = await filmsDomain.getFilmsList(
+        region: region, path: '/3/movie/popular');
+    final trandingFilms = await filmsDomain.getFilmsList(
+        region: region, path: '/3/trending/movie/day');
     emit(state.copyWith(
         popularityFilms: popularityFilms, trandingFilms: trandingFilms));
   }
