@@ -14,51 +14,56 @@ class ChatRoomPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-          ),
-          flexibleSpace: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .scaffoldBackgroundColor
-                        .withOpacity(0.9)),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+        ),
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color:
+                    Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
               ),
             ),
           ),
-          backgroundColor:
-              Theme.of(context).appBarTheme.backgroundColor!.withOpacity(0.5),
-          bottom: const PreferredSize(
-              child: Divider(height: 1), preferredSize: Size.fromHeight(5)),
-          leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: Icon(Icons.arrow_back_ios,
-                  color: Theme.of(context).iconTheme.color)),
-          title: BlocBuilder<ChatBloc, ChatState>(
-              bloc: ChatInheritedWidget.of(context)!.bloc,
-              builder: (context, state) {
-                return ListTile(
-                  onTap: () {},
-                  contentPadding: const EdgeInsets.all(0),
-                  leading: CircleAvatar(
-                    radius: 22,
-                    backgroundImage: NetworkImage(state.chatUser!.avatarUrl!),
-                  ),
-                  title: Text(state.chatUser!.name,
-                      style: Theme.of(context).textTheme.headline2),
-                );
-              }),
         ),
-        body: Column(
-          children: [
-            const Expanded(child: ChatMessagesList()),
-            MessageInputBar(uid: homeBloc.state.myProfile!.uid)
-          ],
-        ));
+        backgroundColor:
+            Theme.of(context).appBarTheme.backgroundColor!.withOpacity(0.5),
+        bottom: const PreferredSize(
+          child: Divider(height: 1),
+          preferredSize: Size.fromHeight(5),
+        ),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios,
+              color: Theme.of(context).iconTheme.color),
+        ),
+        title: BlocBuilder<ChatBloc, ChatState>(
+          bloc: ChatInheritedWidget.of(context)!.bloc,
+          builder: (context, state) {
+            return ListTile(
+              onTap: () {},
+              contentPadding: const EdgeInsets.all(0),
+              leading: CircleAvatar(
+                radius: 22,
+                backgroundImage: NetworkImage(state.chatUser!.avatarUrl!),
+              ),
+              title: Text(state.chatUser!.name,
+                  style: Theme.of(context).textTheme.headline2),
+            );
+          },
+        ),
+      ),
+      body: Column(
+        children: [
+          const Expanded(child: ChatMessagesList()),
+          MessageInputBar(uid: homeBloc.state.myProfile!.uid)
+        ],
+      ),
+    );
   }
 }
 

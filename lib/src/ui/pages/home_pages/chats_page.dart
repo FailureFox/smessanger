@@ -62,7 +62,10 @@ class _ChatPageState extends State<ChatPage> {
                 children: [
                   const Spacer(),
                   Text('Chats', style: Theme.of(context).textTheme.headline1),
-                  const SearchInput()
+                  SearchInput(
+                    text: 'Chats, channels and peoples...',
+                    onTap: () {},
+                  )
                 ],
               ),
             ),

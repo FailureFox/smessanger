@@ -7,6 +7,7 @@ import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
 import 'package:smessanger/src/models/films_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 
 class FilmsMainPage extends StatelessWidget {
   const FilmsMainPage({Key? key}) : super(key: key);
@@ -16,14 +17,80 @@ class FilmsMainPage extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
       if (state.status == HomeStatus.loaded) {
         return BlocProvider<FilmsBloc>(
-            create: (_) => FilmsBloc(
-                filmsDomain: rep.sl.call(),
-                region: state.myProfile!.countryCode),
-            child: const FilmsBody());
+          create: (_) => FilmsBloc(
+              filmsDomain: rep.sl.call(), region: state.myProfile!.countryCode),
+          child: const SecondFilmsBody(),
+        );
       } else {
         return Container();
       }
     });
+  }
+}
+
+class SecondFilmsBody extends StatefulWidget {
+  const SecondFilmsBody({Key? key}) : super(key: key);
+
+  @override
+  State<SecondFilmsBody> createState() => SecondFilmsBodyState();
+}
+
+class SecondFilmsBodyState extends State<SecondFilmsBody> {
+  final ScrollController _controller = ScrollController();
+  bool _isClosed = false;
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      _isClosed = isClosed;
+      setState(() {});
+    });
+  }
+
+  bool get isClosed {
+    return _controller.hasClients &&
+        _controller.offset > (150 - kToolbarHeight);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      controller: _controller,
+      slivers: [
+        SliverAppBar(
+          centerTitle: true,
+          pinned: true,
+          title: AnimatedCrossFade(
+              firstChild: Text(
+                'Movies',
+                style: Theme.of(context).textTheme.headline2,
+              ),
+              secondChild: const SizedBox(),
+              crossFadeState: _isClosed
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+              duration: const Duration(milliseconds: 300)),
+          expandedHeight: 150,
+          flexibleSpace: FlexibleSpaceBar(
+            background: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Spacer(),
+                  Text('Movies', style: Theme.of(context).textTheme.headline1),
+                  SearchInput(
+                    onTap: () {},
+                    text: 'Films, serials and actors...',
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+        const FilmsBody()
+      ],
+    );
   }
 }
 
@@ -32,8 +99,8 @@ class FilmsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
+    return SliverList(
+      delegate: SliverChildListDelegate.fixed([
         BlocBuilder<FilmsBloc, FilmsState>(builder: (context, state) {
           return MainFilmsList(
             films: state.popularityFilms,
@@ -46,7 +113,7 @@ class FilmsBody extends StatelessWidget {
             text: 'Tranding',
           );
         }),
-      ],
+      ]),
     );
   }
 }
