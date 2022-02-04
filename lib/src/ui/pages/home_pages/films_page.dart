@@ -12,38 +12,36 @@ class FilmsMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
-        if (state.status == HomeStatus.loaded) {
-          return BlocProvider<FilmsBloc>(
-              create: (_) => FilmsBloc(
-                  filmsDomain: rep.sl.call(),
-                  region: state.myProfile!.countryCode),
-              child: const FilmsPageBody());
-        } else {
-          return Container();
-        }
-      }),
-    );
+    return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+      if (state.status == HomeStatus.loaded) {
+        return BlocProvider<FilmsBloc>(
+            create: (_) => FilmsBloc(
+                filmsDomain: rep.sl.call(),
+                region: state.myProfile!.countryCode),
+            child: const FilmsBody());
+      } else {
+        return Container();
+      }
+    });
   }
 }
 
-class FilmsPageBody extends StatelessWidget {
-  const FilmsPageBody({Key? key}) : super(key: key);
+class FilmsBody extends StatelessWidget {
+  const FilmsBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FilmsBloc, FilmsState>(builder: (context, state) {
-      return ListView(
-        children: [
-          Text('Популярные фильмы',
-              style: Theme.of(context).textTheme.headline1),
-          MainFilmsList(films: state.popularityFilms),
-          MainFilmsList(films: state.trandingFilms),
-        ],
-      );
-    });
+    return ListView(
+      children: [
+        Text('123', style: Theme.of(context).textTheme.headline1),
+        BlocBuilder<FilmsBloc, FilmsState>(builder: (context, state) {
+          return MainFilmsList(films: state.popularityFilms);
+        }),
+        BlocBuilder<FilmsBloc, FilmsState>(builder: (context, state) {
+          return MainFilmsList(films: state.trandingFilms);
+        }),
+      ],
+    );
   }
 }
 
