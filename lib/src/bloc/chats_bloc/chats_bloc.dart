@@ -39,7 +39,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     on<ChatSendMessageEvent>((event, emit) async {
       messageRepo.sendMessage(
-          message: MessageModel(
+          message: MessageTextModel(
               dateTime: Timestamp.now(),
               from: event.uid,
               message: event.message,
@@ -52,7 +52,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(state.copyWith(chatUser: user));
   }
 
-  messagesLoaded(List<MessageModel> messages) {
+  messagesLoaded(List<MessageTextModel> messages) {
     final time = messages.last.dateTime.toDate();
     final lastMessageTime = timeDetect(time);
     if (state.messages == null) {

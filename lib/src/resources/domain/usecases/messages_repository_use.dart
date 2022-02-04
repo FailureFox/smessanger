@@ -8,7 +8,7 @@ class MessagesRepositoryUse extends MessagesRepository {
 
   @override
   Future<void> sendMessage({
-    required MessageModel message,
+    required MessageTextModel message,
     required String chatId,
   }) async {
     final CollectionReference collection =
@@ -17,7 +17,7 @@ class MessagesRepositoryUse extends MessagesRepository {
   }
 
   @override
-  Stream<List<MessageModel>> getMessages(String chatId) {
+  Stream<List<MessageTextModel>> getMessages(String chatId) {
     final snapshots = firestore
         .collection('chats')
         .doc(chatId)
@@ -25,6 +25,6 @@ class MessagesRepositoryUse extends MessagesRepository {
         .orderBy('dateTime', descending: true)
         .snapshots();
     return snapshots.map((event) =>
-        event.docs.map((e) => MessageModel.fromMap(e.data())).toList());
+        event.docs.map((e) => MessageTextModel.fromMap(e.data())).toList());
   }
 }

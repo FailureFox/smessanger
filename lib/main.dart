@@ -1,12 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_event.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_state.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_status.dart';
-import 'package:smessanger/src/ui/pages/register_pages/pin_setup_page.dart';
 import 'package:smessanger/src/ui/screens/auth_screen.dart';
 import 'package:smessanger/src/ui/screens/home_screen.dart';
 import 'injections.dart' as rep;
@@ -15,7 +13,7 @@ import 'package:smessanger/src/ui/styles/theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  rep.init();
+  await rep.init();
   runApp(const App());
 }
 

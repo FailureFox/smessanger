@@ -7,8 +7,8 @@ import 'package:smessanger/src/resources/data/news_data.dart';
 import 'package:smessanger/src/resources/data/news_data_use.dart';
 
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
-  final NewsData newsData = NewsDataUse();
-  NewsBloc() : super(NewsState()) {
+  final NewsData newsData;
+  NewsBloc({required this.newsData}) : super(NewsState()) {
     on<NewsLoadingEvent>((event, emit) async {
       try {
         emit(state.copyWIth(status: NewsStatus.loading));

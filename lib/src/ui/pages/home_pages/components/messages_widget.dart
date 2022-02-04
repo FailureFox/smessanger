@@ -10,7 +10,7 @@ class MessagesWidget extends StatelessWidget {
     required this.userModel,
   }) : super(key: key);
   final Animation<double> animation;
-  final MessageModel message;
+  final MessageTextModel message;
 
   final UserModel userModel;
 

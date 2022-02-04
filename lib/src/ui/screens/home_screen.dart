@@ -46,7 +46,7 @@ class _HomeScreenState extends State<_HomeScreen> {
           children: const [
             NewsPage(),
             ChatPage(),
-            FilmsPage(),
+            FilmsMainPage(),
             SettingsPage(),
           ],
         ),

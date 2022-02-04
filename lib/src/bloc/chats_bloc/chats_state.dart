@@ -4,7 +4,7 @@ import 'package:smessanger/src/models/my_profile_model.dart';
 
 class ChatState {
   final UserModel? chatUser;
-  List<MessageModel>? messages;
+  List<MessageTextModel>? messages;
   final ChatStatus status;
   final String lastMessageTime;
   ChatState({
@@ -15,7 +15,7 @@ class ChatState {
   });
 
   ChatState copyWith({
-    List<MessageModel>? messages,
+    List<MessageTextModel>? messages,
     UserModel? chatUser,
     ChatStatus? status,
     String? lastMessageTime,

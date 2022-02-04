@@ -4,8 +4,10 @@ import 'package:smessanger/src/bloc/news_bloc/news_bloc.dart';
 import 'package:smessanger/src/bloc/news_bloc/news_event.dart';
 import 'package:smessanger/src/bloc/news_bloc/news_state.dart';
 import 'package:smessanger/src/bloc/news_bloc/news_status.dart';
+import 'package:smessanger/src/resources/data/news_data.dart';
 import 'package:smessanger/src/ui/pages/home_pages/components/news_items_widget.dart';
 import 'package:smessanger/src/ui/styles/images.dart';
+import 'package:smessanger/injections.dart' as rep;
 
 class NewsPage extends StatelessWidget {
   const NewsPage({Key? key}) : super(key: key);
@@ -13,7 +15,8 @@ class NewsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (_) => NewsBloc(), child: const _NewsPageWithBloc());
+        create: (_) => NewsBloc(newsData: rep.sl.call<NewsData>()),
+        child: const _NewsPageWithBloc());
   }
 }
 
