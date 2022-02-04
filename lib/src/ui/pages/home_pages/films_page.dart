@@ -6,6 +6,7 @@ import 'package:smessanger/src/bloc/films_bloc/films_state.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
 import 'package:smessanger/src/models/films_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class FilmsMainPage extends StatelessWidget {
   const FilmsMainPage({Key? key}) : super(key: key);
@@ -119,9 +120,23 @@ class PopularityFilmsWidget extends StatelessWidget {
                 ? Stack(
                     children: [
                       SizedBox.expand(
-                        child: Image.network(
-                            film.posterPath ?? film.backdropPath!,
-                            fit: BoxFit.fitHeight),
+                        child: CachedNetworkImage(
+                          cacheKey: film.posterPath ?? film.backdropPath,
+                          height: double.infinity,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          imageUrl: film.posterPath ?? film.backdropPath!,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Center(
+                            child: CircularProgressIndicator(
+                                value: downloadProgress.progress),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
+                        // child: Image.network(
+                        //     film.posterPath ?? film.backdropPath!,
+                        //     fit: BoxFit.fitHeight),
                       ),
                       Material(
                         color: Colors.transparent,
@@ -160,7 +175,7 @@ class SingleFilmPage extends StatelessWidget {
       body: Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.width / 1.2 ,
+            height: MediaQuery.of(context).size.width / 1.2,
             width: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
