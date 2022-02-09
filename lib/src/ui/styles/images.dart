@@ -11,4 +11,5 @@ abstract class AppImages {
   static const String searching = 'assets/larry/searching.png';
   static const String teamwork = 'assets/larry/teamwork.png';
   static const String waiting = 'assets/larry/waiting.png';
+  static const String noImage = 'assets/no_image.jpg';
 }

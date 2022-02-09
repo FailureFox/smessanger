@@ -16,11 +16,10 @@ class HttpDomainUse extends HttpDomain {
         final jsonString = response.body;
         return jsonDecode(jsonString);
       } else {
-        print(jsonDecode(response.body));
         throw Exception('Ошибка');
       }
     } catch (e) {
-      print(e);
+ 
       throw Exception(e);
     }
   }

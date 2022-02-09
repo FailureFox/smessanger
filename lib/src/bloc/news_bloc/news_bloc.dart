@@ -4,7 +4,6 @@ import 'package:smessanger/src/bloc/news_bloc/news_state.dart';
 import 'package:smessanger/src/bloc/news_bloc/news_status.dart';
 import 'package:smessanger/src/models/news_model.dart';
 import 'package:smessanger/src/resources/data/news_data.dart';
-import 'package:smessanger/src/resources/data/news_data_use.dart';
 
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
   final NewsData newsData;

@@ -17,7 +17,7 @@ class MessagesRepositoryUse extends MessagesRepository {
   }
 
   @override
-  Stream<List<MessageTextModel>> getMessages(String chatId) {
+  Stream<List<Message>> getMessages(String chatId) {
     final snapshots = firestore
         .collection('chats')
         .doc(chatId)

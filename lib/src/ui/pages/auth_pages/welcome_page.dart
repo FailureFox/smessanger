@@ -24,7 +24,7 @@ class WelcomePage extends StatelessWidget {
           ),
           const Spacer(),
           SizedBox(
-            height: MediaQuery.of(context).size.width / 8,
+            height: MediaQuery.of(context).size.height / 15,
             width: double.infinity,
             child: ElevatedButton(
                 onPressed: () {

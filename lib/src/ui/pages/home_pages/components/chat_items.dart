@@ -6,6 +6,7 @@ import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_event.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_state.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
+import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/ui/pages/home_pages/chats_page.dart';
 import 'package:smessanger/src/ui/pages/home_pages/sub_pages.dart/chat_room_page.dart';
 
@@ -53,7 +54,7 @@ class _ChatItemsState extends State<ChatItems> {
             trailing: Column(children: [
               Text(state.lastMessageTime),
             ]),
-            subtitle: Text(state.messages!.last.message));
+            subtitle: Text((state.messages!.last as MessageTextModel).message));
       } else {
         return const ChatListLoadingItems();
       }

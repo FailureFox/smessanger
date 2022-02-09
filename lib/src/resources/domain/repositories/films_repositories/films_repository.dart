@@ -19,4 +19,9 @@ class FilmsDomain {
         .toList();
   }
 
+  Future getMovie({
+    required int id,
+    required String region,
+    required String language,
+  }) async {}
 }

@@ -52,7 +52,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(state.copyWith(chatUser: user));
   }
 
-  messagesLoaded(List<MessageTextModel> messages) {
+  messagesLoaded(List<Message> messages) {
     final time = messages.last.dateTime.toDate();
     final lastMessageTime = timeDetect(time);
     if (state.messages == null) {

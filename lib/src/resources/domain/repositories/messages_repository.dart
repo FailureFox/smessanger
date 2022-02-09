@@ -4,5 +4,5 @@ abstract class MessagesRepository {
   Future<void> sendMessage(
       {required MessageTextModel message, required String chatId});
 
-  Stream<List<MessageTextModel>> getMessages(String chatId);
+  Stream<List<Message>> getMessages(String chatId);
 }

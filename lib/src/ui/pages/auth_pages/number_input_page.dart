@@ -175,7 +175,7 @@ class NumberNextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.width / 8,
+      height: MediaQuery.of(context).size.height / 15,
       width: double.infinity,
       child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
         return ElevatedButton(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:smessanger/src/models/news_model.dart';
 import 'package:smessanger/src/ui/pages/home_pages/sub_pages.dart/news_full_page.dart';
+import 'package:smessanger/src/ui/styles/images.dart';
 
 class NewsItemsWidget extends StatelessWidget {
   const NewsItemsWidget({Key? key, required this.news}) : super(key: key);
@@ -42,10 +43,14 @@ class NewsItemsWidget extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 3,
                   height: MediaQuery.of(context).size.width / 5,
-                  child: Image.network(
-                    news.urlToImage,
-                    fit: BoxFit.fitWidth,
-                  ),
+                  child: FadeInImage(
+                      placeholder: const AssetImage(AppImages.searching),
+                      fit: BoxFit.cover,
+                      imageErrorBuilder: (context, error, starckTrase) {
+                        return Image.asset(AppImages.noImage,
+                            fit: BoxFit.cover);
+                      },
+                      image: NetworkImage(news.urlToImage)),
                 )
               ],
             ),

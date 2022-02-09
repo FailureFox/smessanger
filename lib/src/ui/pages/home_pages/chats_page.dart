@@ -9,6 +9,7 @@ import 'package:smessanger/src/resources/domain/repositories/user_repository.dar
 import 'package:smessanger/src/ui/pages/home_pages/components/chat_items.dart';
 import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 import 'package:smessanger/injections.dart' as rep;
+import 'package:smessanger/src/ui/pages/home_pages/sub_pages.dart/search_page.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -34,6 +35,7 @@ class _ChatPageState extends State<ChatPage> {
         _controller.offset > (150 - kToolbarHeight);
   }
 
+  static const String chatsText = 'Chats, channels and peoples...';
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -63,8 +65,15 @@ class _ChatPageState extends State<ChatPage> {
                   const Spacer(),
                   Text('Chats', style: Theme.of(context).textTheme.headline1),
                   SearchInput(
-                    text: 'Chats, channels and peoples...',
-                    onTap: () {},
+                    text: chatsText,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SearchPage(),
+                        ),
+                      );
+                    },
                   )
                 ],
               ),

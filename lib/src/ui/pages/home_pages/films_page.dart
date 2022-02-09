@@ -125,6 +125,8 @@ class MainFilmsList extends StatelessWidget {
   final String text;
   @override
   Widget build(BuildContext context) {
+    final Key key = UniqueKey();
+
     return BlocBuilder<FilmsBloc, FilmsState>(builder: (context, state) {
       return SizedBox(
         height: MediaQuery.of(context).size.width / 1,
@@ -155,6 +157,7 @@ class MainFilmsList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return PopularityFilmsWidget(
                     film: films[index],
+                    index: index,
                   );
                 },
               ),
@@ -167,8 +170,11 @@ class MainFilmsList extends StatelessWidget {
 }
 
 class PopularityFilmsWidget extends StatelessWidget {
-  const PopularityFilmsWidget({Key? key, required this.film}) : super(key: key);
+  const PopularityFilmsWidget(
+      {Key? key, required this.film, required this.index})
+      : super(key: key);
   final FilmsModel film;
+  final int index;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -187,24 +193,8 @@ class PopularityFilmsWidget extends StatelessWidget {
                 ? Stack(
                     children: [
                       SizedBox.expand(
-                        child: CachedNetworkImage(
-                          cacheKey: film.posterPath ?? film.backdropPath,
-                          height: double.infinity,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          imageUrl: film.posterPath ?? film.backdropPath!,
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) => Center(
-                            child: CircularProgressIndicator(
-                                value: downloadProgress.progress),
-                          ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                        // child: Image.network(
-                        //     film.posterPath ?? film.backdropPath!,
-                        //     fit: BoxFit.fitHeight),
-                      ),
+                          child: FilmPhotoHeroWidget(
+                              url: film.posterPath ?? film.backdropPath!)),
                       Material(
                         color: Colors.transparent,
                         child: InkWell(
@@ -212,9 +202,8 @@ class PopularityFilmsWidget extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SingleFilmPage(
-                                  film: film,
-                                ),
+                                builder: (context) =>
+                                    FilmDetailsPage(film: film),
                               ),
                             );
                           },
@@ -233,33 +222,53 @@ class PopularityFilmsWidget extends StatelessWidget {
   }
 }
 
-class SingleFilmPage extends StatelessWidget {
-  const SingleFilmPage({Key? key, required this.film}) : super(key: key);
-  final FilmsModel film;
+class FilmPhotoHeroWidget extends StatelessWidget {
+  const FilmPhotoHeroWidget({Key? key, required this.url}) : super(key: key);
+  final String url;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.width / 1.2,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: NetworkImage(film.backdropPath ?? film.posterPath!),
-                  fit: BoxFit.fitHeight),
-            ),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(film.title,
-                    style: Theme.of(context).textTheme.headline1),
+    return CachedNetworkImage(
+      cacheKey: url,
+      height: double.infinity,
+      width: double.infinity,
+      fit: BoxFit.cover,
+      imageUrl: url,
+      progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+        child: CircularProgressIndicator(value: downloadProgress.progress),
+      ),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
+    );
+  }
+}
+
+class FilmDetailsPage extends StatelessWidget {
+  const FilmDetailsPage({Key? key, required this.film}) : super(key: key);
+  final FilmsModel film;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            image: film.backdropPath != null
+                ? DecorationImage(image: NetworkImage(film.backdropPath!))
+                : null,
+          ),
+          height: MediaQuery.of(context).size.width / 1.3,
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: SizedBox(
+              height: 100,
+              width: 50,
+              child: FilmPhotoHeroWidget(
+                url: (film.posterPath ?? film.backdropPath!),
               ),
             ),
           ),
-        ],
-      ),
+        )
+      ],
     );
   }
 }

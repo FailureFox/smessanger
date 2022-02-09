@@ -9,6 +9,7 @@ import 'package:smessanger/src/ui/screens/auth_screen.dart';
 import 'package:smessanger/src/ui/screens/home_screen.dart';
 import 'injections.dart' as rep;
 import 'package:smessanger/src/ui/styles/theme.dart';
+import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -34,8 +34,9 @@ class FilmsModel {
   factory FilmsModel.fromMap(Map<String, dynamic> map) {
     return FilmsModel(
       adult: map['adult'],
-      backdropPath:
-          'https://image.tmdb.org/t/p/original' + map['backdrop_path'],
+      backdropPath: map['backdrop_path'] != null
+          ? 'https://image.tmdb.org/t/p/original' + map['backdrop_path']
+          : null,
       genreId: (map['genre_ids'] as List).map((e) => e as int).toList(),
       id: map['id'],
       language: map['original_language'],

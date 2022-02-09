@@ -49,7 +49,7 @@ class PhoneVerifyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: MediaQuery.of(context).size.width / 8,
+      height: MediaQuery.of(context).size.height / 15,
       child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
         return ElevatedButton(
           onPressed: state.status is AuthLoadingStatus

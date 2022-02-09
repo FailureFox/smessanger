@@ -80,7 +80,7 @@ class RegAvatarSelectNextButton extends StatelessWidget {
     return BlocBuilder<RegistrationBloc, RegistrationState>(
         builder: (context, state) {
       return SizedBox(
-        height: MediaQuery.of(context).size.width / 8,
+        height: MediaQuery.of(context).size.height / 15,
         width: double.infinity,
         child: ElevatedButton(
           onPressed: state.status is RegAvatarLoadedStatus

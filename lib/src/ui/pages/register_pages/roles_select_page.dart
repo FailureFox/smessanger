@@ -50,7 +50,7 @@ class RolesSelectPage extends StatelessWidget {
             const Spacer(),
             SizedBox(
               width: double.infinity,
-              height: MediaQuery.of(context).size.width / 8,
+              height: MediaQuery.of(context).size.height / 15,
               child: ElevatedButton(
                 onPressed: () => context.read<RegistrationBloc>().nextPage(),
                 child: const Text('Next'),

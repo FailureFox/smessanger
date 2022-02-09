@@ -6,6 +6,7 @@ import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_event.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_state.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
+import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/ui/pages/home_pages/components/messages_widget.dart';
 
 class ChatRoomPage extends StatelessWidget {
@@ -140,7 +141,7 @@ class ChatMessagesList extends StatelessWidget {
           itemBuilder: (context, index, animation) {
             return MessagesWidget(
               animation: animation,
-              message: state.messages![index],
+              message: state.messages![index] as MessageTextModel,
               userModel: state.chatUser!,
             );
           },
