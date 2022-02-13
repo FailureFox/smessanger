@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smessanger/src/bloc/films_bloc/details_page_bloc/film_details_bloc.dart';
+import 'package:smessanger/src/bloc/films_bloc/details_page_bloc/film_details_state.dart';
 import 'package:smessanger/src/bloc/films_bloc/films_bloc.dart';
 import 'package:smessanger/injections.dart' as rep;
 import 'package:smessanger/src/bloc/films_bloc/films_state.dart';
@@ -7,7 +10,11 @@ import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
 import 'package:smessanger/src/models/films_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:smessanger/src/models/movie_details_model.dart';
+import 'package:smessanger/src/resources/domain/repositories/films_repositories/films_repository.dart';
 import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
+
+import 'sub_pages/film_details_page.dart';
 
 class FilmsMainPage extends StatelessWidget {
   const FilmsMainPage({Key? key}) : super(key: key);
@@ -18,7 +25,9 @@ class FilmsMainPage extends StatelessWidget {
       if (state.status == HomeStatus.loaded) {
         return BlocProvider<FilmsBloc>(
           create: (_) => FilmsBloc(
-              filmsDomain: rep.sl.call(), region: state.myProfile!.countryCode),
+            filmsDomain: rep.sl.call(),
+            gettedregion: state.myProfile!.countryCode,
+          ),
           child: const SecondFilmsBody(),
         );
       } else {
@@ -201,9 +210,15 @@ class PopularityFilmsWidget extends StatelessWidget {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    FilmDetailsPage(film: film),
+                              CupertinoPageRoute(
+                                builder: (mycontext) => FilmDetailsPage(
+                                  film: film,
+                                  region: BlocProvider.of<HomeBloc>(context)
+                                          .state
+                                          .myProfile
+                                          ?.countryCode ??
+                                      'rus',
+                                ),
                               ),
                             );
                           },
@@ -238,37 +253,6 @@ class FilmPhotoHeroWidget extends StatelessWidget {
         child: CircularProgressIndicator(value: downloadProgress.progress),
       ),
       errorWidget: (context, url, error) => const Icon(Icons.error),
-    );
-  }
-}
-
-class FilmDetailsPage extends StatelessWidget {
-  const FilmDetailsPage({Key? key, required this.film}) : super(key: key);
-  final FilmsModel film;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            image: film.backdropPath != null
-                ? DecorationImage(image: NetworkImage(film.backdropPath!))
-                : null,
-          ),
-          height: MediaQuery.of(context).size.width / 1.3,
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: SizedBox(
-              height: 100,
-              width: 50,
-              child: FilmPhotoHeroWidget(
-                url: (film.posterPath ?? film.backdropPath!),
-              ),
-            ),
-          ),
-        )
-      ],
     );
   }
 }

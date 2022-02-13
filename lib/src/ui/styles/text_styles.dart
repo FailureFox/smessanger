@@ -12,6 +12,13 @@ abstract class AppTextThemes {
         color: Colors.white),
     headline2: TextStyle(
         fontWeight: FontWeight.w700, fontSize: 17, color: Colors.white),
+
+    headline3: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Editor',
+        fontSize: 20,
+        color: Colors.white),
+
     bodyText1: TextStyle(
         fontWeight: FontWeight.w700, fontSize: 15, color: Colors.white),
     bodyText2: TextStyle(
@@ -28,6 +35,13 @@ abstract class AppTextThemes {
         color: Colors.black),
     headline2: TextStyle(
         fontWeight: FontWeight.w700, fontSize: 17, color: Colors.black),
+
+    headline3: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Editor',
+        fontSize: 20,
+        color: Colors.black),
+
     bodyText1: TextStyle(
         fontWeight: FontWeight.w700, fontSize: 15, color: Colors.black),
     bodyText2: TextStyle(

@@ -5,7 +5,7 @@ import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_event.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
 import 'package:smessanger/src/ui/pages/home_pages/chats_page.dart';
-import 'package:smessanger/src/ui/pages/home_pages/films_page.dart';
+import 'package:smessanger/src/ui/pages/movie_pages/films_page.dart';
 import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 import 'package:smessanger/src/ui/pages/home_pages/settings_page.dart';
 import 'package:unicons/unicons.dart';
@@ -51,8 +51,10 @@ class _HomeScreenState extends State<_HomeScreen> {
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
-          onTap: (index) =>
-              context.read<HomeBloc>().add(HomePageChangeEvent(page: index)),
+          onTap: (index) {
+            FocusScope.of(context).unfocus();
+            context.read<HomeBloc>().add(HomePageChangeEvent(page: index));
+          },
           selectedFontSize: 11,
           unselectedFontSize: 11,
           currentIndex: state.page,
