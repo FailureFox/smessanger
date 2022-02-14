@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:smessanger/src/bloc/films_bloc/details_page_bloc/film_details_bloc.dart';
 import 'package:smessanger/src/bloc/films_bloc/details_page_bloc/film_details_state.dart';
+import 'package:smessanger/src/models/credits_model.dart';
 import 'package:smessanger/src/models/films_model.dart';
-import 'package:smessanger/src/models/movie_details_model.dart';
 import 'package:smessanger/src/resources/domain/repositories/films_repositories/films_repository.dart';
 import 'package:smessanger/injections.dart' as rep;
 import 'package:smessanger/src/ui/pages/movie_pages/sub_pages/trailer_page.dart';
@@ -49,7 +49,8 @@ class _FilmDetailsPage extends StatelessWidget {
               ),
               const RaitingAndTrailerWidget(),
               const FilmDetailsTitle(),
-              const OverViewWidget()
+              const OverViewWidget(),
+              const CreditsList(),
             ],
           ),
         );
@@ -161,6 +162,7 @@ class RaitingAndTrailerWidget extends StatelessWidget {
                           child: CustomPaint(
                             painter: RatingPainter(
                                 rating: state.details.voteAvergane,
+                                context: context,
                                 backGroundColor:
                                     Theme.of(context).dialogBackgroundColor),
                           ),
@@ -217,18 +219,27 @@ class RaitingAndTrailerWidget extends StatelessWidget {
 class RatingPainter extends CustomPainter {
   final Color backGroundColor;
   final double rating;
-  RatingPainter({required this.backGroundColor, required this.rating});
+  final BuildContext context;
+  RatingPainter(
+      {required this.backGroundColor,
+      required this.rating,
+      required this.context});
   @override
   void paint(Canvas canvas, Size size) {
     final Paint backgroundPainter = Paint();
-    backgroundPainter.color = backGroundColor;
+    backgroundPainter.color = Theme.of(context).backgroundColor;
     backgroundPainter.style = PaintingStyle.fill;
     canvas.drawOval(Offset.zero & size, backgroundPainter);
-
+    final Paint raitDecoration = Paint();
+    raitDecoration.color = Colors.white30;
+    raitDecoration.style = PaintingStyle.stroke;
+    raitDecoration.strokeWidth = 4;
+    canvas.drawArc(const Offset(2, 2) & Size(size.width - 4, size.width - 4), 0,
+        pi * 2, false, raitDecoration);
     final Paint secondPainter = Paint();
     secondPainter.color = getColor(rating);
     secondPainter.style = PaintingStyle.stroke;
-    secondPainter.strokeWidth = 4;
+    secondPainter.strokeWidth = 2;
     canvas.drawArc(const Offset(2, 2) & Size(size.width - 4, size.height - 4),
         -pi / 2, pi * 2 * (rating / 10), false, secondPainter);
   }
@@ -272,6 +283,83 @@ class OverViewWidget extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText1,
             );
           }),
+        ],
+      ),
+    );
+  }
+}
+
+class CreditsList extends StatelessWidget {
+  const CreditsList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Text('Credits', style: Theme.of(context).textTheme.headline2),
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height / 3.5,
+          child: BlocBuilder<FilmDetailsBloc, FilmDetailsState>(
+              builder: (context, state) {
+            final mystate = state as FilmDetailsLoaded;
+            return ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                for (var item in state.credits) CreditsItem(credit: item),
+              ],
+            );
+          }),
+        ),
+      ],
+    );
+  }
+}
+
+class CreditsItem extends StatelessWidget {
+  const CreditsItem({Key? key, required this.credit}) : super(key: key);
+  final CreditsModel credit;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(right: 10),
+      width: MediaQuery.of(context).size.height / 6,
+      child: Column(
+        children: [
+          Expanded(
+            child: credit.profilePath != ''
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    clipBehavior: Clip.hardEdge,
+                    child: FadeInImage(
+                      fit: BoxFit.cover,
+                      placeholder: const AssetImage(AppImages.noImage),
+                      image: NetworkImage(
+                        'https://image.tmdb.org/t/p/original' +
+                            credit.profilePath,
+                      ),
+                    ),
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    clipBehavior: Clip.hardEdge,
+                    child: Image.asset(
+                      AppImages.noImage,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              credit.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );

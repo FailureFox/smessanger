@@ -47,7 +47,7 @@ class FilmsDomain {
   }
 
   Future<List<CreditsModel>> getCredits(int id) async {
-    final String path = '3/movie/$id/movies';
+    final String path = '3/movie/$id/credits';
     final Map<String, dynamic> creditsMap =
         await httpDomain.get(url: link, path: path, query: query);
     final List credits = creditsMap['cast'] as List;
