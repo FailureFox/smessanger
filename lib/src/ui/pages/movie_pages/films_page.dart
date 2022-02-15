@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smessanger/src/bloc/films_bloc/details_page_bloc/film_details_bloc.dart';
-import 'package:smessanger/src/bloc/films_bloc/details_page_bloc/film_details_state.dart';
 import 'package:smessanger/src/bloc/films_bloc/films_bloc.dart';
 import 'package:smessanger/injections.dart' as rep;
 import 'package:smessanger/src/bloc/films_bloc/films_state.dart';
@@ -10,11 +8,11 @@ import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
 import 'package:smessanger/src/models/films_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:smessanger/src/models/movie_details_model.dart';
-import 'package:smessanger/src/resources/domain/repositories/films_repositories/films_repository.dart';
 import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
+import 'package:smessanger/src/ui/styles/images.dart';
 
 import 'sub_pages/film_details_page.dart';
+import 'sub_pages/search_page.dart';
 
 class FilmsMainPage extends StatelessWidget {
   const FilmsMainPage({Key? key}) : super(key: key);
@@ -89,7 +87,17 @@ class SecondFilmsBodyState extends State<SecondFilmsBody> {
                   const Spacer(),
                   Text('Movies', style: Theme.of(context).textTheme.headline1),
                   SearchInput(
-                    onTap: () {},
+                    enabled: false,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, firstAnim, secondAnim) {
+                            return const FilmsSearchPage();
+                          },
+                        ),
+                      );
+                    },
                     text: 'Films, serials and actors...',
                   )
                 ],
@@ -97,31 +105,75 @@ class SecondFilmsBodyState extends State<SecondFilmsBody> {
             ),
           ),
         ),
-        const FilmsBody()
+        BlocBuilder<FilmsBloc, FilmsState>(builder: (context, state) {
+          if (state is FilmsLoadedState) {
+            return FilmsBody(
+              trandingFilms: state.popularityFilms,
+              popularityFilms: state.trandingFilms,
+            );
+          } else if (state is FilmsLoadingState) {
+            return SliverList(
+              delegate: SliverChildListDelegate.fixed([
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 1.3,
+                  child: const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                ),
+              ]),
+            );
+          } else {
+            state as FilmsLoadingStateError;
+            return SliverList(
+              delegate: SliverChildListDelegate.fixed([
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 2,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(AppImages.error, color: Colors.white),
+                      const SizedBox(height: 20),
+                      const Text('No connection'),
+                      const SizedBox(height: 20),
+                      CircleAvatar(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        child: IconButton(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () =>
+                              BlocProvider.of<FilmsBloc>(context).loadFilms(),
+                          icon: const Icon(Icons.refresh),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ]),
+            );
+          }
+        })
       ],
     );
   }
 }
 
 class FilmsBody extends StatelessWidget {
-  const FilmsBody({Key? key}) : super(key: key);
-
+  const FilmsBody(
+      {Key? key, required this.popularityFilms, required this.trandingFilms})
+      : super(key: key);
+  final List<FilmsModel> popularityFilms;
+  final List<FilmsModel> trandingFilms;
   @override
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildListDelegate.fixed([
-        BlocBuilder<FilmsBloc, FilmsState>(builder: (context, state) {
-          return MainFilmsList(
-            films: state.popularityFilms,
-            text: 'Popularity',
-          );
-        }),
-        BlocBuilder<FilmsBloc, FilmsState>(builder: (context, state) {
-          return MainFilmsList(
-            films: state.trandingFilms,
-            text: 'Tranding',
-          );
-        }),
+        MainFilmsList(
+          films: popularityFilms,
+          text: 'Popularity',
+        ),
+        MainFilmsList(
+          films: trandingFilms,
+          text: 'Tranding',
+        ),
       ]),
     );
   }

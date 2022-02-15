@@ -19,7 +19,6 @@ class HttpDomainUse extends HttpDomain {
         throw Exception('Ошибка');
       }
     } catch (e) {
- 
       throw Exception(e);
     }
   }

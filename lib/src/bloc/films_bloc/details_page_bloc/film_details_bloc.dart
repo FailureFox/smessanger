@@ -18,12 +18,19 @@ class FilmDetailsBloc extends Cubit<FilmDetailsState> {
   }
 
   Future<void> loadingDetails() async {
-    final DetailsModel details = await domain.getMovieDetails(
-        id: filmId, region: region, language: 'en');
-    final List<TrailersModel> trailers = await domain.getTrailers(filmId);
-    final List<CreditsModel> credits = await domain.getCredits(filmId);
-    emit(
-      FilmDetailsLoaded(details: details, trailers: trailers, credits: credits),
-    );
+    try {
+      emit(FilmDetailsLoading());
+      final DetailsModel details = await domain.getMovieDetails(
+          id: filmId, region: region, language: 'en');
+      final List<TrailersModel> trailers = await domain.getTrailers(filmId);
+      final List<CreditsModel> credits = await domain.getCredits(filmId);
+      emit(
+        FilmDetailsLoaded(
+            details: details, trailers: trailers, credits: credits),
+      );
+    } catch (e) {
+      print(e);
+      emit(FilmDetailsError(error: e.toString()));
+    }
   }
 }

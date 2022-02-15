@@ -75,6 +75,7 @@ class _NewsPageWithBlocState extends State<_NewsPageWithBloc> {
                   Text('Discover',
                       style: Theme.of(context).textTheme.headline1),
                   SearchInput(
+                    enabled: false,
                     onTap: () {},
                     text: 'Chats, channels and peoples...',
                   )
@@ -136,24 +137,33 @@ class NewsBody extends StatelessWidget {
 }
 
 class SearchInput extends StatelessWidget {
-  const SearchInput({Key? key, required this.onTap, required this.text})
+  const SearchInput(
+      {Key? key,
+      required this.onTap,
+      required this.text,
+      required this.enabled})
       : super(key: key);
   final VoidCallback onTap;
   final String text;
+  final bool enabled;
   @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.width / 9,
       margin: const EdgeInsets.symmetric(vertical: 10),
-      child: TextField(
+      child: GestureDetector(
         onTap: onTap,
-        maxLines: null,
-        minLines: null,
-        expands: true,
-        textAlignVertical: TextAlignVertical.center,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.search),
-          hintText: text,
+        child: TextField(
+          autofocus: enabled,
+          enabled: enabled,
+          maxLines: null,
+          minLines: null,
+          expands: true,
+          textAlignVertical: TextAlignVertical.center,
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.search),
+            hintText: text,
+          ),
         ),
       ),
     );

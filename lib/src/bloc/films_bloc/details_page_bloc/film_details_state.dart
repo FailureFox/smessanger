@@ -11,7 +11,10 @@ class FilmDetailsLoaded extends FilmDetailsState {
   final List<TrailersModel> trailers;
   final List<CreditsModel> credits;
   FilmDetailsLoaded(
-      {required this.details,
-      required this.trailers,
-      required this.credits});
+      {required this.details, required this.trailers, required this.credits});
+}
+
+class FilmDetailsError extends FilmDetailsState {
+  final String error;
+  FilmDetailsError({required this.error});
 }

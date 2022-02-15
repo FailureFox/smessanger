@@ -195,8 +195,8 @@ class RaitingAndTrailerWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (myContext) =>
-                          TrailerViewPage(url: state.trailers.first.key),
+                      builder: (myContext) => TrailerViewPage(
+                          url: state.trailers.map((e) => e.key).toList()),
                     ),
                   );
                 },
@@ -301,7 +301,7 @@ class CreditsList extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Text('Credits', style: Theme.of(context).textTheme.headline2),
         ),
-        Container(
+        SizedBox(
           height: MediaQuery.of(context).size.height / 3.5,
           child: BlocBuilder<FilmDetailsBloc, FilmDetailsState>(
               builder: (context, state) {
@@ -325,33 +325,28 @@ class CreditsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 10),
+      margin: const EdgeInsets.only(right: 10),
       width: MediaQuery.of(context).size.height / 6,
       child: Column(
         children: [
           Expanded(
+              child: ClipRRect(
+            clipBehavior: Clip.hardEdge,
+            borderRadius: BorderRadius.circular(10),
             child: credit.profilePath != ''
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    clipBehavior: Clip.hardEdge,
-                    child: FadeInImage(
-                      fit: BoxFit.cover,
-                      placeholder: const AssetImage(AppImages.noImage),
-                      image: NetworkImage(
-                        'https://image.tmdb.org/t/p/original' +
-                            credit.profilePath,
-                      ),
+                ? FadeInImage(
+                    fit: BoxFit.cover,
+                    placeholder: const AssetImage(AppImages.noImage),
+                    image: NetworkImage(
+                      'https://image.tmdb.org/t/p/original' +
+                          credit.profilePath,
                     ),
                   )
-                : ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    clipBehavior: Clip.hardEdge,
-                    child: Image.asset(
-                      AppImages.noImage,
-                      fit: BoxFit.cover,
-                    ),
+                : Image.asset(
+                    AppImages.noImage,
+                    fit: BoxFit.cover,
                   ),
-          ),
+          )),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Text(

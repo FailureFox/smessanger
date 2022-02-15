@@ -65,12 +65,13 @@ class _ChatPageState extends State<ChatPage> {
                   const Spacer(),
                   Text('Chats', style: Theme.of(context).textTheme.headline1),
                   SearchInput(
+                    enabled: false,
                     text: chatsText,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const SearchPage(),
+                          builder: (context) => Container(),
                         ),
                       );
                     },

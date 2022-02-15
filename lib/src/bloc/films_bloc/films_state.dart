@@ -1,10 +1,15 @@
 import 'package:smessanger/src/models/films_model.dart';
 
-class FilmsState {
+abstract class FilmsState {}
+
+class FilmsLoadingState extends FilmsState {}
+
+class FilmsLoadedState extends FilmsState {
   final List<FilmsModel> popularityFilms;
   final List<FilmsModel> trandingFilms;
   late bool isLoaded;
-  FilmsState({this.popularityFilms = const [], this.trandingFilms = const []}) {
+  FilmsLoadedState(
+      {this.popularityFilms = const [], this.trandingFilms = const []}) {
     if (trandingFilms.isNotEmpty && popularityFilms.isNotEmpty) {
       isLoaded = true;
     }
@@ -12,9 +17,14 @@ class FilmsState {
 
   copyWith(
       {List<FilmsModel>? popularityFilms, List<FilmsModel>? trandingFilms}) {
-    return FilmsState(
+    return FilmsLoadedState(
       popularityFilms: popularityFilms ?? this.popularityFilms,
       trandingFilms: trandingFilms ?? this.trandingFilms,
     );
   }
+}
+
+class FilmsLoadingStateError extends FilmsState {
+  final String exception;
+  FilmsLoadingStateError({required this.exception});
 }
