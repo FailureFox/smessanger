@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class DetailsModel {
   final bool adult;
-  final String backdopPath;
+  final String? backdopPath;
   final int budget;
   final List<Genres> genres;
   final String homepage;
@@ -53,7 +53,9 @@ class DetailsModel {
   factory DetailsModel.fromMap(Map<String, dynamic> map) {
     return DetailsModel(
       adult: map['adult'] ?? false,
-      backdopPath: map['backdrop_path'] ?? '',
+      backdopPath: map['backdrop_path'] != null
+          ? 'https://image.tmdb.org/t/p/original' + map['backdrop_path']
+          : null,
       budget: map['budget']?.toInt() ?? 0,
       genres: List<Genres>.from(map['genres']?.map((x) => Genres.fromMap(x))),
       homepage: map['homepage'] ?? '',
@@ -62,7 +64,9 @@ class DetailsModel {
       originalTitle: map['original_title'] ?? '',
       overView: map['overview'] ?? '',
       popularity: map['popularity']?.toDouble() ?? 0.0,
-      posterPath: map['poster_path'],
+      posterPath: map['poster_path'] != null
+          ? 'https://image.tmdb.org/t/p/w500' + map['poster_path']
+          : null,
       productionCompanies: List<ProductionsCompanies>.from(
           map['production_companies']
               ?.map((x) => ProductionsCompanies.fromMap(x))),

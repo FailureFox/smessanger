@@ -1,14 +1,38 @@
-import 'package:flutter/material.dart';
-import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
+import 'dart:async';
 
-class FilmsSearchPage extends StatefulWidget {
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:smessanger/src/bloc/films_bloc/films_search_bloc/films_search_bloc.dart';
+import 'package:smessanger/src/bloc/films_bloc/films_search_bloc/films_search_state.dart';
+import 'package:smessanger/src/resources/domain/repositories/films_repositories/films_repository.dart';
+import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
+import 'package:smessanger/src/ui/pages/movie_pages/sub_pages/film_details_page.dart';
+import 'package:smessanger/src/ui/styles/images.dart';
+import 'package:smessanger/injections.dart' as rep;
+
+class FilmsSearchPage extends StatelessWidget {
   const FilmsSearchPage({Key? key}) : super(key: key);
 
   @override
-  State<FilmsSearchPage> createState() => _FilmsSearchPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider<FilmsSearchBloc>(
+      create: (_) =>
+          FilmsSearchBloc(region: 'us', domain: rep.sl.call<FilmsDomain>()),
+      child: const FilmsSearchPageBody(),
+    );
+  }
 }
 
-class _FilmsSearchPageState extends State<FilmsSearchPage> {
+class FilmsSearchPageBody extends StatefulWidget {
+  const FilmsSearchPageBody({Key? key}) : super(key: key);
+
+  @override
+  State<FilmsSearchPageBody> createState() => _FilmsSearchPageBodyState();
+}
+
+class _FilmsSearchPageBodyState extends State<FilmsSearchPageBody> {
   final ScrollController _controller = ScrollController();
   bool _isClosed = false;
   @override
@@ -23,6 +47,15 @@ class _FilmsSearchPageState extends State<FilmsSearchPage> {
   bool get isClosed {
     return _controller.hasClients &&
         _controller.offset > (150 - kToolbarHeight);
+  }
+
+  String lastInputValue = '';
+  Timer? _debounce;
+  _onSearchChanged(VoidCallback function) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      function();
+    });
   }
 
   @override
@@ -57,6 +90,17 @@ class _FilmsSearchPageState extends State<FilmsSearchPage> {
                     SearchInput(
                       enabled: true,
                       onTap: () {},
+                      onChanged: (text) {
+                        if (text != lastInputValue) {
+                          lastInputValue = text;
+                          _onSearchChanged(
+                            () {
+                              BlocProvider.of<FilmsSearchBloc>(context)
+                                  .searchFilms(text: text);
+                            },
+                          );
+                        }
+                      },
                       text: 'Films, serials and actors...',
                     )
                   ],
@@ -64,13 +108,184 @@ class _FilmsSearchPageState extends State<FilmsSearchPage> {
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildListDelegate.fixed(
-              [],
-            ),
-          ),
+          BlocBuilder<FilmsSearchBloc, FilmsSearchState>(
+              builder: (context, state) {
+            if (state is FilmsSearchLoading) {
+              return FilmsSearchEmptyWidget(
+                  whiteColor: Colors.black45,
+                  darkColor: Colors.white54,
+                  widget: Container(
+                    width: MediaQuery.of(context).size.height / 20,
+                    height: MediaQuery.of(context).size.height / 20,
+                    margin: const EdgeInsets.all(20),
+                    child: const CircularProgressIndicator(),
+                  ),
+                  image: AppImages.loading,
+                  text: 'Loading...');
+            } else if (state is FilmsSearchEmpty) {
+              return const FilmsSearchEmptyWidget(
+                image: AppImages.empty,
+                whiteColor: Colors.black45,
+                darkColor: Colors.white54,
+                text: 'No data',
+              );
+            } else if (state is FilmsSearchLoaded) {
+              return const SearchFilmsList();
+            } else if (state is FilmsSearchInitial) {
+              return const FilmsSearchEmptyWidget(
+                whiteColor: Colors.black45,
+                darkColor: Colors.white54,
+                image: AppImages.searching,
+                text: 'Search',
+              );
+            } else {
+              return const FilmsSearchEmptyWidget(
+                  whiteColor: Colors.black45,
+                  darkColor: Colors.white54,
+                  image: AppImages.error,
+                  text: 'ERROR...');
+            }
+          })
         ],
       ),
+    );
+  }
+}
+
+class FilmsSearchEmptyWidget extends StatelessWidget {
+  const FilmsSearchEmptyWidget({
+    Key? key,
+    required this.image,
+    required this.text,
+    this.darkColor,
+    this.whiteColor,
+    this.widget,
+  }) : super(key: key);
+  final String image;
+  final String text;
+  final Color? darkColor;
+  final Color? whiteColor;
+  final Widget? widget;
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildListDelegate.fixed(
+        [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width / 3,
+                    child: Image.asset(image,
+                        fit: BoxFit.cover,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? darkColor
+                            : whiteColor)),
+                const SizedBox(height: 35),
+                Text(text, style: const TextStyle(fontSize: 17)),
+                if (widget != null) widget!,
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class SearchFilmsList extends StatelessWidget {
+  const SearchFilmsList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<FilmsSearchBloc, FilmsSearchState>(
+        builder: (context, state) {
+      state as FilmsSearchLoaded;
+      return SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return SearchFilmsListItems(film: state.movies[index]);
+        }, childCount: state.movies.length),
+      );
+    });
+  }
+}
+
+class SearchFilmsListItems extends StatelessWidget {
+  const SearchFilmsListItems({Key? key, required this.film}) : super(key: key);
+  final FilmsSearchEntity film;
+  @override
+  Widget build(BuildContext context) {
+    final dateTime = DateFormat('dd MMMM yyyy').format(film.releaseDate);
+    return SizedBox(
+      height: MediaQuery.of(context).size.height / 7,
+      width: double.infinity,
+      child: Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  color: Theme.of(context).focusColor.withOpacity(0.06),
+                  blurRadius: 5,
+                  offset: Offset(0, 2)),
+            ],
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          child: Stack(
+            children: [
+              Row(
+                children: [
+                  if (film.posterPath != null)
+                    AspectRatio(
+                      aspectRatio: 1 / 1.5,
+                      child: Image.network(
+                        'https://image.tmdb.org/t/p/w500' + film.posterPath!,
+                      ),
+                    ),
+                  Flexible(
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 10.0, top: 5, bottom: 5, right: 5),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              film.title,
+                              style: Theme.of(context).textTheme.headline2,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(dateTime),
+                            const Spacer(),
+                            Text(film.overview,
+                                maxLines: 2, textAlign: TextAlign.start),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) =>
+                                FilmDetailsPage(id: film.id, region: 'ru')));
+                  },
+                ),
+              )
+            ],
+          )),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:smessanger/src/bloc/films_bloc/films_search_bloc/films_search_bloc.dart';
 import 'package:smessanger/src/models/credits_model.dart';
 import 'package:smessanger/src/models/films_model.dart';
 import 'package:smessanger/src/models/movie_details_model.dart';
@@ -64,6 +65,23 @@ class FilmsDomain {
           await httpDomain.get(url: link, path: path, query: query);
       final List credits = creditsMap['cast'] as List;
       return credits.map((e) => CreditsModel.fromMap(e)).toList();
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<List<FilmsSearchEntity>> getSearchMovies(String text) async {
+    try {
+      Map<String, dynamic> myQuery = {
+        'api_key': apiKey,
+        'language': 'en - US',
+        'query': text,
+      };
+      const String path = '/3/search/movie';
+      final Map<String, dynamic> map =
+          await httpDomain.get(url: link, path: path, query: myQuery);
+      final result = map['results'] as List;
+      return result.map((e) => FilmsSearchEntity.fromMap(e)).toList();
     } catch (e) {
       throw Exception(e);
     }

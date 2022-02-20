@@ -14,24 +14,24 @@ import 'package:smessanger/src/ui/styles/images.dart';
 import '../films_page.dart';
 
 class FilmDetailsPage extends StatelessWidget {
-  const FilmDetailsPage({Key? key, required this.film, required this.region})
+  const FilmDetailsPage({Key? key, required this.region, required this.id})
       : super(key: key);
-  final FilmsModel film;
+  final int id;
   final String region;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FilmDetailsBloc>(
       create: (context) => FilmDetailsBloc(
-          filmId: film.id, domain: rep.sl.call<FilmsDomain>(), region: region),
-      child: Scaffold(body: _FilmDetailsPage(film: film)),
+          filmId: id, domain: rep.sl.call<FilmsDomain>(), region: region),
+      child: Scaffold(body: _FilmDetailsPage()),
     );
   }
 }
 
 class _FilmDetailsPage extends StatelessWidget {
-  const _FilmDetailsPage({Key? key, required this.film}) : super(key: key);
-  final FilmsModel film;
+  const _FilmDetailsPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FilmDetailsBloc, FilmDetailsState>(
@@ -41,7 +41,7 @@ class _FilmDetailsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FilmDetailsHeader(film: film),
+              FilmDetailsHeader(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 0),
                 child: Text((state.details.title),
@@ -62,37 +62,42 @@ class _FilmDetailsPage extends StatelessWidget {
 }
 
 class FilmDetailsHeader extends StatelessWidget {
-  const FilmDetailsHeader({Key? key, required this.film}) : super(key: key);
-  final FilmsModel film;
+  const FilmDetailsHeader({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.width / 1.3,
-      child: Stack(
-        children: [
-          SizedBox.expand(
-            child: FadeInImage(
-                placeholder: const AssetImage(AppImages.loading),
-                image: NetworkImage(film.backdropPath ?? film.posterPath!)),
-          ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                    width: 2, color: Theme.of(context).colorScheme.primary),
-              ),
-              margin: const EdgeInsets.only(left: 30),
-              height: 150,
-              width: 100,
-              child: FilmPhotoHeroWidget(
-                url: (film.posterPath ?? film.backdropPath!),
+    return BlocBuilder<FilmDetailsBloc, FilmDetailsState>(
+        builder: (context, state) {
+      state as FilmDetailsLoaded;
+      return SizedBox(
+        height: MediaQuery.of(context).size.width / 1.3,
+        child: Stack(
+          children: [
+            SizedBox.expand(
+              child: FadeInImage(
+                  placeholder: const AssetImage(AppImages.loading),
+                  image: NetworkImage(
+                      state.details.backdopPath ?? state.details.posterPath!)),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      width: 2, color: Theme.of(context).colorScheme.primary),
+                ),
+                margin: const EdgeInsets.only(left: 30),
+                height: 150,
+                width: 100,
+                child: FilmPhotoHeroWidget(
+                  url: (state.details.posterPath ?? state.details.posterPath!),
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 }
 

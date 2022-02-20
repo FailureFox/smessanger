@@ -137,15 +137,17 @@ class NewsBody extends StatelessWidget {
 }
 
 class SearchInput extends StatelessWidget {
-  const SearchInput(
-      {Key? key,
-      required this.onTap,
-      required this.text,
-      required this.enabled})
-      : super(key: key);
+  const SearchInput({
+    Key? key,
+    required this.onTap,
+    required this.text,
+    required this.enabled,
+    this.onChanged,
+  }) : super(key: key);
   final VoidCallback onTap;
   final String text;
   final bool enabled;
+  final Function(String)? onChanged;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -157,6 +159,7 @@ class SearchInput extends StatelessWidget {
           autofocus: enabled,
           enabled: enabled,
           maxLines: null,
+          onChanged: onChanged ?? (String value) {},
           minLines: null,
           expands: true,
           textAlignVertical: TextAlignVertical.center,

@@ -1,7 +1,8 @@
 abstract class AppImages {
   //lary
+  static const String empty = 'assets/larry/empty.png';
   static const String hello = 'assets/larry/hello.png';
-  static const String connectionLost = 'assets/larry/connections_lost.png';
+  static const String connectionLost = 'assets/larry/connection_lost.png';
   static const String communication = 'assets/larry/communication.png';
   static const String error = 'assets/larry/error.png';
   static const String loading = 'assets/larry/loading.png';

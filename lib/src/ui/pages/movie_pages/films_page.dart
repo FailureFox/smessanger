@@ -117,7 +117,7 @@ class SecondFilmsBodyState extends State<SecondFilmsBody> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 1.3,
                   child: const Center(
-                    child: CircularProgressIndicator.adaptive(),
+                    child: CircularProgressIndicator(),
                   ),
                 ),
               ]),
@@ -141,7 +141,8 @@ class SecondFilmsBodyState extends State<SecondFilmsBody> {
                           padding: const EdgeInsets.all(0),
                           onPressed: () =>
                               BlocProvider.of<FilmsBloc>(context).loadFilms(),
-                          icon: const Icon(Icons.refresh),
+                          icon: Icon(Icons.refresh,
+                              color: Theme.of(context).backgroundColor),
                         ),
                       )
                     ],
@@ -264,7 +265,7 @@ class PopularityFilmsWidget extends StatelessWidget {
                               context,
                               CupertinoPageRoute(
                                 builder: (mycontext) => FilmDetailsPage(
-                                  film: film,
+                                  id: film.id,
                                   region: BlocProvider.of<HomeBloc>(context)
                                           .state
                                           .myProfile
@@ -302,7 +303,9 @@ class FilmPhotoHeroWidget extends StatelessWidget {
       fit: BoxFit.cover,
       imageUrl: url,
       progressIndicatorBuilder: (context, url, downloadProgress) => Center(
-        child: CircularProgressIndicator(value: downloadProgress.progress),
+        child: CircularProgressIndicator(
+          value: downloadProgress.progress,
+        ),
       ),
       errorWidget: (context, url, error) => const Icon(Icons.error),
     );
