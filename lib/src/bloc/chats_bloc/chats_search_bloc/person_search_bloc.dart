@@ -1,18 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smessanger/src/resources/domain/usecases/search_person.dart';
+import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 
 import 'person_search_state.dart';
 
 class PersonSearchBloc extends Cubit<PersonSearchState> {
-  final SearchPerson searchPerson;
+  final UserRepository searchPerson;
   PersonSearchBloc({required this.searchPerson})
       : super(const PersonSearchInitialState());
 
   personSearchFromNumber({required String number}) async {
     try {
       emit(PersonSearchLoadingState());
-      final persons =
-          await searchPerson.searchPersonFromNumber(phoneNumber: number);
+      final persons = await searchPerson.searchUser(number);
       if (persons.isNotEmpty) {
         emit(PersonSearchLoaded(users: persons));
       } else {
