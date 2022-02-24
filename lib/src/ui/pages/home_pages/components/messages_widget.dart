@@ -7,15 +7,18 @@ class MessagesWidget extends StatelessWidget {
     Key? key,
     required this.animation,
     required this.message,
+    this.nextId = '',
     required this.userModel,
   }) : super(key: key);
   final Animation<double> animation;
   final MessageTextModel message;
+  final String nextId;
 
   final UserModel userModel;
 
   @override
   Widget build(BuildContext context) {
+    final bool nextMessageThis = nextId == message.from;
     bool isNotMy = message.from == userModel.uid;
     return SizeTransition(
       sizeFactor: animation,
@@ -24,8 +27,12 @@ class MessagesWidget extends StatelessWidget {
             isNotMy ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: [
           isNotMy
-              ? CircleAvatar(
-                  backgroundImage: NetworkImage(userModel.avatarUrl!))
+              ? (!nextMessageThis
+                  ? CircleAvatar(
+                      backgroundImage: NetworkImage(userModel.avatarUrl!))
+                  : const SizedBox(
+                      width: 40,
+                    ))
               : const SizedBox(),
           Container(
             constraints:

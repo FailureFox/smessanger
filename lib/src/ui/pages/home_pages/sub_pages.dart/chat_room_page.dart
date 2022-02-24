@@ -143,6 +143,7 @@ class ChatMessagesList extends StatelessWidget {
               animation: animation,
               message: state.messages![index] as MessageTextModel,
               userModel: state.chatUser!,
+              nextId: index > 0 ? state.messages![index - 1].from : '',
             );
           },
         );

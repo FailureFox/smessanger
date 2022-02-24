@@ -88,6 +88,23 @@ class _FilmsSearchPageBodyState extends State<FilmsSearchPageBody> {
                     Text('Search',
                         style: Theme.of(context).textTheme.headline1),
                     SearchInput(
+                      suffix: SizedBox(
+                        height: 20,
+                        width: 60,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                              isExpanded: true,
+                              value: 'All',
+                              items:
+                                  <String>['All', 'Movies', 'Actors', 'Serials']
+                                      .map((e) => DropdownMenuItem(
+                                            child: Text(e),
+                                            value: e,
+                                          ))
+                                      .toList(),
+                              onChanged: (value) {}),
+                        ),
+                      ),
                       enabled: true,
                       onTap: () {},
                       onChanged: (text) {
@@ -243,6 +260,7 @@ class SearchFilmsListItems extends StatelessWidget {
                       aspectRatio: 1 / 1.5,
                       child: Image.network(
                         'https://image.tmdb.org/t/p/w500' + film.posterPath!,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   Flexible(

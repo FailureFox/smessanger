@@ -5,11 +5,11 @@ import 'package:intl/intl.dart';
 import 'package:smessanger/src/bloc/films_bloc/details_page_bloc/film_details_bloc.dart';
 import 'package:smessanger/src/bloc/films_bloc/details_page_bloc/film_details_state.dart';
 import 'package:smessanger/src/models/credits_model.dart';
-import 'package:smessanger/src/models/films_model.dart';
 import 'package:smessanger/src/resources/domain/repositories/films_repositories/films_repository.dart';
 import 'package:smessanger/injections.dart' as rep;
 import 'package:smessanger/src/ui/pages/movie_pages/sub_pages/trailer_page.dart';
 import 'package:smessanger/src/ui/styles/images.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../films_page.dart';
 
@@ -24,7 +24,7 @@ class FilmDetailsPage extends StatelessWidget {
     return BlocProvider<FilmDetailsBloc>(
       create: (context) => FilmDetailsBloc(
           filmId: id, domain: rep.sl.call<FilmsDomain>(), region: region),
-      child: Scaffold(body: _FilmDetailsPage()),
+      child: const Scaffold(body: _FilmDetailsPage()),
     );
   }
 }
@@ -41,13 +41,29 @@ class _FilmDetailsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FilmDetailsHeader(),
+              const FilmDetailsHeader(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 0),
                 child: Text((state.details.title),
                     style: Theme.of(context).textTheme.headline3),
               ),
               const RaitingAndTrailerWidget(),
+              Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 15),
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.width / 8,
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        final url =
+                            'https://autoembed.xyz/movie/tmdb/${state.details.id}';
+                        if (await canLaunch(url)) {
+                          await launch(
+                            url,
+                            forceSafariVC: false,
+                          );
+                        }
+                      },
+                      child: const Text('Play movie'))),
               const FilmDetailsTitle(),
               const OverViewWidget(),
               const CreditsList(),
@@ -231,20 +247,24 @@ class RatingPainter extends CustomPainter {
       required this.context});
   @override
   void paint(Canvas canvas, Size size) {
+    final Color color = getColor(rating);
     final Paint backgroundPainter = Paint();
     backgroundPainter.color = Theme.of(context).backgroundColor;
     backgroundPainter.style = PaintingStyle.fill;
     canvas.drawOval(Offset.zero & size, backgroundPainter);
     final Paint raitDecoration = Paint();
-    raitDecoration.color = Colors.white30;
+    raitDecoration.color = color.withOpacity(0.3);
     raitDecoration.style = PaintingStyle.stroke;
     raitDecoration.strokeWidth = 4;
+
     canvas.drawArc(const Offset(2, 2) & Size(size.width - 4, size.width - 4), 0,
         pi * 2, false, raitDecoration);
     final Paint secondPainter = Paint();
-    secondPainter.color = getColor(rating);
+    secondPainter.color = color;
     secondPainter.style = PaintingStyle.stroke;
     secondPainter.strokeWidth = 2;
+    secondPainter.strokeCap = StrokeCap.round;
+
     canvas.drawArc(const Offset(2, 2) & Size(size.width - 4, size.height - 4),
         -pi / 2, pi * 2 * (rating / 10), false, secondPainter);
   }

@@ -70,8 +70,9 @@ class _ChatPageState extends State<ChatPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => Container(),
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, animation2) =>
+                              const ChatSearchPage(),
                         ),
                       );
                     },

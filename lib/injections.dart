@@ -62,6 +62,7 @@ Future<void> init() async {
   final FirebaseAuth fAuth = FirebaseAuth.instance;
   final FirebaseStorage fStorage = FirebaseStorage.instance;
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
+
   final FilePicker filePicker = FilePicker.platform;
   const secureStorage = FlutterSecureStorage();
   sl.registerLazySingleton<FilePicker>(() => filePicker);

@@ -142,11 +142,14 @@ class SearchInput extends StatelessWidget {
     required this.onTap,
     required this.text,
     required this.enabled,
+    this.suffix,
     this.onChanged,
   }) : super(key: key);
   final VoidCallback onTap;
   final String text;
   final bool enabled;
+  final Widget? suffix;
+
   final Function(String)? onChanged;
   @override
   Widget build(BuildContext context) {
@@ -164,6 +167,7 @@ class SearchInput extends StatelessWidget {
           expands: true,
           textAlignVertical: TextAlignVertical.center,
           decoration: InputDecoration(
+            suffix: suffix,
             prefixIcon: const Icon(Icons.search),
             hintText: text,
           ),

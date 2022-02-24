@@ -12,7 +12,7 @@ import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 import 'package:smessanger/src/ui/styles/images.dart';
 
 import 'sub_pages/film_details_page.dart';
-import 'sub_pages/search_page.dart';
+import 'sub_pages/movie_search_page.dart';
 
 class FilmsMainPage extends StatelessWidget {
   const FilmsMainPage({Key? key}) : super(key: key);

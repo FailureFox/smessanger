@@ -15,7 +15,7 @@ class MessagesRepositoryUse extends MessagesRepository {
         firestore.collection('chats').doc(chatId).collection('messages');
     await collection.add(message.toMap());
   }
-
+  
   @override
   Stream<List<Message>> getMessages(String chatId) {
     final snapshots = firestore

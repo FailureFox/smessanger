@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,12 +10,15 @@ import 'package:smessanger/src/ui/screens/auth_screen.dart';
 import 'package:smessanger/src/ui/screens/home_screen.dart';
 import 'injections.dart' as rep;
 import 'package:smessanger/src/ui/styles/theme.dart';
-import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: false,
+  );
   await rep.init();
+
   runApp(const App());
 }
 
@@ -45,18 +49,20 @@ class _MyAppState extends State<_MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppBloc, AppState>(builder: (context, state) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: state.isDark ? AppTheme.darkTheme : AppTheme.lightTheme,
-        title: 'Messanger',
-        home: state.status == AppStatus.unlogged
-            ? const AuthScreen()
-            : state.status == AppStatus.initial
-                ? const WaitingScreen()
-                : const HomeScreen(),
-      );
-    });
+    return BlocBuilder<AppBloc, AppState>(
+      builder: (context, state) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: state.isDark ? AppTheme.darkTheme : AppTheme.lightTheme,
+          title: 'Messanger',
+          home: state.status == AppStatus.unlogged
+              ? const AuthScreen()
+              : state.status == AppStatus.initial
+                  ? const WaitingScreen()
+                  : const HomeScreen(),
+        );
+      },
+    );
   }
 }
 
