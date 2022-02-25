@@ -10,9 +10,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeLoadingEvent>(
       (event, emit) {
         emit(state.copyWith(status: HomeStatus.loading));
-        repository
-            .getUser(event.uid)
-            .listen((event) => myUserChangedEvent(event));
+        repository.getUser(event.uid).listen(
+              (event) => myUserChangedEvent(event),
+            );
       },
     );
 
