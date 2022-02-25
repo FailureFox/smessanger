@@ -95,7 +95,7 @@ class _ChatSearchBodyState extends State<ChatSearchBody> {
                           _onSearchChanged(
                             () {
                               BlocProvider.of<PersonSearchBloc>(context)
-                                  .personSearchFromNumber(number: text);
+                                  .personSearchFromNumber(text: text);
                             },
                           );
                         }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 
@@ -17,11 +18,13 @@ class UserRepositoryUse extends UserRepository {
   }
 
   @override
-  Future<List<UserModel>> searchUser(String userName) async {
+  Future<List<UserModel>> searchUser(
+      {required String text, required UsersSearchType searchType}) async {
+    print(searchType.name);
     final snapshot = await firestore
         .collection('users')
-        .orderBy('name')
-        .startAt([userName]).endAt([userName + '\uf8ff']).get();
+        .orderBy(searchType.name)
+        .startAt([text]).endAt([text + '\uf8ff']).get();
     return snapshot.docs.map((e) => UserModel.fromMap(e.data(), e.id)).toList();
   }
 
@@ -31,3 +34,5 @@ class UserRepositoryUse extends UserRepository {
     return snapshot.map((event) => UserModel.fromMap(event.data()!, uid));
   }
 }
+
+enum UsersSearchType { phoneNumber, name }

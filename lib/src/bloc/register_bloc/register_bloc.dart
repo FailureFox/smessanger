@@ -79,7 +79,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           uid: state.uid,
           roles: state.roles.map((e) => e.toString()).toList(),
           avatarUrl: state.avatarUrl,
-          phoneNumber: state.phoneNumber,
+          phoneNumber: state.phoneNumber.replaceAll('-', ''),
           newsChannels: state.interestedNews);
 
       userRep.setUser(profile);

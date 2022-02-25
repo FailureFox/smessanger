@@ -23,19 +23,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       required this.messageRepo,
       required this.userRepo})
       : super(ChatState()) {
-    on<ChatLoadingEvent>((event, emit) {
-      emit(state.copyWith(status: ChatStatus.loading));
-      try {
-        userRepo.getUser(chatModel.chatUser).listen((user) {
-          userLoaded(user);
-          messageRepo.getMessages(chatModel.chatID).listen((messages) {
-            messagesLoaded(messages);
+    on<ChatLoadingEvent>(
+      (event, emit) {
+        emit(state.copyWith(status: ChatStatus.loading));
+        try {
+          userRepo.getUser(chatModel.chatUser).listen((user) {
+            userLoaded(user);
+            messageRepo.getMessages(chatModel.chatID).listen((messages) {
+              messagesLoaded(messages);
+            });
           });
-        });
-      } on SocketException catch (e) {
-        log('asd' + e.message);
-      }
-    });
+        } on SocketException catch (e) {
+          log('asd' + e.message);
+        }
+      },
+    );
 
     on<ChatSendMessageEvent>((event, emit) async {
       messageRepo.sendMessage(

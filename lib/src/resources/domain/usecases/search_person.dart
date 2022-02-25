@@ -10,7 +10,7 @@ class SearchPerson {
     final persons = await firestore
         .collection('users')
         .orderBy('phoneNumber')
-        .startAt([phoneNumber]).endAt(['phoneNumber' + '\uf8ff']).get();
+        .startAt([phoneNumber]).endAt([phoneNumber + '\uf8ff']).get();
     return persons.docs.map((e) => UserModel.fromMap(e.data(), e.id)).toList();
   }
 }
