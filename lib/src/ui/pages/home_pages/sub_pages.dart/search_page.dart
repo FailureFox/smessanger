@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_search_bloc/person_search_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:smessanger/src/models/my_profile_model.dart';
 import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 import 'package:smessanger/injections.dart' as rep;
+import 'package:smessanger/src/ui/pages/home_pages/sub_pages.dart/profile_page.dart';
 import 'package:smessanger/src/ui/pages/movie_pages/sub_pages/movie_search_page.dart';
 import 'package:smessanger/src/ui/styles/images.dart';
 
@@ -19,7 +21,7 @@ class ChatSearchPage extends StatelessWidget {
     return BlocProvider(
       create: (_) =>
           PersonSearchBloc(searchPerson: rep.sl.call<UserRepository>()),
-      child: const ChatSearchBody(),
+      child: ChatSearchBody(),
     );
   }
 }
@@ -64,6 +66,12 @@ class _ChatSearchBodyState extends State<ChatSearchBody> {
         controller: _controller,
         slivers: [
           SliverAppBar(
+            leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(Icons.arrow_back_ios,
+                  color: Theme.of(context).iconTheme.color),
+            ),
+            automaticallyImplyLeading: false,
             centerTitle: true,
             pinned: true,
             title: AnimatedCrossFade(
@@ -155,6 +163,7 @@ class PersonSearchListItems extends StatelessWidget {
   const PersonSearchListItems({Key? key, required this.model})
       : super(key: key);
   final UserModel model;
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -169,7 +178,16 @@ class PersonSearchListItems extends StatelessWidget {
       ),
       title: Text(model.name),
       subtitle: Text(model.phoneNumber),
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => ProfilePage(
+              profile: model,
+            ),
+          ),
+        );
+      },
     );
   }
 }

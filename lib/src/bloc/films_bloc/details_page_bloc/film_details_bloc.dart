@@ -29,7 +29,6 @@ class FilmDetailsBloc extends Cubit<FilmDetailsState> {
             details: details, trailers: trailers, credits: credits),
       );
     } catch (e) {
-      print(e);
       emit(FilmDetailsError(error: e.toString()));
     }
   }

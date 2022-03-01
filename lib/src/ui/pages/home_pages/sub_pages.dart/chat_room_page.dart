@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
-import 'package:smessanger/src/bloc/chats_bloc/chats_event.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_state.dart';
-import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/ui/pages/home_pages/components/messages_widget.dart';
 
 class ChatRoomPage extends StatelessWidget {
-  const ChatRoomPage({Key? key, required this.homeBloc}) : super(key: key);
-  final HomeBloc homeBloc;
+  const ChatRoomPage({Key? key, required this.uid}) : super(key: key);
+  final String uid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,14 +43,15 @@ class ChatRoomPage extends StatelessWidget {
         title: BlocBuilder<ChatBloc, ChatState>(
           bloc: ChatInheritedWidget.of(context)!.bloc,
           builder: (context, state) {
+            state as ChatStateLoaded;
             return ListTile(
               onTap: () {},
               contentPadding: const EdgeInsets.all(0),
               leading: CircleAvatar(
                 radius: 22,
-                backgroundImage: NetworkImage(state.chatUser!.avatarUrl!),
+                backgroundImage: NetworkImage(state.chatUser.avatarUrl!),
               ),
-              title: Text(state.chatUser!.name,
+              title: Text(state.chatUser.name,
                   style: Theme.of(context).textTheme.headline2),
             );
           },
@@ -61,7 +60,7 @@ class ChatRoomPage extends StatelessWidget {
       body: Column(
         children: [
           const Expanded(child: ChatMessagesList()),
-          MessageInputBar(uid: homeBloc.state.myProfile!.uid)
+          MessageInputBar(uid: uid)
         ],
       ),
     );
@@ -114,8 +113,9 @@ class _MessageInputBarState extends State<MessageInputBar> {
               : IconButton(
                   onPressed: () {
                     final String text = controller.text;
-                    ChatInheritedWidget.of(context)!.bloc.add(
-                        ChatSendMessageEvent(message: text, uid: widget.uid));
+                    ChatInheritedWidget.of(context)!
+                        .bloc
+                        .sendMessage(text: text, from: widget.uid);
                     controller.clear();
                     setState(() {});
                   },
@@ -134,16 +134,17 @@ class ChatMessagesList extends StatelessWidget {
     return BlocBuilder<ChatBloc, ChatState>(
       bloc: ChatInheritedWidget.of(context)!.bloc,
       builder: (context, state) {
+        state as ChatStateLoaded;
         return AnimatedList(
           reverse: true,
           key: ChatInheritedWidget.of(context)!.bloc.listKey,
-          initialItemCount: state.messages!.length,
+          initialItemCount: state.messages.length,
           itemBuilder: (context, index, animation) {
             return MessagesWidget(
               animation: animation,
-              message: state.messages![index] as MessageTextModel,
-              userModel: state.chatUser!,
-              nextId: index > 0 ? state.messages![index - 1].from : '',
+              message: state.messages[index] as MessageTextModel,
+              userModel: state.chatUser,
+              nextId: index > 0 ? state.messages[index - 1].from : '',
             );
           },
         );

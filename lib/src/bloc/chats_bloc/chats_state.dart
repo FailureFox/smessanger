@@ -1,30 +1,32 @@
-import 'package:smessanger/src/bloc/chats_bloc/chat_status.dart';
 import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 
-class ChatState {
-  final UserModel? chatUser;
-  List<Message>? messages;
-  final ChatStatus status;
+class ChatState {}
+
+class ChatStateLoaded extends ChatState {
+  final UserModel chatUser;
+  final List<Message> messages;
   final String lastMessageTime;
-  ChatState({
-    this.chatUser,
-    this.messages,
-    this.status = ChatStatus.initial,
+  ChatStateLoaded({
+    required this.chatUser,
+    required this.messages,
     this.lastMessageTime = '',
   });
-
-  ChatState copyWith({
-    List<Message>? messages,
+  ChatStateLoaded copyWith({
     UserModel? chatUser,
-    ChatStatus? status,
+    List<Message>? messages,
     String? lastMessageTime,
   }) {
-    return ChatState(
-      chatUser: chatUser ?? this.chatUser,
-      messages: messages ?? this.messages,
-      status: status ?? this.status,
-      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
-    );
+    return ChatStateLoaded(
+        chatUser: chatUser ?? this.chatUser,
+        messages: messages ?? this.messages,
+        lastMessageTime: lastMessageTime ?? this.lastMessageTime);
   }
+}
+
+class ChatStateLoading extends ChatState {}
+
+class ChatStateError extends ChatState {
+  String errorText;
+  ChatStateError({required this.errorText});
 }

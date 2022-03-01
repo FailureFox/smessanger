@@ -71,7 +71,7 @@ class _ChatPageState extends State<ChatPage> {
                       Navigator.push(
                         context,
                         PageRouteBuilder(
-                          pageBuilder: (context, animation, animation2) =>
+                          pageBuilder: (mycontext, animation, animation2) =>
                               const ChatSearchPage(),
                         ),
                       );
