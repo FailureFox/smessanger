@@ -1,11 +1,6 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smessanger/src/bloc/chats_bloc/chat_status.dart';
-import 'package:smessanger/src/bloc/chats_bloc/chats_event.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_state.dart';
 import 'package:smessanger/src/models/chat_model.dart';
 import 'package:smessanger/src/models/message_model.dart';
@@ -13,7 +8,7 @@ import 'package:smessanger/src/models/my_profile_model.dart';
 import 'package:smessanger/src/resources/domain/repositories/messages_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 
-class ChatBloc extends Bloc<ChatEvent, ChatState> {
+class ChatBloc extends Cubit<ChatState> {
   final MessagesRepository messageRepo;
   final UserRepository userRepo;
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
@@ -23,52 +18,49 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       required this.messageRepo,
       required this.userRepo})
       : super(ChatState()) {
-    on<ChatLoadingEvent>(
-      (event, emit) {
-        emit(state.copyWith(status: ChatStatus.loading));
-        try {
-          userRepo.getUser(chatModel.chatUser).listen((user) {
-            userLoaded(user);
-            messageRepo.getMessages(chatModel.chatID).listen((messages) {
-              messagesLoaded(messages);
-            });
-          });
-        } on SocketException catch (e) {
-          log('asd' + e.message);
-        }
-      },
-    );
+    chatLoading();
+  }
 
-    on<ChatSendMessageEvent>((event, emit) async {
-      messageRepo.sendMessage(
-          message: MessageTextModel(
-              dateTime: Timestamp.now(),
-              from: event.uid,
-              message: event.message,
-              readed: false),
-          chatId: chatModel.chatID);
+  chatLoading() async {
+    emit(ChatStateLoading());
+    final user = await userRepo.getUser(chatModel.chatUser).first;
+    messageRepo.getMessages(chatModel.chatID).listen((event) {
+      messagesLoaded(event, user);
     });
   }
 
-  userLoaded(UserModel user) {
-    emit(state.copyWith(chatUser: user));
+  sendMessage({required String text, required String from}) {
+    messageRepo.sendMessage(
+      message: MessageTextModel(
+        dateTime: Timestamp.now(),
+        from: from,
+        message: text,
+        readed: false,
+      ),
+      chatId: chatModel.chatID,
+    );
   }
 
-  messagesLoaded(List<Message> messages) {
+  messagesLoaded(List<Message> messages, UserModel user) {
     final time = messages.last.dateTime.toDate();
     final lastMessageTime = timeDetect(time);
-    if (state.messages == null) {
-      emit(
-        state.copyWith(
+
+    try {
+      if (state is ChatStateLoading) {
+        emit(ChatStateLoaded(
           messages: messages,
-          status: ChatStatus.loaded,
+          
           lastMessageTime: lastMessageTime,
-        ),
-      );
-    } else {
-      listKey.currentState!
-          .insertItem(0, duration: const Duration(milliseconds: 200));
-      state.messages = messages;
+          chatUser: user,
+        ));
+      } else if (state is ChatStateLoaded) {
+        final mystate = state as ChatStateLoaded;
+        listKey.currentState!
+            .insertItem(0, duration: const Duration(milliseconds: 200));
+        emit(mystate.copyWith(messages: messages));
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
 
