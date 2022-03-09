@@ -14,9 +14,7 @@ class NewsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (_) => NewsBloc(newsData: rep.sl.call<NewsData>()),
-        child: const _NewsPageWithBloc());
+    return const _NewsPageWithBloc();
   }
 }
 
@@ -33,7 +31,9 @@ class _NewsPageWithBlocState extends State<_NewsPageWithBloc> {
   @override
   void initState() {
     super.initState();
-    context.read<NewsBloc>().add(NewsLoadingEvent());
+    if (BlocProvider.of<NewsBloc>(context).state.status != NewsStatus.loaded) {
+      context.read<NewsBloc>().add(NewsLoadingEvent());
+    }
     _controller.addListener(() {
       isClosed = _isSliverAppBarExpanded;
       setState(() {});

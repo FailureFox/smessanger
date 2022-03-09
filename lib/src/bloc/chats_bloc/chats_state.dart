@@ -1,26 +1,14 @@
+import 'package:smessanger/src/models/chat_model.dart';
 import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 
 class ChatState {}
 
 class ChatStateLoaded extends ChatState {
-  final UserModel chatUser;
-  final List<Message> messages;
-  final String lastMessageTime;
-  ChatStateLoaded({
-    required this.chatUser,
-    required this.messages,
-    this.lastMessageTime = '',
-  });
-  ChatStateLoaded copyWith({
-    UserModel? chatUser,
-    List<Message>? messages,
-    String? lastMessageTime,
-  }) {
-    return ChatStateLoaded(
-        chatUser: chatUser ?? this.chatUser,
-        messages: messages ?? this.messages,
-        lastMessageTime: lastMessageTime ?? this.lastMessageTime);
+  final List<ChatModel> chats;
+  ChatStateLoaded({required this.chats});
+  ChatStateLoaded copyWith({List<ChatModel>? chats}) {
+    return ChatStateLoaded(chats: chats ?? this.chats);
   }
 }
 

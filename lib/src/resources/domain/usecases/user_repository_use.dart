@@ -31,7 +31,12 @@ class UserRepositoryUse extends UserRepository {
     final snapshot = firestore.collection('users').doc(uid).snapshots();
     return snapshot.map((event) => UserModel.fromMap(event.data()!, uid));
   }
+
+  @override
+  Future<UserModel> getAsyncUser(String uid) async {
+    final snapshot = await firestore.collection('users').doc(uid).get();
+    return UserModel.fromMap(snapshot.data()!, uid);
+  }
 }
 
 enum UsersSearchType { phoneNumber, name }
-

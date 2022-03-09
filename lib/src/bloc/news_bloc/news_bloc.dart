@@ -20,6 +20,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         }
         emit(state.copyWIth(news: news, status: NewsStatus.loaded));
       } catch (e) {
+        print(e);
         emit(state.copyWIth(status: NewsStatus.error));
       }
     });

@@ -1,15 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
+import 'package:smessanger/src/bloc/chats_bloc/chats_state.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
-import 'package:smessanger/src/resources/domain/repositories/messages_repository.dart';
+import 'package:smessanger/src/models/chat_model.dart';
+import 'package:smessanger/src/resources/domain/repositories/chats_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
-import 'package:smessanger/src/ui/pages/home_pages/components/chat_items.dart';
+import 'package:smessanger/src/ui/pages/chat_pages/components/chat_items.dart';
 import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 import 'package:smessanger/injections.dart' as rep;
-import 'package:smessanger/src/ui/pages/home_pages/sub_pages.dart/search_page.dart';
+import 'package:smessanger/src/ui/pages/chat_pages/sub_pages/search_page.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -72,7 +75,7 @@ class _ChatPageState extends State<ChatPage> {
                         context,
                         PageRouteBuilder(
                           pageBuilder: (mycontext, animation, animation2) =>
-                              const ChatSearchPage(),
+                              const ChatSearchPage(chats: []),
                         ),
                       );
                     },
@@ -83,11 +86,18 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ),
         BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
-          if (state.status == HomeStatus.loaded) {
-            return const ChatsBody();
-          } else {
-            return const ChatLoadingBody();
-          }
+          return BlocBuilder<ChatBloc, ChatState>(
+              builder: (context, chatState) {
+            if (chatState is! ChatStateLoaded) {
+              BlocProvider.of<ChatBloc>(context).chatsLoading();
+            }
+            if (state.status == HomeStatus.loaded &&
+                chatState is ChatStateLoaded) {
+              return const ChatsBody();
+            } else {
+              return const ChatLoadingBody();
+            }
+          });
         })
       ],
     );
@@ -102,21 +112,17 @@ class ChatsBody extends StatelessWidget {
     return SliverList(
       delegate: SliverChildListDelegate(
         [
-          BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
-            return Column(
-              children: [
-                ...state.myProfile!.chats.map(
-                  (e) => BlocProvider<ChatBloc>(
-                    create: (_) => ChatBloc(
-                        chatModel: e,
-                        userRepo: rep.sl.call<UserRepository>(),
-                        messageRepo: rep.sl.call<MessagesRepository>()),
-                    child: const ChatItems(),
-                  ),
-                )
-              ],
-            );
-          }),
+          BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+            if (state is ChatStateLoaded) {
+              return Column(
+                children: [
+                  ...state.chats.map((e) => ChatItems(chat: e)).toList()
+                ],
+              );
+            } else {
+              return Container();
+            }
+          })
         ],
       ),
     );

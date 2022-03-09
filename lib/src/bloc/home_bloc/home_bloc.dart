@@ -8,7 +8,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final UserRepository repository;
   HomeBloc({required this.repository}) : super(HomeState()) {
     on<HomeLoadingEvent>(
-      (event, emit) {
+      (event, emit) async {
         emit(state.copyWith(status: HomeStatus.loading));
         repository.getUser(event.uid).listen(
               (event) => myUserChangedEvent(event),

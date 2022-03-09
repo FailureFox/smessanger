@@ -6,4 +6,5 @@ abstract class UserRepository {
   Future<List<UserModel>> searchUser(
       {required String text, required UsersSearchType searchType});
   Stream<UserModel> getUser(String uid);
+  Future<UserModel> getAsyncUser(String uid);
 }

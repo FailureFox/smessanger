@@ -14,11 +14,9 @@ import 'package:smessanger/src/ui/styles/theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseFirestore.instance.settings = const Settings(
-    persistenceEnabled: false,
-  );
+  FirebaseFirestore.instance.settings =
+      const Settings(persistenceEnabled: false);
   await rep.init();
-
   runApp(const App());
 }
 
@@ -43,7 +41,6 @@ class _MyAppState extends State<_MyApp> {
   @override
   void initState() {
     super.initState();
-
     context.read<AppBloc>().add(AppThemeLoadingEvent());
   }
 

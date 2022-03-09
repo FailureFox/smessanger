@@ -10,7 +10,6 @@ class UserModel {
   String uid;
   List<String> roles;
   List<String> newsChannels;
-  List<ChatModel> chats;
   List<String> groups;
   List<String> following;
   List<String> followers;
@@ -23,7 +22,6 @@ class UserModel {
     this.roles = const [],
     this.status,
     required this.avatarUrl,
-    this.chats = const [],
     required this.phoneNumber,
     required this.newsChannels,
     this.groups = const [],
@@ -39,9 +37,6 @@ class UserModel {
       countryCode: map['countryCode'],
       status: map['status'] != '' ? map['status'] : null,
       avatarUrl: map['avatarUrl'] != '' ? map['avatarUrl'] : null,
-      chats: (map['chats'] as List)
-          .map((e) => ChatModel.fromMap(e as Map<String, dynamic>))
-          .toList(),
       phoneNumber: map['phoneNumber'],
       roles: (map['roles'] as List).map((e) => e as String).toList(),
       newsChannels:
@@ -62,7 +57,6 @@ class UserModel {
       'avatarUrl': avatarUrl ?? '',
       'roles': roles,
       'newsChannels': newsChannels,
-      'chats': chats.map((e) => e.toMap()).toList(),
       'groups': groups,
       'following': following,
       'followers': followers,

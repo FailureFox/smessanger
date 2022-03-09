@@ -3,82 +3,93 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_state.dart';
 import 'package:smessanger/src/models/chat_model.dart';
-import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
-import 'package:smessanger/src/resources/domain/repositories/messages_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/chats_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 
 class ChatBloc extends Cubit<ChatState> {
-  final MessagesRepository messageRepo;
+  final ChatsRepository messageRepo;
   final UserRepository userRepo;
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
-  final ChatModel chatModel;
+  final String uid;
   ChatBloc(
-      {required this.chatModel,
-      required this.messageRepo,
-      required this.userRepo})
-      : super(ChatState()) {
-    chatLoading();
-  }
+      {required this.messageRepo, required this.userRepo, required this.uid})
+      : super(ChatState());
 
-  chatLoading() async {
-    emit(ChatStateLoading());
-    final user = await userRepo.getUser(chatModel.chatUser).first;
-    messageRepo.getMessages(chatModel.chatID).listen((event) {
-      messagesLoaded(event, user);
-    });
-  }
-
-  sendMessage({required String text, required String from}) {
-    messageRepo.sendMessage(
-      message: MessageTextModel(
-        dateTime: Timestamp.now(),
-        from: from,
-        message: text,
-        readed: false,
-      ),
-      chatId: chatModel.chatID,
+  chatsLoading() async {
+    messageRepo.listenChats(uid).listen(
+      (snapShot) async {
+        for (var i in snapShot.docChanges) {
+          if (state is! ChatStateLoaded) {
+            break;
+          }
+          final String userId =
+              (i.doc.data() as Map<String, dynamic>)['chatUser'];
+          final UserModel chatUser = await userRepo.getAsyncUser(userId);
+          final ChatModel singleChat = ChatModel.fromMap(
+              i.doc.data() as Map<String, dynamic>, chatUser, i.doc.id);
+          switch (i.type) {
+            case DocumentChangeType.added:
+              chatItemAdded(singleChat);
+              break;
+            case DocumentChangeType.modified:
+              chatItemChanged(singleChat);
+              break;
+            case DocumentChangeType.removed:
+              chatItemDeleted(singleChat);
+              break;
+          }
+        }
+      },
     );
+    emit(ChatStateLoading());
+    final List<ChatModel> chats = await messageRepo.getChats(uid, userRepo);
+    emit(ChatStateLoaded(chats: chats));
   }
 
-  messagesLoaded(List<Message> messages, UserModel user) {
-    final time = messages.last.dateTime.toDate();
-    final lastMessageTime = timeDetect(time);
-
-    try {
-      if (state is ChatStateLoading) {
-        emit(ChatStateLoaded(
-          messages: messages,
-          
-          lastMessageTime: lastMessageTime,
-          chatUser: user,
-        ));
-      } else if (state is ChatStateLoaded) {
-        final mystate = state as ChatStateLoaded;
-        listKey.currentState!
-            .insertItem(0, duration: const Duration(milliseconds: 200));
-        emit(mystate.copyWith(messages: messages));
+//chatsMethods
+  chatItemChanged(ChatModel modifiedChat) {
+    final myState = state;
+    if (myState is ChatStateLoaded) {
+      final chats = myState.chats;
+      for (var p = 0; p < chats.length; p++) {
+        if (modifiedChat.chatId == chats[p].chatId) {
+          chats.removeAt(p);
+          chats.add(modifiedChat);
+        }
       }
-    } catch (e) {
-      print(e.toString());
+      emit(myState.copyWith(chats: chats));
     }
   }
 
-  String timeDetect(DateTime time) {
-    final difference = DateTime.now().difference(time);
+  chatItemAdded(ChatModel newChat) {
+    final myState = state;
+    if (myState is ChatStateLoaded) {
+      final myChats = myState.chats;
+      myChats.add(newChat);
+      emit(myState.copyWith(chats: myChats));
+    }
+  }
 
-    if (difference.inDays != 0) {
-      if (difference.inDays > 7) {
-        return '${time.day}.${time.month}.${time.year}';
-      } else {
-        return '${time.weekday}';
+  chatItemDeleted(ChatModel deletedChat) {
+    final myState = state;
+    if (myState is ChatStateLoaded) {
+      final myChats = myState.chats;
+
+      for (var item in myChats) {
+        if (item.chatId == deletedChat.chatId) {
+          myChats.remove(deletedChat);
+        }
       }
-    } else if (difference.inHours != 0) {
-      return '${time.hour}:${time.minute} ${time.timeZoneName}';
-    } else if (difference.inMinutes != 0) {
-      return difference.inMinutes.toString() + ' m';
-    } else {
-      return difference.inSeconds.toString() + ' s';
+      emit(myState.copyWith(chats: myChats));
     }
   }
 }
+
+enum ChatChangeType { modified, deleted, added }
+
+
+
+
+
+

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
+import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_event.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
-import 'package:smessanger/src/ui/pages/home_pages/chats_page.dart';
-import 'package:smessanger/src/ui/pages/movie_pages/films_page.dart';
+import 'package:smessanger/src/bloc/news_bloc/news_bloc.dart';
+import 'package:smessanger/src/resources/data/news_data.dart';
+
+import 'package:smessanger/src/ui/pages/chat_pages/chats_page.dart';
 import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 import 'package:smessanger/src/ui/pages/home_pages/settings_page.dart';
 import 'package:unicons/unicons.dart';
@@ -16,8 +19,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<HomeBloc>(
-        create: (_) => rep.sl.call<HomeBloc>(), child: const _HomeScreen());
+    return MultiBlocProvider(providers: [
+      BlocProvider(create: (_) => rep.sl.call<HomeBloc>()),
+      BlocProvider(create: (_) => NewsBloc(newsData: rep.sl.call<NewsData>())),
+      BlocProvider(
+        create: (_) => ChatBloc(
+          uid: BlocProvider.of<AppBloc>(context).state.uid,
+          messageRepo: rep.sl.call(),
+          userRepo: rep.sl.call(),
+        ),
+      )
+    ], child: const _HomeScreen());
   }
 }
 
@@ -37,19 +49,17 @@ class _HomeScreenState extends State<_HomeScreen> {
         );
   }
 
+  static const List<Widget> pages = <Widget>[
+    NewsPage(),
+    ChatPage(),
+    SizedBox(),
+    SettingsPage(),
+  ];
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
       return Scaffold(
-        body: IndexedStack(
-          index: state.page,
-          children: const [
-            NewsPage(),
-            ChatPage(),
-            FilmsMainPage(),
-            SettingsPage(),
-          ],
-        ),
+        body: pages[state.page],
         bottomNavigationBar: BottomNavigationBar(
           onTap: (index) {
             FocusScope.of(context).unfocus();
@@ -66,7 +76,7 @@ class _HomeScreenState extends State<_HomeScreen> {
             BottomNavigationBarItem(
                 icon: Icon(UniconsLine.chat), label: 'Messages'),
             BottomNavigationBarItem(
-                icon: Icon(UniconsLine.film), label: "Films"),
+                icon: Icon(UniconsLine.phone), label: 'Calls'),
             BottomNavigationBarItem(
                 icon: Icon(UniconsLine.setting), label: "Settings"),
           ],
@@ -75,5 +85,3 @@ class _HomeScreenState extends State<_HomeScreen> {
     });
   }
 }
-
-

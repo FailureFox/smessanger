@@ -50,6 +50,8 @@ abstract class AppTheme {
       iconTheme: const IconThemeData(color: AppColors.dforegroundML));
 
   static final ThemeData lightTheme = ThemeData(
+    bottomSheetTheme:
+        const BottomSheetThemeData(backgroundColor: AppColors.lbackgroundLD),
     iconTheme: const IconThemeData(color: AppColors.lforegroundML),
     canvasColor: AppColors.lbackground,
     scaffoldBackgroundColor: AppColors.lbackground,

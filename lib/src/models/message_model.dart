@@ -4,7 +4,13 @@ abstract class Message {
   final Timestamp dateTime;
   final String from;
   final bool readed;
-  Message({required this.dateTime, required this.from, required this.readed});
+  final String? id;
+
+  Message(
+      {required this.dateTime,
+      required this.from,
+      required this.readed,
+      required this.id});
   Map<String, dynamic> toMap();
 }
 
@@ -15,16 +21,17 @@ class MessageTextModel extends Message {
     required dateTime,
     required from,
     required this.message,
-    required readed,
-  }) : super(dateTime: dateTime, from: from, readed: readed);
+    readed = false,
+    String? id,
+  }) : super(dateTime: dateTime, from: from, readed: readed, id: id);
 
-  factory MessageTextModel.fromMap(Map<String, dynamic> map) {
+  factory MessageTextModel.fromMap(Map<String, dynamic> map, id) {
     return MessageTextModel(
-      dateTime: map['dateTime'],
-      from: map['from'],
-      message: map['message'],
-      readed: map['readed'],
-    );
+        dateTime: map['dateTime'],
+        from: map['from'],
+        message: map['message'],
+        readed: map['readed'],
+        id: id);
   }
   @override
   Map<String, dynamic> toMap() {
@@ -47,8 +54,9 @@ class MessageMediaModel extends Message {
     required Timestamp dateTime,
     required String from,
     required bool readed,
+    required String id,
     this.message,
-  }) : super(dateTime: dateTime, from: from, readed: readed);
+  }) : super(dateTime: dateTime, from: from, readed: readed, id: id);
 
   @override
   Map<String, dynamic> toMap() {
@@ -62,8 +70,9 @@ class MessageMediaModel extends Message {
     };
   }
 
-  factory MessageMediaModel.fromMap(Map<String, dynamic> map) {
+  factory MessageMediaModel.fromMap(Map<String, dynamic> map, String id) {
     return MessageMediaModel(
+      id: id,
       mediaUrl: map['mediaUrl'],
       mediaType: map['mediaType'],
       dateTime: map['dateTime'],

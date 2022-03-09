@@ -17,7 +17,8 @@ class PersonSearchErrorState extends PersonSearchState {
 
 class PersonSearchLoaded extends PersonSearchState {
   List<UserModel> users;
-  PersonSearchLoaded({required this.users});
+  List<UserModel> localUsers;
+  PersonSearchLoaded({required this.users, required this.localUsers});
 }
 
 class PersonSearchEmpty extends PersonSearchState {}

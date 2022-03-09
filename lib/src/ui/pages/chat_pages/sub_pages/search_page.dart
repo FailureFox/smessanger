@@ -5,23 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_search_bloc/person_search_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_search_bloc/person_search_state.dart';
+import 'package:smessanger/src/models/chat_model.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 import 'package:smessanger/injections.dart' as rep;
 import 'package:smessanger/src/ui/pages/home_pages/sub_pages.dart/profile_page.dart';
-import 'package:smessanger/src/ui/pages/movie_pages/sub_pages/movie_search_page.dart';
 import 'package:smessanger/src/ui/styles/images.dart';
 
 class ChatSearchPage extends StatelessWidget {
-  const ChatSearchPage({Key? key}) : super(key: key);
-
+  const ChatSearchPage({Key? key, required this.chats}) : super(key: key);
+  final List<ChatModel> chats;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          PersonSearchBloc(searchPerson: rep.sl.call<UserRepository>()),
-      child: ChatSearchBody(),
+      create: (_) => PersonSearchBloc(
+          searchPerson: rep.sl.call<UserRepository>(), chats: chats),
+      child: const ChatSearchBody(),
     );
   }
 }
@@ -126,21 +126,21 @@ class _ChatSearchBodyState extends State<ChatSearchBody> {
                 ),
               );
             } else if (state is PersonSearchEmpty) {
-              return const FilmsSearchEmptyWidget(
+              return const SearchEmptyWidget(
                 image: AppImages.empty,
                 whiteColor: Colors.black45,
                 darkColor: Colors.white54,
                 text: 'No data',
               );
             } else if (state is PersonSearchInitialState) {
-              return const FilmsSearchEmptyWidget(
+              return const SearchEmptyWidget(
                 whiteColor: Colors.black45,
                 darkColor: Colors.white54,
                 image: AppImages.searching,
                 text: 'Search',
               );
             } else {
-              return FilmsSearchEmptyWidget(
+              return SearchEmptyWidget(
                   whiteColor: Colors.black45,
                   darkColor: Colors.white54,
                   widget: Container(
@@ -188,6 +188,49 @@ class PersonSearchListItems extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class SearchEmptyWidget extends StatelessWidget {
+  const SearchEmptyWidget({
+    Key? key,
+    required this.image,
+    required this.text,
+    this.darkColor,
+    this.whiteColor,
+    this.widget,
+  }) : super(key: key);
+  final String image;
+  final String text;
+  final Color? darkColor;
+  final Color? whiteColor;
+  final Widget? widget;
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildListDelegate.fixed(
+        [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width / 3,
+                    child: Image.asset(image,
+                        fit: BoxFit.cover,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? darkColor
+                            : whiteColor)),
+                const SizedBox(height: 35),
+                Text(text, style: const TextStyle(fontSize: 17)),
+                if (widget != null) widget!,
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

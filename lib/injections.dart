@@ -7,21 +7,21 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
 import 'package:smessanger/src/bloc/auth_bloc/auth_bloc.dart';
+import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/register_bloc/register_bloc.dart';
 import 'package:smessanger/src/resources/data/news_data.dart';
 import 'package:smessanger/src/resources/data/news_data_use.dart';
 import 'package:smessanger/src/resources/domain/repositories/auth_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/file_repository.dart';
-import 'package:smessanger/src/resources/domain/repositories/films_repositories/films_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/http_domain.dart';
-import 'package:smessanger/src/resources/domain/repositories/messages_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/chats_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/token_repository.dart';
 import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 import 'package:smessanger/src/resources/domain/usecases/auth_repository_use.dart';
 import 'package:smessanger/src/resources/domain/usecases/file_repository_use.dart';
 import 'package:smessanger/src/resources/domain/usecases/http_domain_use.dart';
-import 'package:smessanger/src/resources/domain/usecases/messages_repository_use.dart';
+import 'package:smessanger/src/resources/domain/usecases/chats_repository.dart';
 import 'package:smessanger/src/resources/domain/usecases/token_repository_use.dart';
 import 'package:smessanger/src/resources/domain/usecases/user_repository_use.dart';
 
@@ -47,14 +47,13 @@ Future<void> init() async {
       () => AuthRepositoryUse(firestore: sl.call(), firebaseAuth: sl.call()));
   sl.registerLazySingleton<FileRepository>(
       () => FileRepositoryUse(firebaseStorage: sl.call()));
-  sl.registerLazySingleton<MessagesRepository>(
-      () => MessagesRepositoryUse(firestore: sl.call()));
+  sl.registerLazySingleton<ChatsRepository>(
+      () => ChatsRepositoryUse(firestore: sl.call()));
   sl.registerLazySingleton<TokenRepository>(
       () => TokenRepositoryUse(securestorage: sl.call()));
   sl.registerLazySingleton<NewsData>(() => NewsDataUse(httpDomain: sl.call()));
   sl.registerLazySingleton<HttpDomain>(() => HttpDomainUse());
-  sl.registerLazySingleton<FilmsDomain>(
-      () => FilmsDomain(httpDomain: sl.call()));
+
   //
 
   final SharedPreferences sharedPreferences =
