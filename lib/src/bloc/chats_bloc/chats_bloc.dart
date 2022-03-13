@@ -8,26 +8,35 @@ import 'package:smessanger/src/resources/domain/repositories/chats_repository.da
 import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 
 class ChatBloc extends Cubit<ChatState> {
-  final ChatsRepository messageRepo;
+  final ChatsRepository chatRep;
   final UserRepository userRepo;
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   final String uid;
-  ChatBloc(
-      {required this.messageRepo, required this.userRepo, required this.uid})
-      : super(ChatState());
+  bool isFirst = true;
+  ChatBloc({required this.chatRep, required this.userRepo, required this.uid})
+      : super(ChatState()) {
+    chatsLoading();
+  }
 
   chatsLoading() async {
-    messageRepo.listenChats(uid).listen(
+    chatRep.listenChats(uid).listen(
       (snapShot) async {
         for (var i in snapShot.docChanges) {
-          if (state is! ChatStateLoaded) {
+          if (isFirst) {
+            isFirst = false;
             break;
           }
           final String userId =
               (i.doc.data() as Map<String, dynamic>)['chatUser'];
           final UserModel chatUser = await userRepo.getAsyncUser(userId);
+          final int notReadedCount =
+              await chatRep.getisNotReadedCount(uid, i.doc.id);
           final ChatModel singleChat = ChatModel.fromMap(
-              i.doc.data() as Map<String, dynamic>, chatUser, i.doc.id);
+            map: i.doc.data() as Map<String, dynamic>,
+            user: chatUser,
+            chatId: i.doc.id,
+            notReadedCount: notReadedCount,
+          );
           switch (i.type) {
             case DocumentChangeType.added:
               chatItemAdded(singleChat);
@@ -43,8 +52,17 @@ class ChatBloc extends Cubit<ChatState> {
       },
     );
     emit(ChatStateLoading());
-    final List<ChatModel> chats = await messageRepo.getChats(uid, userRepo);
+    final List<ChatModel> chats = await chatRep.getChats(uid, userRepo);
     emit(ChatStateLoaded(chats: chats));
+  }
+
+  deleteChat(
+      {required String chatId,
+      required String companionId,
+      required String myID}) async {
+    try {
+      chatRep.deleteChat(chatId: chatId, myId: myID, companionId: companionId);
+    } catch (e) {}
   }
 
 //chatsMethods
@@ -55,7 +73,8 @@ class ChatBloc extends Cubit<ChatState> {
       for (var p = 0; p < chats.length; p++) {
         if (modifiedChat.chatId == chats[p].chatId) {
           chats.removeAt(p);
-          chats.add(modifiedChat);
+          chats.insert(0, modifiedChat);
+          break;
         }
       }
       emit(myState.copyWith(chats: chats));
@@ -76,20 +95,15 @@ class ChatBloc extends Cubit<ChatState> {
     if (myState is ChatStateLoaded) {
       final myChats = myState.chats;
 
-      for (var item in myChats) {
-        if (item.chatId == deletedChat.chatId) {
-          myChats.remove(deletedChat);
+      for (var i = 0; i < myChats.length; i++) {
+        if (deletedChat.chatId == myChats[i].chatId) {
+          myChats.removeAt(i);
         }
       }
+
       emit(myState.copyWith(chats: myChats));
     }
   }
 }
 
 enum ChatChangeType { modified, deleted, added }
-
-
-
-
-
-

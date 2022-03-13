@@ -1,6 +1,4 @@
 import 'package:smessanger/src/models/chat_model.dart';
-import 'package:smessanger/src/models/message_model.dart';
-import 'package:smessanger/src/models/my_profile_model.dart';
 
 class ChatState {}
 

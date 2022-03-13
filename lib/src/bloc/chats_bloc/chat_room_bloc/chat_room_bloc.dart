@@ -1,64 +1,67 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chat_room_bloc/chat_room_state.dart';
 import 'package:smessanger/src/models/message_model.dart';
-import 'package:smessanger/src/resources/domain/repositories/chats_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/message_repository.dart';
 
 class ChatRoomBloc extends Cubit<ChatRoomState> {
-  final String? chatId;
+  String? chatId;
   final String uid;
-  late StreamSubscription subscription;
-  final ChatsRepository chatRep;
-  bool isFirst = true;
+  final MessageRepository messageRep;
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+  StreamSubscription? subscription;
+  bool isFirst = true;
   ChatRoomBloc({
     required this.chatId,
-    required this.chatRep,
     required this.uid,
+    required this.messageRep,
   }) : super(const ChatRoomStateInitial()) {
     chatRoomLoading();
   }
   @override
   close() async {
-    subscription.cancel();
+    subscription?.cancel();
     super.close();
   }
 
   chatRoomLoading() async {
     if (chatId != null) {
-      subscription = chatRep.listenMessages(chatId: chatId!, uid: uid).listen(
-        (event) async {
-          final List<DocumentChange> docs = event.docChanges;
-          for (var item in docs) {
-            if (isFirst) {
-              isFirst = false;
-              break;
-            } else {
-              final myState = state as ChatRoomStateLoaded;
-              switch (item.type) {
-                case DocumentChangeType.added:
-                  final messages = messageAdd(item.doc, myState.messages);
-                  emit(ChatRoomStateLoaded(messages: messages));
-                  break;
-                case DocumentChangeType.modified:
-                  final messages = messageEdit(item.doc, myState.messages);
-                  emit(ChatRoomStateLoaded(messages: messages));
-                  break;
-                case DocumentChangeType.removed:
-                  final messages = messageDelete(item.doc, myState.messages);
-                  emit(ChatRoomStateLoaded(messages: messages));
-                  break;
+      try {
+        subscription =
+            messageRep.listenMessages(chatId: chatId!, uid: uid).listen(
+          (event) async {
+            final List<DocumentChange> docs = event.docChanges;
+            for (var item in docs) {
+              if (isFirst) {
+                isFirst = false;
+                break;
+              } else {
+                final myState = state as ChatRoomStateLoaded;
+                switch (item.type) {
+                  case DocumentChangeType.added:
+                    messageAdd(item.doc, myState.messages);
+                    break;
+                  case DocumentChangeType.modified:
+                    messageEdit(item.doc, myState.messages);
+                    break;
+                  case DocumentChangeType.removed:
+                    messageDelete(item.doc, myState.messages);
+                    break;
+                }
               }
             }
-          }
-        },
-      );
-      emit(ChatRoomStateLoading());
-
-      final messages = await chatRep.getMessages(chatId: chatId!, uid: uid);
-      emit(ChatRoomStateLoaded(messages: messages));
+          },
+        );
+        emit(ChatRoomStateLoading());
+        final messages =
+            await messageRep.getMessages(chatId: chatId!, uid: uid);
+        emit(ChatRoomStateLoaded(messages: messages));
+      } catch (e) {}
+    } else {
+      emit(ChatRoomStateEmtpy());
     }
   }
 
@@ -72,14 +75,18 @@ class ChatRoomBloc extends Cubit<ChatRoomState> {
           from: uid,
           message: message,
           readed: false);
-      await chatRep.sendMessage(
+      final String? newChatId = await messageRep.sendMessage(
         message: messageModel,
         chatId: chatId,
         companionId: companionId,
         myId: uid,
       );
+      if (newChatId != null) {
+        chatId = newChatId;
+        chatRoomLoading();
+      }
     } catch (e) {
-      print(e);
+      log(e.toString());
     }
   }
 

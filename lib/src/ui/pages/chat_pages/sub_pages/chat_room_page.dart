@@ -6,13 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chat_room_bloc/chat_room_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chat_room_bloc/chat_room_state.dart';
-import 'package:smessanger/src/models/chat_model.dart';
 import 'package:smessanger/src/models/message_model.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
-import 'package:smessanger/src/resources/domain/repositories/chats_repository.dart';
+import 'package:smessanger/src/resources/domain/repositories/message_repository.dart';
 import 'package:smessanger/src/ui/pages/chat_pages/components/messages_widget.dart';
 import 'package:smessanger/src/ui/pages/home_pages/sub_pages.dart/profile_page.dart';
 import 'package:smessanger/injections.dart' as rep;
+import 'package:unicons/unicons.dart';
 
 class ChatRoomPage extends StatelessWidget {
   const ChatRoomPage({Key? key, required this.chatId, required this.user})
@@ -25,11 +25,25 @@ class ChatRoomPage extends StatelessWidget {
       create: (_) => ChatRoomBloc(
         uid: BlocProvider.of<AppBloc>(context).state.uid,
         chatId: chatId,
-        chatRep: rep.sl.call<ChatsRepository>(),
+        messageRep: rep.sl.call<MessageRepository>(),
       ),
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  UniconsLine.phone,
+                  color: Theme.of(context).iconTheme.color,
+                )),
+            IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  UniconsLine.video,
+                  color: Theme.of(context).iconTheme.color,
+                ))
+          ],
           systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
           ),
@@ -162,6 +176,9 @@ class ChatMessagesList extends StatelessWidget {
         if (myState is ChatRoomStateLoaded) {
           if (myState.messages.isNotEmpty) {
             return AnimatedList(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).viewInsets.top +
+                      Scaffold.of(context).appBarMaxHeight!.toDouble()),
               reverse: true,
               key: BlocProvider.of<ChatRoomBloc>(context).listKey,
               initialItemCount: myState.messages.length,

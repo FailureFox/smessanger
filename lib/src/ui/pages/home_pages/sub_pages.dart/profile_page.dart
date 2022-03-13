@@ -24,22 +24,13 @@ class ProfilePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                     Navigator.pop(context);
-                    // Navigator.push(
-                    //   context,
-                    //   CupertinoPageRoute(
-                    //     builder: (context) => ChatInheritedWidget(
-                    //       bloc: ChatBloc(
-                    //           chatModel: ChatModel(
-                    //             type: ChatType.oneToOne,
-                    //             chatUser: profile.uid,
-                    //             chatID: null,
-                    //           ),
-                    //           messageRepo: rep.sl.call<MessagesRepository>(),
-                    //           userRepo: rep.sl.call<UserRepository>()),
-                    //       child: ChatRoomPage(user: profile),
-                    //     ),
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) =>
+                            ChatRoomPage(chatId: null, user: profile),
+                      ),
+                    );
                   },
                   child: const Icon(Icons.message),
                 )

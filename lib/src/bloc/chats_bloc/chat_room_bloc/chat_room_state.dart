@@ -14,3 +14,5 @@ class ChatRoomStateInitial extends ChatRoomState {
 }
 
 class ChatRoomStateLoading extends ChatRoomState {}
+
+class ChatRoomStateEmtpy extends ChatRoomState {}

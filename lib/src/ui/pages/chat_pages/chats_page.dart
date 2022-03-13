@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -6,12 +5,7 @@ import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
 import 'package:smessanger/src/bloc/chats_bloc/chats_state.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
-import 'package:smessanger/src/models/chat_model.dart';
-import 'package:smessanger/src/resources/domain/repositories/chats_repository.dart';
-import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
 import 'package:smessanger/src/ui/pages/chat_pages/components/chat_items.dart';
-import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
-import 'package:smessanger/injections.dart' as rep;
 import 'package:smessanger/src/ui/pages/chat_pages/sub_pages/search_page.dart';
 
 class ChatPage extends StatefulWidget {
@@ -75,7 +69,10 @@ class _ChatPageState extends State<ChatPage> {
                         context,
                         PageRouteBuilder(
                           pageBuilder: (mycontext, animation, animation2) =>
-                              const ChatSearchPage(chats: []),
+                              ChatSearchPage(
+                                  chats: (BlocProvider.of<ChatBloc>(context)
+                                          .state as ChatStateLoaded)
+                                      .chats),
                         ),
                       );
                     },
@@ -88,9 +85,6 @@ class _ChatPageState extends State<ChatPage> {
         BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
           return BlocBuilder<ChatBloc, ChatState>(
               builder: (context, chatState) {
-            if (chatState is! ChatStateLoaded) {
-              BlocProvider.of<ChatBloc>(context).chatsLoading();
-            }
             if (state.status == HomeStatus.loaded &&
                 chatState is ChatStateLoaded) {
               return const ChatsBody();
@@ -188,6 +182,47 @@ class ChatListLoadingItems extends StatelessWidget {
           child: Container(
             color: Theme.of(context).backgroundColor,
             height: 10,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SearchInput extends StatelessWidget {
+  const SearchInput({
+    Key? key,
+    required this.onTap,
+    required this.text,
+    required this.enabled,
+    this.suffix,
+    this.onChanged,
+  }) : super(key: key);
+  final VoidCallback onTap;
+  final String text;
+  final bool enabled;
+  final Widget? suffix;
+
+  final Function(String)? onChanged;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.width / 9,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: GestureDetector(
+        onTap: onTap,
+        child: TextField(
+          autofocus: enabled,
+          enabled: enabled,
+          maxLines: null,
+          onChanged: onChanged ?? (String value) {},
+          minLines: null,
+          expands: true,
+          textAlignVertical: TextAlignVertical.center,
+          decoration: InputDecoration(
+            suffix: suffix,
+            prefixIcon: const Icon(Icons.search),
+            hintText: text,
           ),
         ),
       ),

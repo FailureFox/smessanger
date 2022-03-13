@@ -8,8 +8,8 @@ import 'package:smessanger/src/bloc/chats_bloc/chats_search_bloc/person_search_s
 import 'package:smessanger/src/models/chat_model.dart';
 import 'package:smessanger/src/models/my_profile_model.dart';
 import 'package:smessanger/src/resources/domain/repositories/user_repository.dart';
-import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 import 'package:smessanger/injections.dart' as rep;
+import 'package:smessanger/src/ui/pages/chat_pages/chats_page.dart';
 import 'package:smessanger/src/ui/pages/home_pages/sub_pages.dart/profile_page.dart';
 import 'package:smessanger/src/ui/styles/images.dart';
 
@@ -118,13 +118,7 @@ class _ChatSearchBodyState extends State<ChatSearchBody> {
           BlocBuilder<PersonSearchBloc, PersonSearchState>(
               builder: (context, state) {
             if (state is PersonSearchLoaded) {
-              return SliverList(
-                delegate: SliverChildListDelegate.fixed(
-                  state.users
-                      .map((e) => PersonSearchListItems(model: e))
-                      .toList(),
-                ),
-              );
+              return const PersonSearchList();
             } else if (state is PersonSearchEmpty) {
               return const SearchEmptyWidget(
                 image: AppImages.empty,
@@ -156,6 +150,38 @@ class _ChatSearchBodyState extends State<ChatSearchBody> {
         ],
       ),
     );
+  }
+}
+
+class PersonSearchList extends StatelessWidget {
+  const PersonSearchList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PersonSearchBloc, PersonSearchState>(
+        builder: (context, state) {
+      final mystate = state as PersonSearchLoaded;
+      return SliverList(
+        delegate: SliverChildListDelegate.fixed([
+          if (state.localUsers.isNotEmpty) ...[
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 15),
+              child: Text('Local search'),
+            ),
+            ...state.localUsers
+                .map((e) => PersonSearchListItems(model: e))
+                .toList(),
+          ],
+          ...[
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 15),
+              child: Text('Global search'),
+            ),
+            ...state.users.map((e) => PersonSearchListItems(model: e)).toList(),
+          ],
+        ]),
+      );
+    });
   }
 }
 

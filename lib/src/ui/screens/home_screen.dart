@@ -5,11 +5,7 @@ import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_bloc.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_event.dart';
 import 'package:smessanger/src/bloc/home_bloc/home_state.dart';
-import 'package:smessanger/src/bloc/news_bloc/news_bloc.dart';
-import 'package:smessanger/src/resources/data/news_data.dart';
-
 import 'package:smessanger/src/ui/pages/chat_pages/chats_page.dart';
-import 'package:smessanger/src/ui/pages/home_pages/news_page.dart';
 import 'package:smessanger/src/ui/pages/home_pages/settings_page.dart';
 import 'package:unicons/unicons.dart';
 import 'package:smessanger/injections.dart' as rep;
@@ -21,11 +17,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
       BlocProvider(create: (_) => rep.sl.call<HomeBloc>()),
-      BlocProvider(create: (_) => NewsBloc(newsData: rep.sl.call<NewsData>())),
       BlocProvider(
         create: (_) => ChatBloc(
           uid: BlocProvider.of<AppBloc>(context).state.uid,
-          messageRepo: rep.sl.call(),
+          chatRep: rep.sl.call(),
           userRepo: rep.sl.call(),
         ),
       )
@@ -50,8 +45,8 @@ class _HomeScreenState extends State<_HomeScreen> {
   }
 
   static const List<Widget> pages = <Widget>[
-    NewsPage(),
     ChatPage(),
+    SizedBox(),
     SizedBox(),
     SettingsPage(),
   ];
@@ -72,11 +67,11 @@ class _HomeScreenState extends State<_HomeScreen> {
           showUnselectedLabels: true,
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(UniconsLine.home_alt), label: 'Home'),
-            BottomNavigationBarItem(
                 icon: Icon(UniconsLine.chat), label: 'Messages'),
             BottomNavigationBarItem(
                 icon: Icon(UniconsLine.phone), label: 'Calls'),
+            BottomNavigationBarItem(
+                icon: Icon(UniconsLine.users_alt), label: 'contacts'),
             BottomNavigationBarItem(
                 icon: Icon(UniconsLine.setting), label: "Settings"),
           ],

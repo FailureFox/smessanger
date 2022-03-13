@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smessanger/src/bloc/app_bloc/app_bloc.dart';
+import 'package:smessanger/src/bloc/chats_bloc/chats_bloc.dart';
 import 'package:smessanger/src/models/chat_model.dart';
 import 'package:smessanger/src/ui/pages/chat_pages/sub_pages/chat_room_page.dart';
 import 'package:smessanger/src/ui/styles/colors.dart';
@@ -16,7 +19,7 @@ class _ChatItemsState extends State<ChatItems> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onLongPress: showMyDialog,
+      onLongPress: () => showDeleteChatDialog(widget.chat, context),
       onTap: () {
         Navigator.push(
           context,
@@ -38,17 +41,24 @@ class _ChatItemsState extends State<ChatItems> {
         ),
       ),
       title: Text(widget.chat.chatUser.name),
-      trailing: Column(children: [
+      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
         Text(widget.chat.time),
+        const SizedBox(width: 5),
+        CircleAvatar(
+          radius: 15,
+          child: Text(widget.chat.notReadedCount.toString(),
+              style: Theme.of(context).textTheme.caption),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
       ]),
       subtitle: Text((widget.chat.lastMessage!)),
     );
   }
 
-  showMyDialog() {
+  showDeleteChatDialog(ChatModel chat, context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (secondContext) => AlertDialog(
         actionsAlignment: MainAxisAlignment.spaceAround,
         title: const Center(child: Text('Delete сhat?')),
         content: Text(
@@ -71,7 +81,7 @@ class _ChatItemsState extends State<ChatItems> {
                   primary: Theme.of(context).bottomSheetTheme.backgroundColor,
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(secondContext);
                 },
                 child: Text('Cancel',
                     style: TextStyle(color: Theme.of(context).hintColor))),
@@ -83,7 +93,13 @@ class _ChatItemsState extends State<ChatItems> {
                 style: ElevatedButton.styleFrom(
                   primary: AppColors.redTint,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  BlocProvider.of<ChatBloc>(context).deleteChat(
+                      chatId: chat.chatId,
+                      companionId: chat.chatUser.uid,
+                      myID: BlocProvider.of<AppBloc>(context).state.uid);
+                  Navigator.pop(secondContext);
+                },
                 child: const Text('Delete')),
           )
         ],

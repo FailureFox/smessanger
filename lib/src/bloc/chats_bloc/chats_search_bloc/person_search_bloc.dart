@@ -21,8 +21,10 @@ class PersonSearchBloc extends Cubit<PersonSearchState> {
         List<UserModel> localPerson = [];
         for (int i = 0; i < persons.length; i++) {
           for (int p = 0; p < chats.length; p++) {
-            if (persons[i].uid == chats[p].chatUser) {
+            if (persons[i].uid == chats[p].chatUser.uid) {
               localPerson.add(persons.removeAt(i));
+              i--;
+              break;
             }
           }
         }

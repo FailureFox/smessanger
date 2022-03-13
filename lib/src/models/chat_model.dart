@@ -9,23 +9,31 @@ class ChatModel {
   final Timestamp lastMessageTime;
   final String chatId;
   late final String time;
+  final int notReadedCount;
   ChatModel({
     required this.type,
     required this.chatUser,
     required this.lastMessage,
     required this.lastMessageTime,
     required this.chatId,
+    required this.notReadedCount,
   }) {
     time = timeDetect(lastMessageTime.toDate());
   }
-  factory ChatModel.fromMap(
-      Map<String, dynamic> map, UserModel user, String chatId) {
+  factory ChatModel.fromMap({
+    required Map<String, dynamic> map,
+    required UserModel user,
+    required String chatId,
+    required int notReadedCount,
+  }) {
     return ChatModel(
-        lastMessage: map['message'],
-        lastMessageTime: map['dateTime'],
-        type: _typeDetect[map['type']]!,
-        chatUser: user,
-        chatId: chatId);
+      lastMessage: map['message'],
+      lastMessageTime: map['dateTime'],
+      type: _typeDetect[map['type']]!,
+      chatUser: user,
+      chatId: chatId,
+      notReadedCount: notReadedCount,
+    );
   }
   Map<String, dynamic> toMap() {
     return {
@@ -42,18 +50,22 @@ class ChatModel {
     'channel': ChatType.channel,
   };
 
-  ChatModel copyWith(
-      {ChatType? type,
-      UserModel? chatUser,
-      String? lastMessage,
-      Timestamp? lastMessageTime,
-      String? chatId}) {
+  ChatModel copyWith({
+    ChatType? type,
+    UserModel? chatUser,
+    String? lastMessage,
+    Timestamp? lastMessageTime,
+    String? chatId,
+    int? notReadedCount,
+  }) {
     return ChatModel(
-        type: type ?? this.type,
-        chatId: chatId ?? this.chatId,
-        chatUser: chatUser ?? this.chatUser,
-        lastMessage: lastMessage ?? this.lastMessage,
-        lastMessageTime: lastMessageTime ?? this.lastMessageTime);
+      type: type ?? this.type,
+      chatId: chatId ?? this.chatId,
+      chatUser: chatUser ?? this.chatUser,
+      lastMessage: lastMessage ?? this.lastMessage,
+      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
+      notReadedCount: notReadedCount ?? this.notReadedCount,
+    );
   }
 
   String timeDetect(DateTime time) {
